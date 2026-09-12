@@ -1,0 +1,200 @@
+/* ==========================================================================
+   NANNERAM VINTAGE HOROLOGY & ASTRONOMICAL CLOCK DESIGN SYSTEM
+   Old-world aged parchment, antique brass, deep walnut ink, wax seals,
+   and precision horological chronometers.
+   ========================================================================== */
+
+:root {
+  /* Antique Parchment & Deep Sepia Palette ("A Little Old") */
+  --aged-parchment: #f2ebd9;
+  --aged-parchment-light: #faf6ec;
+  --aged-parchment-dark: #e5dcc7;
+  --aged-paper-card: #fdfbf7;
+  
+  /* Antique Inks */
+  --walnut-ink: #1f1813;
+  --sepia-dark: #2d241c;
+  --sepia-medium: #5c4d3f;
+  --sepia-faded: #8c7a6b;
+  --ink-hairline: rgba(45, 36, 28, 0.18);
+  --ink-border-heavy: #241c15;
+
+  /* Antique Metals & Horology Accents */
+  --antique-brass: #b89347;
+  --antique-brass-light: #d4af58;
+  --antique-brass-glow: rgba(184, 147, 71, 0.25);
+  --antique-copper: #a65839;
+  --wax-seal-crimson: #841b1b;
+  --wax-seal-bg: #fae8e8;
+  --patina-sage: #2a5a3b;
+  --patina-sage-bg: #ebf5ee;
+
+  /* Fonts */
+  --font-antique-serif: 'Cinzel', 'Playfair Display', Georgia, serif;
+  --font-engraved: 'Outfit', 'Inter', -apple-system, sans-serif;
+  --font-chrono-mono: 'Courier Prime', 'SF Mono', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--aged-parchment);
+  color: var(--walnut-ink);
+  font-family: var(--font-engraved);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  /* Antique vellum / handmade linen texture */
+  background-image: 
+    radial-gradient(#d3c5aa 0.75px, transparent 0.75px),
+    linear-gradient(to right, rgba(0,0,0,0.02) 1px, transparent 1px);
+  background-size: 20px 20px, 60px 60px;
+}
+
+h1, h2, h3, h4, .antique-title {
+  font-family: var(--font-antique-serif);
+  color: var(--walnut-ink);
+  letter-spacing: 0.03em;
+  font-weight: 800;
+}
+
+.mono-time {
+  font-family: var(--font-chrono-mono);
+  letter-spacing: 1px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+/* Antique Wax Seal & Brass Plaque Buttons */
+.btn-brass {
+  background: linear-gradient(180deg, #c9a75c 0%, #a48135 100%);
+  color: #171109;
+  border: 2px solid var(--ink-border-heavy);
+  font-family: var(--font-antique-serif);
+  font-weight: 800;
+  padding: 0.8rem 1.6rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 3px 3px 0px var(--ink-border-heavy);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.btn-brass:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--ink-border-heavy);
+  filter: brightness(1.08);
+}
+
+.btn-walnut {
+  background: var(--ink-border-heavy);
+  color: #f7f1e1;
+  border: 2px solid var(--ink-border-heavy);
+  font-family: var(--font-antique-serif);
+  font-weight: 800;
+  padding: 0.8rem 1.6rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.btn-walnut:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px #000;
+  background: #110c08;
+}
+
+/* Antique Parchment Card */
+.antique-card {
+  background: var(--aged-paper-card);
+  border: 2px solid var(--ink-border-heavy);
+  border-radius: 8px;
+  box-shadow: 4px 4px 0px var(--ink-border-heavy);
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.antique-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--ink-border-heavy);
+}
+
+/* Wax Seal Stamp Tag */
+.wax-seal-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border: 1.5px solid var(--ink-border-heavy);
+  border-radius: 4px;
+  font-family: var(--font-antique-serif);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: var(--aged-parchment-light);
+  box-shadow: 2px 2px 0px var(--ink-border-heavy);
+}
+
+/* Antique Clock Dial Animation */
+@keyframes clockHandRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pendulumSwing {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+
+.pendulum-anim {
+  transform-origin: top center;
+  animation: pendulumSwing 3s ease-in-out infinite;
+}
+
+/* Ornate Antique Border Line */
+.ornate-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  color: var(--antique-brass);
+  font-size: 0.9rem;
+}
+
+.ornate-rule::before,
+.ornate-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--antique-brass), transparent);
+}
+
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
