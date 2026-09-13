@@ -78,7 +78,7 @@ export function formatZoomId(rawId) {
  */
 export function getZoomJoinUrl(config) {
   if (!config) {
-    return 'https://zoom.us/j/9842107452';
+    return 'https://zoom.us/start/videomeeting';
   }
 
   // 1. If user provided a vanity URL (e.g. zoom.us/my/dr_saaqib)
