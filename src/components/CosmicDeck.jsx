@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Compass, Sparkles, Clock } from 'lucide-react';
 
 const VINTAGE_DECK_CARDS = [
@@ -103,25 +103,7 @@ const VINTAGE_DECK_CARDS = [
 ];
 
 export default function CosmicDeck() {
-  const [activeTab, setActiveTab] = useState('3D');
   const [hoveredCard, setHoveredCard] = useState(null);
-  const [isNarrow, setIsNarrow] = useState(false);
-
-  useEffect(() => {
-    // Matches the breakpoint where .cosmic-grid drops below 3 columns (see
-    // index.css). At 1-2 columns the stack is tall enough that rotating it
-    // in 3D space pushes the bounding box past the viewport edge, so the
-    // isometric tilt is only safe at the full 3-column width.
-    const mq = window.matchMedia('(max-width: 980px)');
-    const update = () => setIsNarrow(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
-
-  // Falls back to the flat view below the 3-column breakpoint regardless of
-  // the user's tab choice (see effect above).
-  const effectiveTab = isNarrow ? 'GRID' : activeTab;
 
   return (
     <section style={{
@@ -169,49 +151,12 @@ export default function CosmicDeck() {
           }}>
             Time is not a flat number on a digital screen. It is an intricate clockwork of solar declination, planetary horas, and golden windows. Explore the 6 great instruments of victory.
           </p>
-
-          {/* Perspective Switcher */}
-          <div className="deck-switcher" style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.4)', borderRadius: '6px', padding: '3px', border: '1px solid #4a3c2c', maxWidth: '100%' }}>
-            <button
-              onClick={() => setActiveTab('3D')}
-              style={{
-                padding: '0.45rem 1.1rem', borderRadius: '4px', fontSize: '0.78rem', fontWeight: 800,
-                fontFamily: 'var(--font-antique-serif)', letterSpacing: '1px',
-                background: activeTab === '3D' ? 'var(--antique-brass)' : 'transparent',
-                color: activeTab === '3D' ? '#171109' : '#c5b8a5',
-                transition: '0.2s'
-              }}
-            >
-              ISOMETRIC 3D ALMANAC
-            </button>
-            <button
-              onClick={() => setActiveTab('GRID')}
-              style={{
-                padding: '0.45rem 1.1rem', borderRadius: '4px', fontSize: '0.78rem', fontWeight: 800,
-                fontFamily: 'var(--font-antique-serif)', letterSpacing: '1px',
-                background: activeTab === 'GRID' ? 'var(--antique-brass)' : 'transparent',
-                color: activeTab === 'GRID' ? '#171109' : '#c5b8a5',
-                transition: '0.2s'
-              }}
-            >
-              FLAT VELLUM VIEW
-            </button>
-          </div>
         </div>
 
-        {/* 3D DECK CONTAINER */}
-        <div style={{
-          perspective: effectiveTab === '3D' ? '1400px' : 'none',
-          padding: effectiveTab === '3D' ? '2rem 0 3rem' : '0',
-          overflowX: 'hidden'
-        }}>
+        {/* ALMANAC DECK CONTAINER */}
+        <div style={{ overflowX: 'hidden' }}>
 
-          <div className="cosmic-grid" style={{
-            gap: '2.5rem',
-            transform: effectiveTab === '3D' ? 'rotateX(18deg) rotateZ(-5deg) scale(0.96)' : 'none',
-            transformOrigin: 'center center',
-            transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
-          }}>
+          <div className="cosmic-grid" style={{ gap: '2.5rem' }}>
             
             {VINTAGE_DECK_CARDS.map((card, idx) => {
               const isHovered = hoveredCard === idx;
