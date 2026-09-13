@@ -12,6 +12,7 @@ import HorologyClockHero from './components/HorologyClockHero';
 import CosmicDeck from './components/CosmicDeck';
 import OracleChatbot from './components/OracleChatbot';
 import ZoomConnectModal from './components/ZoomConnectModal';
+import GmeetConnectModal from './components/GmeetConnectModal';
 import { 
   loadZoomConfig, 
   getZoomJoinUrl, 
@@ -35,6 +36,14 @@ export default function App() {
   const [connectedCalendar, setConnectedCalendar] = useState(false);
   const [zoomConfig, setZoomConfig] = useState(() => loadZoomConfig());
   const [showZoomModal, setShowZoomModal] = useState(false);
+  const [gmeetLink, setGmeetLink] = useState(() => {
+    try {
+      return localStorage.getItem('nanneram_gmeet_link') || '';
+    } catch {
+      return '';
+    }
+  });
+  const [showGmeetModal, setShowGmeetModal] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
   // Toast Helper
@@ -75,9 +84,10 @@ export default function App() {
 
   // Dynamic Meeting Join URL helper
   const getCurrentMeetingUrl = () => {
-    return platform === 'Zoom'
-      ? getZoomJoinUrl(zoomConfig)
-      : 'https://meet.google.com/nan-neram-882';
+    if (platform === 'Zoom') {
+      return getZoomJoinUrl(zoomConfig);
+    }
+    return gmeetLink.trim() || 'https://meet.google.com/new';
   };
 
   // Google Calendar URL generator
@@ -500,6 +510,50 @@ export default function App() {
                 >
                   Google Meet
                 </button>
+
+                {platform === 'Google Meet' && (
+                  <div style={{
+                    marginTop: '0.2rem',
+                    padding: '0.45rem 0.75rem',
+                    background: '#ffffff',
+                    border: '1.5px solid var(--antique-brass-light)',
+                    borderRadius: '5px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '0.5rem',
+                    fontSize: '0.72rem'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', minWidth: 0, overflow: 'hidden' }}>
+                      <span style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        background: '#16a34a',
+                        flexShrink: 0
+                      }} />
+                      <span style={{ fontWeight: 800, color: 'var(--walnut-ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {gmeetLink ? `Room: ${gmeetLink.replace('https://meet.google.com/', '')}` : 'Instant 0-Setup Rooms'}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setShowGmeetModal(true)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--antique-brass-deep)',
+                        fontWeight: 900,
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                        flexShrink: 0,
+                        fontSize: '0.72rem'
+                      }}
+                    >
+                      Configure ⚙️
+                    </button>
+                  </div>
+                )}
+
                 <button
                   onClick={() => setPlatform('Zoom')}
                   className="wax-seal-tag"
@@ -882,6 +936,37 @@ export default function App() {
               </button>
             </div>
 
+            {platform === 'Google Meet' && (
+              <div style={{
+                marginBottom: '1.25rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                fontSize: '0.78rem',
+                background: '#e8f5e9',
+                padding: '0.5rem 0.8rem',
+                borderRadius: '5px',
+                border: '1.5px solid #2e7d32'
+              }}>
+                <span style={{ color: '#1b5e20', fontWeight: 700 }}>
+                  Google Meet: {gmeetLink ? `Custom (${gmeetLink.replace('https://meet.google.com/', '')})` : 'Instant 0-Setup Room'}
+                </span>
+                <button
+                  onClick={() => setShowGmeetModal(true)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#1b5e20',
+                    textDecoration: 'underline',
+                    fontWeight: 800,
+                    cursor: 'pointer'
+                  }}
+                >
+                  Configure ⚙️
+                </button>
+              </div>
+            )}
+
             {platform === 'Zoom' && (
               <div style={{
                 marginBottom: '1.25rem',
@@ -1119,6 +1204,15 @@ export default function App() {
         onClose={() => setShowZoomModal(false)}
         zoomConfig={zoomConfig}
         setZoomConfig={setZoomConfig}
+        triggerToast={triggerToast}
+      />
+
+      {/* GOOGLE MEET CONNECT MODAL */}
+      <GmeetConnectModal
+        isOpen={showGmeetModal}
+        onClose={() => setShowGmeetModal(false)}
+        gmeetLink={gmeetLink}
+        setGmeetLink={setGmeetLink}
         triggerToast={triggerToast}
       />
 
