@@ -5,6 +5,8 @@
 
 const STORAGE_KEY = 'nanneram_zoom_apparatus_config';
 
+export const DEFAULT_CLIENT_ID = 'ZFTS0RgwT1OFEEkhFsXxA';
+
 export const DEFAULT_ZOOM_CONFIG = {
   connected: false,
   mode: 'pmi', // 'pmi' | 'oauth'
@@ -12,11 +14,53 @@ export const DEFAULT_ZOOM_CONFIG = {
   passcode: '',
   vanityUrl: '',
   hostName: '',
-  clientId: '',
+  clientId: DEFAULT_CLIENT_ID,
   clientSecret: '',
   accountId: '',
   lastTestedAt: null
 };
+
+/**
+ * Get Zoom 1-Click OAuth Authorization URL for any visitor
+ */
+export function getZoomOAuthUrl(customClientId) {
+  const clientId = customClientId || DEFAULT_CLIENT_ID;
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://nanneram.vercel.app';
+  const redirectUri = encodeURIComponent(origin);
+  return `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+}
+
+/**
+ * Handle incoming OAuth redirect code on app mount
+ */
+export function handleZoomOAuthCallback() {
+  if (typeof window === 'undefined') return null;
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    if (code) {
+      const current = loadZoomConfig();
+      const updated = {
+        ...current,
+        connected: true,
+        mode: 'oauth',
+        authCode: code,
+        clientId: current.clientId || DEFAULT_CLIENT_ID,
+        hostName: 'Authenticated Zoom Member',
+        lastTestedAt: new Date().toISOString()
+      };
+      saveZoomConfig(updated);
+      
+      // Clean up URL search query without page reload
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+      return updated;
+    }
+  } catch (err) {
+    console.error('Error handling Zoom OAuth callback:', err);
+  }
+  return null;
+}
 
 /**
  * Load persisted Zoom configuration from browser local storage

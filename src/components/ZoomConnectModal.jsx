@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Video, X, Check, ExternalLink, ShieldCheck, Lock, Sparkles, Key, Globe, Trash2 } from 'lucide-react';
-import { getZoomJoinUrl, formatZoomId, saveZoomConfig, clearZoomConfig } from '../utils/zoomIntegration';
+import { Video, X, Check, ExternalLink, ShieldCheck, Lock, Sparkles, Key, Globe, Trash2, CheckCircle2 } from 'lucide-react';
+import { getZoomJoinUrl, formatZoomId, saveZoomConfig, clearZoomConfig, getZoomOAuthUrl, DEFAULT_CLIENT_ID } from '../utils/zoomIntegration';
 
 export default function ZoomConnectModal({
   isOpen,
@@ -104,6 +104,80 @@ export default function ZoomConnectModal({
           <button onClick={onClose} style={{ padding: '4px' }}>
             <X size={22} />
           </button>
+        </div>
+
+        {/* 1-Click Instant Authorization Banner for ANY visitor */}
+        <div style={{
+          background: zoomConfig.connected ? '#e8f5e9' : '#eef4ff',
+          border: zoomConfig.connected ? '2px solid #2e7d32' : '2px solid #0b5cff',
+          borderRadius: '8px',
+          padding: '1rem 1.25rem',
+          marginBottom: '1.5rem',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.06)'
+        }}>
+          {zoomConfig.connected ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.8rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#2e7d32', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+                  <Check size={16} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 900, color: '#1b5e20', fontSize: '0.92rem' }}>
+                    Zoom Video Apparatus Connected
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: '#2e7d32', fontWeight: 600 }}>
+                    {zoomConfig.mode === 'oauth' ? 'Authenticated via 1-Click Zoom OAuth 2.0' : `Linked to PMI: ${formatZoomId(zoomConfig.meetingId)}`}
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={handleDisconnect}
+                style={{
+                  background: 'none', border: '1px solid #c62828', color: '#c62828',
+                  padding: '0.35rem 0.75rem', borderRadius: '4px', fontSize: '0.75rem',
+                  fontWeight: 800, cursor: 'pointer'
+                }}
+              >
+                Disconnect
+              </button>
+            </div>
+          ) : (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 900, textTransform: 'uppercase', color: '#0b5cff', letterSpacing: '1px', fontFamily: 'var(--font-antique-serif)' }}>
+                  ★ 1-CLICK INSTANT AUTHORIZATION (FOR ANY VISITOR)
+                </span>
+                <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#555' }}>No API Keys Needed</span>
+              </div>
+              
+              <button
+                onClick={() => {
+                  window.location.href = getZoomOAuthUrl(clientId);
+                }}
+                className="btn-brass"
+                style={{
+                  width: '100%',
+                  padding: '0.85rem',
+                  fontSize: '0.92rem',
+                  justifyContent: 'center',
+                  background: '#0b5cff',
+                  color: '#ffffff',
+                  border: '2px solid #0045c7',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.6rem',
+                  boxShadow: '0 4px 14px rgba(11, 92, 255, 0.3)'
+                }}
+              >
+                <Video size={18} />
+                <span>Authorize & Connect with Zoom</span>
+              </button>
+              <div style={{ fontSize: '0.72rem', color: 'var(--sepia-medium)', marginTop: '0.45rem', textAlign: 'center' }}>
+                Any user worldwide can click above to link their personal Zoom account in 5 seconds.
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Mode Switcher Tabs */}

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Calendar, Clock, ShieldAlert, CheckCircle2, Video, Zap, Sparkles, 
   Copy, ExternalLink, Check, ChevronRight, Info, Globe, Lock, 
@@ -17,7 +17,8 @@ import {
   getZoomJoinUrl, 
   formatZoomId, 
   generateICSContent, 
-  downloadICSFile 
+  downloadICSFile,
+  handleZoomOAuthCallback
 } from './utils/zoomIntegration';
 
 export default function App() {
@@ -41,6 +42,16 @@ export default function App() {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
   };
+
+  // Handle Zoom OAuth Callback on mount (for any user worldwide)
+  useEffect(() => {
+    const updated = handleZoomOAuthCallback();
+    if (updated) {
+      setZoomConfig(updated);
+      setPlatform('Zoom');
+      triggerToast('🎉 Zoom Video Apparatus successfully connected to your account!');
+    }
+  }, []);
 
   // Memoized Vedic Calculation
   const vedicData = useMemo(() => {
