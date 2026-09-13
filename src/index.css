@@ -700,7 +700,7 @@ html, body {
   --cosmic-gold-soft: rgba(215, 169, 79, 0.4);
   --cosmic-cream: #f7ecd8;
   --cosmic-lavender: #e4d3ae;
-  background: var(--walnut-ink);
+  background: radial-gradient(circle at 50% 18%, #28170a 0%, #160d05 52%, #0d0702 100%);
 }
 
 .cosmic-video-bg {

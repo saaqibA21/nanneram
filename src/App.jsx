@@ -335,7 +335,7 @@ export default function App() {
                 {formatTime(vedicData.rahuKaalam.start)} – {formatTime(vedicData.rahuKaalam.end)}
               </div>
               <p style={{ fontSize: '0.82rem', color: '#5c1b1b', lineHeight: 1.4, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
-                <strong>Rahu Kaalam (ராகு காலம்):</strong> The window of eclipse shadow. Never initiate contracts or pitch terms during these minutes.
+                <strong>Rahu Kaalam:</strong> The window of eclipse shadow. Never initiate contracts or pitch terms during these minutes.
               </p>
             </div>
 

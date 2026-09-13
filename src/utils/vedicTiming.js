@@ -103,7 +103,7 @@ const WEEKDAY_LORDS = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Sa
 
 export const HORA_METADATA = {
   Mercury: {
-    name: 'Mercury Hora (புதன்)',
+    name: 'Mercury Hora (Budha)',
     planet: 'Mercury',
     color: '#00f5ff',
     bg: 'rgba(0, 245, 255, 0.1)',
@@ -114,7 +114,7 @@ export const HORA_METADATA = {
     rulerMeaning: 'Governs intellect, trade, clear contracts, and persuasive articulation.'
   },
   Jupiter: {
-    name: 'Jupiter Hora (குரு)',
+    name: 'Jupiter Hora (Guru)',
     planet: 'Jupiter',
     color: '#ffd700',
     bg: 'rgba(255, 215, 0, 0.1)',
@@ -125,7 +125,7 @@ export const HORA_METADATA = {
     rulerMeaning: 'Supreme auspicious planet for wisdom, fair expansion, ethics, and wealth flow.'
   },
   Sun: {
-    name: 'Sun Hora (சூரியன்)',
+    name: 'Sun Hora (Surya)',
     planet: 'Sun',
     color: '#ff8400',
     bg: 'rgba(255, 132, 0, 0.1)',
@@ -136,7 +136,7 @@ export const HORA_METADATA = {
     rulerMeaning: 'Governs sovereignty, authority, executive power, and decisive vision.'
   },
   Venus: {
-    name: 'Venus Hora (சுக்கிரன்)',
+    name: 'Venus Hora (Shukra)',
     planet: 'Venus',
     color: '#ff007f',
     bg: 'rgba(255, 0, 127, 0.1)',
@@ -147,7 +147,7 @@ export const HORA_METADATA = {
     rulerMeaning: 'Governs harmony, beauty, diplomatic rapport, and win-win consensus.'
   },
   Moon: {
-    name: 'Moon Hora (சந்திரன்)',
+    name: 'Moon Hora (Chandra)',
     planet: 'Moon',
     color: '#a5b4fc',
     bg: 'rgba(165, 180, 252, 0.1)',
@@ -158,7 +158,7 @@ export const HORA_METADATA = {
     rulerMeaning: 'Governs mental flow, empathy, fluctuating perspectives, and imagination.'
   },
   Mars: {
-    name: 'Mars Hora (செவ்வாய்)',
+    name: 'Mars Hora (Mangala)',
     planet: 'Mars',
     color: '#ef4444',
     bg: 'rgba(239, 68, 68, 0.12)',
@@ -169,7 +169,7 @@ export const HORA_METADATA = {
     rulerMeaning: 'Aggressive warrior energy. High risk of fiery debate and ego clashes.'
   },
   Saturn: {
-    name: 'Saturn Hora (சனி)',
+    name: 'Saturn Hora (Shani)',
     planet: 'Saturn',
     color: '#94a3b8',
     bg: 'rgba(148, 163, 184, 0.12)',
@@ -183,14 +183,14 @@ export const HORA_METADATA = {
 
 // Gowri Panchangam States
 export const GOWRI_STATES = {
-  Amirtham: { name: 'Amirtham (அமிர்தம்)', quality: 'Auspicious', desc: 'Supreme divine nectar; deal sign-off guaranteed', color: '#10b981' },
-  Labham: { name: 'Labham (லாபம்)', quality: 'Auspicious', desc: 'Financial profit, positive negotiation margins', color: '#10b981' },
-  Sugam: { name: 'Sugam / Uthi (சுகம்)', quality: 'Auspicious', desc: 'Comfort, peaceful understanding and consensus', color: '#3b82f6' },
-  Danam: { name: 'Danam (தனம்)', quality: 'Auspicious', desc: 'Cash inflow, grant approvals, invoice clears', color: '#10b981' },
-  Shubham: { name: 'Shubham (சுபம்)', quality: 'Auspicious', desc: 'General auspicious harmony', color: '#3b82f6' },
-  Rogam: { name: 'Rogam (ரோகம்)', quality: 'Inauspicious', desc: 'Fatigue, low energy, audio/video glitches', color: '#ef4444' },
-  Soram: { name: 'Soram (சோரம்)', quality: 'Inauspicious', desc: 'Hidden motives, fine-print traps, deceit', color: '#ef4444' },
-  Visham: { name: 'Visham (விஷம்)', quality: 'Inauspicious', desc: 'Toxic friction, complete deal collapse', color: '#ef4444' }
+  Amirtham: { name: 'Amirtham', quality: 'Auspicious', desc: 'Supreme divine nectar; deal sign-off guaranteed', color: '#10b981' },
+  Labham: { name: 'Labham', quality: 'Auspicious', desc: 'Financial profit, positive negotiation margins', color: '#10b981' },
+  Sugam: { name: 'Sugam / Uthi', quality: 'Auspicious', desc: 'Comfort, peaceful understanding and consensus', color: '#3b82f6' },
+  Danam: { name: 'Danam', quality: 'Auspicious', desc: 'Cash inflow, grant approvals, invoice clears', color: '#10b981' },
+  Shubham: { name: 'Shubham', quality: 'Auspicious', desc: 'General auspicious harmony', color: '#3b82f6' },
+  Rogam: { name: 'Rogam', quality: 'Inauspicious', desc: 'Fatigue, low energy, audio/video glitches', color: '#ef4444' },
+  Soram: { name: 'Soram', quality: 'Inauspicious', desc: 'Hidden motives, fine-print traps, deceit', color: '#ef4444' },
+  Visham: { name: 'Visham', quality: 'Inauspicious', desc: 'Toxic friction, complete deal collapse', color: '#ef4444' }
 };
 
 // Day Gowri table per weekday (8 parts of day)
@@ -280,12 +280,12 @@ export function calculateVedicDay(targetDate, city) {
   const nallaNeramMorning = {
     start: sunriseMin + partDuration * 1.5,
     end: sunriseMin + partDuration * 2.5,
-    label: 'Morning Nalla Neram (கால நேரம்)'
+    label: 'Morning Auspicious Window (Shubh Muhurtha)'
   };
   const nallaNeramEvening = {
     start: sunriseMin + partDuration * 6.5,
     end: sunriseMin + partDuration * 7.5,
-    label: 'Evening Nalla Neram (மாலை நேரம்)'
+    label: 'Evening Auspicious Window (Shubh Muhurtha)'
   };
 
   return {
@@ -297,9 +297,9 @@ export function calculateVedicDay(targetDate, city) {
     sunsetMin,
     dinamana,
     partDuration,
-    rahuKaalam: { start: rahuStart, end: rahuEnd, title: 'Rahu Kaalam (ராகு காலம்)' },
-    yamagandam: { start: yamaStart, end: yamaEnd, title: 'Yamagandam (எமகண்டம்)' },
-    gulikaKaalam: { start: gulikaStart, end: gulikaEnd, title: 'Gulika Kaalam (குளிகை காலம்)' },
+    rahuKaalam: { start: rahuStart, end: rahuEnd, title: 'Rahu Kaalam' },
+    yamagandam: { start: yamaStart, end: yamaEnd, title: 'Yamagandam' },
+    gulikaKaalam: { start: gulikaStart, end: gulikaEnd, title: 'Gulika Kaalam' },
     horas,
     gowriSlots,
     nallaNeramMorning,

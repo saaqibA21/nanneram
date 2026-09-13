@@ -40,16 +40,7 @@ export default function HorologyClockHero({
       overflow: 'hidden'
     }}>
 
-      {/* Nalla Neram video backdrop, tinted toward the clock's own old-gold palette */}
-      <video
-        className="cosmic-video-bg"
-        src="/assets/video/nalla-neram-hero.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-      />
-      <div className="cosmic-video-overlay" />
+
 
       {/* Cosmic Header — manuscript-style flourish kicker, no icon/badge box */}
       <div className="container" style={{ textAlign: 'center', marginBottom: '2.5rem', position: 'relative', zIndex: 1 }}>
