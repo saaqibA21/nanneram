@@ -250,67 +250,23 @@ export default function HorologyClockHero({
 
           </div>
 
-          {/* RIGHT: VINTAGE CHRONO-REGISTER CARDS */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+          {/* Quick Actions — Centered below clock */}
+          <div className="hero-quick-actions" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center', marginTop: '1rem' }}>
+            <button
+              onClick={onOpenScheduleModal}
+              className="btn-brass"
+              style={{ boxShadow: '0 3px 10px rgba(31,24,19,0.35), 0 0 26px rgba(215,169,79,0.55)' }}
+            >
+              Open Appointment Ledger
+            </button>
 
-            {/* Card 1: Active Hour of Negotiation */}
-            <div className="antique-card cosmic-card" style={{ padding: '1.5rem', border: '1.5px solid var(--cosmic-gold-soft)', borderLeft: '6px solid var(--cosmic-gold)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.4rem', marginBottom: '0.4rem' }}>
-                <span className="wax-seal-tag" style={{ background: 'var(--cosmic-gold)', color: '#171109', borderColor: 'var(--cosmic-gold)' }}>
-                  ACTIVE PLANETARY HOUR
-                </span>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--cosmic-gold)' }}>98% HARMONY</span>
-              </div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--cosmic-cream)', marginBottom: '0.2rem' }}>
-                {activeHora ? activeHora.name : 'Mercury Hora (Budha)'}
-              </h3>
-              <p style={{ fontSize: '0.85rem', color: 'var(--cosmic-lavender)', lineHeight: 1.5, marginBottom: '0.8rem' }}>
-                The hour of trade, intellect, clear contracts, and persuasive articulation. Ideal for sales pitches and contract closures.
-              </p>
-              <div style={{
-                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                fontFamily: 'monospace', fontWeight: 800, fontSize: '0.9rem', color: 'var(--cosmic-cream)',
-                background: 'rgba(0,0,0,0.28)', padding: '0.3rem 0.7rem', borderRadius: '4px', border: '1px solid var(--cosmic-gold-soft)'
-              }}>
-                <span>ACTIVE WINDOW: {formatTime(activeHora.start)} – {formatTime(activeHora.end)}</span>
-              </div>
-            </div>
-
-            {/* Card 2: Rahu Kaalam Avoidance Decree */}
-            <div className="antique-card cosmic-card" style={{ padding: '1.5rem', border: '1.5px solid rgba(255,107,74,0.45)', borderLeft: '6px solid var(--wax-seal-crimson)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.4rem', marginBottom: '0.4rem' }}>
-                <span className="wax-seal-tag" style={{ background: 'var(--wax-seal-crimson)', color: '#ffffff', borderColor: '#000' }}>
-                  WAX SEAL AVOIDANCE DECREE
-                </span>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#ff8a68' }}>OCTANT {Math.round((vedicData.rahuKaalam.start - vedicData.sunriseMin) / vedicData.partDuration) + 1}/8</span>
-              </div>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#ff8a68', marginBottom: '0.2rem' }}>
-                Rahu Kaalam: {formatTime(vedicData.rahuKaalam.start)} – {formatTime(vedicData.rahuKaalam.end)}
-              </h3>
-              <p style={{ fontSize: '0.82rem', color: 'rgba(247, 236, 216, 0.8)', lineHeight: 1.4 }}>
-                Under ancient Vedic statutes, meetings initiated during this window encounter disputes, technical failures, or stalled contracts. Our engine guarantees no Google Meet will ever be booked here.
-              </p>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="hero-quick-actions" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
-              <button
-                onClick={onOpenScheduleModal}
-                className="btn-brass"
-                style={{ boxShadow: '0 3px 10px rgba(31,24,19,0.35), 0 0 26px rgba(215,169,79,0.55)' }}
-              >
-                Open Appointment Ledger
-              </button>
-
-              <button
-                onClick={onOpenProofModal}
-                className="btn-walnut"
-                style={{ border: '2px solid var(--cosmic-gold-soft)' }}
-              >
-                Examine Solar Physics
-              </button>
-            </div>
-
+            <button
+              onClick={onOpenProofModal}
+              className="btn-walnut"
+              style={{ border: '2px solid var(--cosmic-gold-soft)' }}
+            >
+              Examine Solar Physics
+            </button>
           </div>
 
         </div>

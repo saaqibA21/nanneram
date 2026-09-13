@@ -347,16 +347,17 @@ html, body {
 
 /* Hero Section & Stage */
 .hero-stage-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
-  gap: 2.5rem;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 1.8rem;
+  margin: 0 auto;
 }
 
 @media (max-width: 880px) {
   .hero-stage-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2.5rem;
+    gap: 1.5rem;
   }
 }
 
