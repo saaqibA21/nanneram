@@ -10,6 +10,7 @@ import {
 } from './utils/vedicTiming';
 import HorologyClockHero from './components/HorologyClockHero';
 import CosmicDeck from './components/CosmicDeck';
+import OracleChatbot from './components/OracleChatbot';
 
 export default function App() {
   // State
@@ -161,6 +162,19 @@ export default function App() {
 
         {/* Action Buttons */}
         <div className="nav-actions">
+          <button
+            onClick={() => {
+              const el = document.getElementById('oracle-advisor-section');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="wax-seal-tag"
+            style={{ cursor: 'pointer', background: 'var(--aged-parchment-dark)', color: 'var(--walnut-ink)' }}
+          >
+            <Sparkles size={14} color="var(--antique-brass-deep)" />
+            <span className="nav-btn-text">AI Meeting Oracle</span>
+            <span className="nav-btn-short">AI Oracle</span>
+          </button>
+
           <button
             onClick={() => setShowProofModal(true)}
             className="wax-seal-tag"
@@ -591,8 +605,18 @@ export default function App() {
 
         </div>
       </section>
+ 
+      {/* 5. PRO GUILD AI HOROLOGICAL ORACLE (MEETING & ATTIRE ADVISOR) */}
+      <OracleChatbot 
+        vedicData={vedicData}
+        selectedCity={selectedCity}
+        optimalSlots={optimalSlots}
+        onIssuePass={(slot) => setSelectedSlotForModal(slot)}
+        onAddToCalendar={(slot) => window.open(getGoogleCalendarUrl(slot), '_blank')}
+        triggerToast={triggerToast}
+      />
 
-      {/* 5. THE GUILD MEMBERSHIP LEDGER (PRICING) */}
+      {/* 6. THE GUILD MEMBERSHIP LEDGER (PRICING) */}
       <section style={{ padding: 'clamp(3rem, 6vw, 4.5rem) clamp(1rem, 4vw, 1.5rem)', background: 'var(--aged-paper-card)', borderBottom: '2.5px solid var(--ink-border-heavy)' }}>
         <div className="container" style={{ maxWidth: '1080px' }}>
           
@@ -659,18 +683,22 @@ export default function App() {
                 </div>
                 <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '0.85rem', fontWeight: 800 }}>
                   <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} color="var(--patina-sage)" style={{ flexShrink: 0 }} /> <strong>Unlimited</strong> Auto-Scheduled Google Meet & Zoom calls</li>
-                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} color="var(--patina-sage)" style={{ flexShrink: 0 }} /> <strong>Live In-Call Chronometer HUD</strong> for Meet & Zoom</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} color="var(--patina-sage)" style={{ flexShrink: 0 }} /> <strong>AI Vedic Meeting & Attire Advisor</strong> (Color, Direction, Script)</li>
                   <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} color="var(--patina-sage)" style={{ flexShrink: 0 }} /> <strong>Two-Way Calendar Sync</strong> (Auto-filters Rahu Kaalam)</li>
                   <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} color="var(--patina-sage)" style={{ flexShrink: 0 }} /> Graceful Exit Window alert notifications</li>
                 </ul>
               </div>
 
               <button 
-                onClick={() => triggerToast('Redirecting to secure Razorpay / Stripe checkout...')}
+                onClick={() => {
+                  const el = document.getElementById('oracle-advisor-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  triggerToast('Master Horologist Advisor Unlocked: Welcome to the AI Oracle!');
+                }}
                 className="btn-brass" 
                 style={{ width: '100%', justifyContent: 'center', marginTop: '2.5rem' }}
               >
-                Claim Master Pass
+                Launch AI Meeting Advisor
               </button>
             </div>
 
