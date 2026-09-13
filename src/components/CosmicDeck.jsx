@@ -127,7 +127,7 @@ export default function CosmicDeck() {
     <section style={{
       background: '#1d1712', // Rich antique dark walnut leather background
       color: '#f4ebd8',
-      padding: '5rem 1.5rem 6rem',
+      padding: 'clamp(3rem, 6vw, 5rem) clamp(1rem, 4vw, 1.5rem) clamp(3.5rem, 7vw, 6rem)',
       position: 'relative',
       borderBottom: '3px solid var(--ink-border-heavy)',
       backgroundImage: 'radial-gradient(#2d2218 1px, transparent 1px)',
@@ -137,7 +137,7 @@ export default function CosmicDeck() {
       <div className="container">
         
         {/* Header Tag & Title */}
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 5vw, 3.5rem)' }}>
           <div className="wax-seal-tag" style={{
             background: 'rgba(184, 147, 71, 0.15)', borderColor: 'var(--antique-brass)',
             color: 'var(--antique-brass-light)', marginBottom: '1rem'
@@ -147,7 +147,7 @@ export default function CosmicDeck() {
           </div>
 
           <h2 style={{
-            fontSize: 'clamp(2.2rem, 5vw, 3.6rem)',
+            fontSize: 'clamp(1.75rem, 5vw, 3.6rem)',
             fontFamily: 'var(--font-antique-serif)',
             fontWeight: 800,
             color: '#f8f1e0',
@@ -159,18 +159,19 @@ export default function CosmicDeck() {
 
           <p style={{
             color: '#c5b8a5',
-            fontSize: '1.05rem',
+            fontSize: 'clamp(0.92rem, 3vw, 1.05rem)',
             maxWidth: '680px',
             margin: '0.75rem auto 1.8rem',
             lineHeight: 1.6,
             fontFamily: 'Georgia, serif',
-            fontStyle: 'italic'
+            fontStyle: 'italic',
+            padding: '0 0.5rem'
           }}>
             Time is not a flat number on a digital screen. It is an intricate clockwork of solar declination, planetary horas, and golden windows. Explore the 6 great instruments of victory.
           </p>
 
           {/* Perspective Switcher */}
-          <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.4)', borderRadius: '6px', padding: '3px', border: '1px solid #4a3c2c' }}>
+          <div className="deck-switcher" style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.4)', borderRadius: '6px', padding: '3px', border: '1px solid #4a3c2c', maxWidth: '100%' }}>
             <button
               onClick={() => setActiveTab('3D')}
               style={{

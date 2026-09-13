@@ -61,7 +61,7 @@ export default function HorologyClockHero({
         </div>
 
         <h1 style={{
-          fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)',
+          fontSize: 'clamp(1.75rem, 5.5vw, 4.2rem)',
           fontWeight: 900,
           color: 'var(--cosmic-cream)',
           lineHeight: 1.15,
@@ -76,7 +76,7 @@ export default function HorologyClockHero({
         </div>
 
         <p style={{
-          fontSize: '1.15rem',
+          fontSize: 'clamp(0.92rem, 3.5vw, 1.15rem)',
           color: 'var(--cosmic-lavender)',
           maxWidth: '720px',
           margin: '0 auto 2rem',
@@ -136,15 +136,12 @@ export default function HorologyClockHero({
 
       {/* THE MASTER HOROLOGICAL CLOCK & ASTROLABE STAGE */}
       <div className="container" style={{ maxWidth: '1040px', position: 'relative', zIndex: 1 }}>
-        <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '2.5rem', alignItems: 'center'
-        }}>
+        <div className="hero-stage-grid">
 
           {/* LEFT: THE ASTRONOMICAL MASTER CLOCK */}
-          <div className="clock-assembly" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+          <div className="clock-assembly">
 
-            <div className="cosmic-clock-glow" style={{ top: '160px' }} />
+            <div className="cosmic-clock-glow" />
 
             <div style={{
               width: '320px', height: '320px', borderRadius: '50%',
@@ -293,7 +290,7 @@ export default function HorologyClockHero({
             </div>
 
             {/* Quick Actions */}
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+            <div className="hero-quick-actions" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
               <button
                 onClick={onOpenScheduleModal}
                 className="btn-brass"

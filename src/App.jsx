@@ -129,23 +129,23 @@ export default function App() {
       {/* VINTAGE MASTER NAVIGATION BAR */}
       <nav className="site-nav" style={{
         background: 'var(--aged-paper-card)', borderBottom: '2px solid var(--ink-border-heavy)',
-        padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0.85rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         position: 'sticky', top: 0, zIndex: 100
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <div style={{
-            width: '38px', height: '38px', borderRadius: '6px', background: 'var(--ink-border-heavy)',
+            width: '36px', height: '36px', borderRadius: '6px', background: 'var(--ink-border-heavy)',
             border: '2px solid var(--antique-brass)', display: 'flex', alignItems: 'center',
-            justifyContent: 'center', color: 'var(--antique-brass-light)', fontWeight: 900, fontSize: '1.2rem',
+            justifyContent: 'center', color: 'var(--antique-brass-light)', fontWeight: 900, fontSize: '1.15rem',
             boxShadow: '0 2px 8px rgba(0,0,0,0.3)', flexShrink: 0
           }}>
             ☿
           </div>
           <div>
-            <span style={{ fontSize: '1.35rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', letterSpacing: '0.04em', color: 'var(--walnut-ink)' }}>
+            <span style={{ fontSize: 'clamp(1.1rem, 4vw, 1.35rem)', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', letterSpacing: '0.04em', color: 'var(--walnut-ink)' }}>
               NANNERAM<span style={{ color: 'var(--antique-brass)' }}>.HORA</span>
             </span>
-            <span className="nav-brand-sub" style={{ display: 'block', fontSize: '0.62rem', fontWeight: 800, color: 'var(--sepia-faded)', letterSpacing: '1px' }}>
+            <span className="nav-brand-sub" style={{ display: 'block', fontSize: '0.6rem', fontWeight: 800, color: 'var(--sepia-faded)', letterSpacing: '1px' }}>
               ANCIENT ASTRONOMICAL CHRONOMETER
             </span>
           </div>
@@ -160,30 +160,33 @@ export default function App() {
         </div>
 
         {/* Action Buttons */}
-        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+        <div className="nav-actions">
           <button
             onClick={() => setShowProofModal(true)}
             className="wax-seal-tag"
             style={{ cursor: 'pointer', background: '#fff' }}
           >
             <ShieldCheck size={14} color="var(--antique-brass)" />
-            Examine Ephemeris
+            <span className="nav-btn-text">Examine Ephemeris</span>
+            <span className="nav-btn-short">Ephemeris</span>
           </button>
 
           <button
             onClick={() => setShowConnectModal(true)}
             className={connectedCalendar ? "wax-seal-tag" : "btn-walnut"}
-            style={{ fontSize: '0.78rem', padding: '0.5rem 1.1rem' }}
+            style={{ fontSize: '0.78rem', padding: '0.5rem 1rem' }}
           >
             {connectedCalendar ? (
               <>
                 <CheckCircle2 size={15} color="var(--patina-sage)" />
-                CHRONO-SYNCED
+                <span className="nav-btn-text">CHRONO-SYNCED</span>
+                <span className="nav-btn-short">SYNCED</span>
               </>
             ) : (
               <>
                 <Compass size={15} color="var(--antique-brass)" />
-                SYNCHRONIZE CALENDAR
+                <span className="nav-btn-text">SYNCHRONIZE CALENDAR</span>
+                <span className="nav-btn-short">SYNC CALENDAR</span>
               </>
             )}
           </button>
@@ -207,7 +210,7 @@ export default function App() {
       />
 
       {/* 2. THE DAILY EPHEMERIS & HOROLOGICAL REGISTER */}
-      <section style={{ padding: '3.5rem 1.5rem', background: 'var(--aged-paper-card)', borderBottom: '2.5px solid var(--ink-border-heavy)' }}>
+      <section style={{ padding: 'clamp(2.5rem, 5vw, 3.5rem) clamp(1rem, 4vw, 1.5rem)', background: 'var(--aged-paper-card)', borderBottom: '2.5px solid var(--ink-border-heavy)' }}>
         <div className="container">
           
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
@@ -215,7 +218,7 @@ export default function App() {
               <div className="wax-seal-tag" style={{ marginBottom: '0.4rem', background: 'var(--aged-parchment-dark)' }}>
                 FOLIO DECREE • {vedicData.dayName.toUpperCase()}
               </div>
-              <h2 style={{ fontSize: '2.2rem', fontFamily: 'var(--font-antique-serif)', fontWeight: 800 }}>
+              <h2 style={{ fontSize: 'clamp(1.6rem, 5vw, 2.2rem)', fontFamily: 'var(--font-antique-serif)', fontWeight: 800 }}>
                 The Daily Ephemeris Register
               </h2>
               <p style={{ color: 'var(--sepia-medium)', fontSize: '0.92rem', fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
@@ -223,7 +226,7 @@ export default function App() {
               </p>
             </div>
 
-            <div style={{ display: 'flex', gap: '0.6rem' }}>
+            <div style={{ display: 'flex', gap: '0.6rem', width: 'auto' }}>
               <select
                 value={selectedCity.name}
                 onChange={(e) => {
@@ -233,7 +236,7 @@ export default function App() {
                 style={{
                   border: '2px solid var(--ink-border-heavy)', padding: '0.5rem 0.9rem', borderRadius: '6px',
                   fontWeight: 800, fontSize: '0.85rem', background: 'var(--aged-parchment)', cursor: 'pointer',
-                  fontFamily: 'var(--font-antique-serif)'
+                  fontFamily: 'var(--font-antique-serif)', maxWidth: '100%'
                 }}
               >
                 {CITIES.map(c => (
@@ -254,7 +257,7 @@ export default function App() {
                 </span>
                 <span style={{ fontSize: '0.75rem', fontWeight: 900, fontFamily: 'var(--font-chrono-mono)' }}>OCTANT {Math.round((vedicData.rahuKaalam.start - vedicData.sunriseMin) / vedicData.partDuration) + 1}/8</span>
               </div>
-              <div style={{ fontSize: '1.7rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', margin: '0.2rem 0', color: 'var(--wax-seal-crimson)' }}>
+              <div style={{ fontSize: 'clamp(1.4rem, 5vw, 1.7rem)', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', margin: '0.2rem 0', color: 'var(--wax-seal-crimson)' }}>
                 {formatTime(vedicData.rahuKaalam.start)} – {formatTime(vedicData.rahuKaalam.end)}
               </div>
               <p style={{ fontSize: '0.82rem', color: '#5c1b1b', lineHeight: 1.4, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
@@ -270,7 +273,7 @@ export default function App() {
                 </span>
                 <span style={{ fontSize: '0.75rem', fontWeight: 900, color: 'var(--antique-brass)' }}>PEAK HARMONY</span>
               </div>
-              <div style={{ fontSize: '1.7rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', margin: '0.2rem 0', color: 'var(--walnut-ink)' }}>
+              <div style={{ fontSize: 'clamp(1.4rem, 5vw, 1.7rem)', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', margin: '0.2rem 0', color: 'var(--walnut-ink)' }}>
                 {formatTime(vedicData.nallaNeramMorning.start)} – {formatTime(vedicData.nallaNeramMorning.end)}
               </div>
               <p style={{ fontSize: '0.82rem', color: 'var(--sepia-medium)', lineHeight: 1.4, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
@@ -286,7 +289,7 @@ export default function App() {
                 </span>
                 <span style={{ fontSize: '0.75rem', fontWeight: 900, color: 'var(--antique-copper)' }}>LOSS RISK</span>
               </div>
-              <div style={{ fontSize: '1.7rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', margin: '0.2rem 0', color: 'var(--walnut-ink)' }}>
+              <div style={{ fontSize: 'clamp(1.4rem, 5vw, 1.7rem)', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', margin: '0.2rem 0', color: 'var(--walnut-ink)' }}>
                 {formatTime(vedicData.yamagandam.start)} – {formatTime(vedicData.yamagandam.end)}
               </div>
               <p style={{ fontSize: '0.82rem', color: 'var(--sepia-faded)', lineHeight: 1.4 }}>
@@ -302,7 +305,7 @@ export default function App() {
                 </span>
                 <span style={{ fontSize: '0.75rem', fontWeight: 900 }}>RECURRING CYCLE</span>
               </div>
-              <div style={{ fontSize: '1.7rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', margin: '0.2rem 0', color: 'var(--walnut-ink)' }}>
+              <div style={{ fontSize: 'clamp(1.4rem, 5vw, 1.7rem)', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', margin: '0.2rem 0', color: 'var(--walnut-ink)' }}>
                 {formatTime(vedicData.gulikaKaalam.start)} – {formatTime(vedicData.gulikaKaalam.end)}
               </div>
               <p style={{ fontSize: '0.82rem', color: 'var(--sepia-faded)', lineHeight: 1.4 }}>
@@ -329,10 +332,7 @@ export default function App() {
               </div>
             </div>
 
-            <div style={{
-              display: 'flex', border: '2px solid var(--ink-border-heavy)', borderRadius: '6px', overflow: 'hidden', height: '42px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-            }}>
+            <div className="hora-slide-rule">
               {vedicData.horas.map((h, i) => (
                 <div 
                   key={i}
@@ -347,15 +347,16 @@ export default function App() {
                     userSelect: 'none'
                   }}
                 >
-                  {h.planet.substring(0, 3).toUpperCase()}
+                  <span className="hora-label-full">{h.planet.substring(0, 3).toUpperCase()}</span>
+                  <span className="hora-label-short">{h.planet.substring(0, 1).toUpperCase()}</span>
                 </div>
               ))}
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', fontWeight: 800, marginTop: '0.5rem', color: 'var(--sepia-faded)', fontFamily: 'var(--font-antique-serif)' }}>
-              <span>SOLAR DAWN: {formatTime(vedicData.sunriseMin)}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', fontWeight: 800, marginTop: '0.5rem', color: 'var(--sepia-faded)', fontFamily: 'var(--font-antique-serif)', flexWrap: 'wrap', gap: '0.3rem' }}>
+              <span>DAWN: {formatTime(vedicData.sunriseMin)}</span>
               <span>MERIDIAN NOON</span>
-              <span>SOLAR DUSK: {formatTime(vedicData.sunsetMin)}</span>
+              <span>DUSK: {formatTime(vedicData.sunsetMin)}</span>
             </div>
           </div>
 
@@ -366,17 +367,17 @@ export default function App() {
       <CosmicDeck />
 
       {/* 4. EXECUTIVE APPOINTMENT LEDGER (MEETING SCHEDULER) */}
-      <section id="scheduler-section" style={{ padding: '4.5rem 1.5rem', background: 'var(--aged-parchment)', borderBottom: '2.5px solid var(--ink-border-heavy)' }}>
+      <section id="scheduler-section" style={{ padding: 'clamp(3rem, 6vw, 4.5rem) clamp(1rem, 4vw, 1.5rem)', background: 'var(--aged-parchment)', borderBottom: '2.5px solid var(--ink-border-heavy)' }}>
         <div className="container">
           
-          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 5vw, 2.5rem)' }}>
             <div className="wax-seal-tag" style={{ background: 'var(--aged-parchment-light)', marginBottom: '0.6rem' }}>
               ROYAL HOROLOGICAL APPOINTMENT DESK
             </div>
-            <h2 style={{ fontSize: '2.4rem', fontFamily: 'var(--font-antique-serif)', fontWeight: 800 }}>
+            <h2 style={{ fontSize: 'clamp(1.75rem, 5vw, 2.4rem)', fontFamily: 'var(--font-antique-serif)', fontWeight: 800 }}>
               Dispatch an Auspicious Meeting Folio
             </h2>
-            <p style={{ color: 'var(--sepia-medium)', fontSize: '1.05rem', maxWidth: '640px', margin: '0 auto', fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
+            <p style={{ color: 'var(--sepia-medium)', fontSize: 'clamp(0.92rem, 3vw, 1.05rem)', maxWidth: '640px', margin: '0 auto', fontStyle: 'italic', fontFamily: 'Georgia, serif', padding: '0 0.5rem' }}>
               Declare your high-stakes negotiation or pitch. The chronometer calculates the optimal minutes, screens Rahu Kaalam, and engraves your Google Meet or Zoom pass.
             </p>
           </div>
@@ -389,7 +390,7 @@ export default function App() {
               <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--sepia-faded)', marginBottom: '0.6rem', fontFamily: 'var(--font-antique-serif)' }}>
                 <span style={{ color: 'var(--antique-brass)' }}>I.</span> Select Objective
               </label>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
+              <div className="preset-buttons" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
                 {presets.map((p, idx) => (
                   <button
                     key={idx}
@@ -398,7 +399,9 @@ export default function App() {
                     style={{
                       cursor: 'pointer',
                       background: meetingPurpose === p.title ? 'var(--ink-border-heavy)' : '#ffffff',
-                      color: meetingPurpose === p.title ? 'var(--antique-brass-light)' : '#000000'
+                      color: meetingPurpose === p.title ? 'var(--antique-brass-light)' : '#000000',
+                      maxWidth: '100%',
+                      textAlign: 'left'
                     }}
                   >
                     {p.title}
@@ -425,7 +428,7 @@ export default function App() {
               <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--sepia-faded)', marginBottom: '0.6rem', fontFamily: 'var(--font-antique-serif)' }}>
                 <span style={{ color: 'var(--antique-brass)' }}>II.</span> Conference Apparatus
               </label>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+              <div className="apparatus-toggle" style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                 <button
                   onClick={() => setPlatform('Google Meet')}
                   className="wax-seal-tag"
@@ -458,7 +461,7 @@ export default function App() {
               <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--sepia-faded)', marginBottom: '0.6rem', fontFamily: 'var(--font-antique-serif)' }}>
                 <span style={{ color: 'var(--antique-brass)' }}>III.</span> Duration
               </label>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem' }}>
+              <div className="duration-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem' }}>
                 {[15, 30, 45, 60].map((mins) => (
                   <button
                     key={mins}
@@ -533,12 +536,12 @@ export default function App() {
                         )}
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: '0.6rem 1rem', marginBottom: '0.8rem' }}>
-                        <span style={{ fontSize: '2.2rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', letterSpacing: '-0.02em' }}>
+                      <div className="appointment-time-row" style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: '0.4rem 0.8rem', marginBottom: '0.8rem' }}>
+                        <span style={{ fontSize: 'clamp(1.5rem, 5.5vw, 2.2rem)', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', letterSpacing: '-0.02em' }}>
                           {slot.startTimeFormatted}
                         </span>
                         <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--sepia-faded)' }}>➔</span>
-                        <span style={{ fontSize: '2.2rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', letterSpacing: '-0.02em' }}>
+                        <span style={{ fontSize: 'clamp(1.5rem, 5.5vw, 2.2rem)', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', letterSpacing: '-0.02em' }}>
                           {slot.endTimeFormatted}
                         </span>
                         <span className="wax-seal-tag" style={{ marginLeft: 'auto', background: 'var(--aged-parchment-dark)' }}>
@@ -560,11 +563,11 @@ export default function App() {
                         {slot.recommendation}
                       </p>
 
-                      <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
+                      <div className="appointment-actions" style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
                         <button 
                           onClick={() => setSelectedSlotForModal(slot)}
                           className="btn-brass" 
-                          style={{ fontSize: '0.8rem', padding: '0.6rem 1.2rem' }}
+                          style={{ fontSize: '0.8rem', padding: '0.65rem 1.2rem', flex: '1 1 170px', justifyContent: 'center' }}
                         >
                           Issue {platform} Pass
                         </button>
@@ -574,7 +577,7 @@ export default function App() {
                           target="_blank"
                           rel="noreferrer"
                           className="btn-walnut" 
-                          style={{ fontSize: '0.8rem', padding: '0.6rem 1.1rem' }}
+                          style={{ fontSize: '0.8rem', padding: '0.65rem 1.1rem', flex: '1 1 170px', justifyContent: 'center' }}
                         >
                           Engrave in Calendar
                         </a>
@@ -590,17 +593,17 @@ export default function App() {
       </section>
 
       {/* 5. THE GUILD MEMBERSHIP LEDGER (PRICING) */}
-      <section style={{ padding: '4.5rem 1.5rem', background: 'var(--aged-paper-card)', borderBottom: '2.5px solid var(--ink-border-heavy)' }}>
+      <section style={{ padding: 'clamp(3rem, 6vw, 4.5rem) clamp(1rem, 4vw, 1.5rem)', background: 'var(--aged-paper-card)', borderBottom: '2.5px solid var(--ink-border-heavy)' }}>
         <div className="container" style={{ maxWidth: '1080px' }}>
           
-          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 5vw, 3.5rem)' }}>
             <div className="wax-seal-tag" style={{ background: 'var(--aged-parchment-dark)', marginBottom: '0.6rem' }}>
               OFFICIAL GUILD LEDGER
             </div>
-            <h2 style={{ fontSize: '2.6rem', fontFamily: 'var(--font-antique-serif)', fontWeight: 800 }}>
+            <h2 style={{ fontSize: 'clamp(1.75rem, 5vw, 2.6rem)', fontFamily: 'var(--font-antique-serif)', fontWeight: 800 }}>
               Invest in Auspicious Chronometry
             </h2>
-            <p style={{ color: 'var(--sepia-medium)', fontSize: '1.05rem', margin: '0.5rem auto 0', fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
+            <p style={{ color: 'var(--sepia-medium)', fontSize: 'clamp(0.92rem, 3vw, 1.05rem)', margin: '0.5rem auto 0', fontStyle: 'italic', fontFamily: 'Georgia, serif', padding: '0 0.5rem' }}>
               A single contract won or dispute avoided pays for a lifetime guild subscription.
             </p>
           </div>
@@ -617,14 +620,14 @@ export default function App() {
                 <p style={{ fontSize: '0.85rem', color: 'var(--sepia-faded)', marginBottom: '1.5rem', fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
                   For personal career decisions and occasional job interview timing.
                 </p>
-                <div style={{ fontSize: '2.8rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', marginBottom: '1.5rem', color: 'var(--walnut-ink)' }}>
+                <div style={{ fontSize: 'clamp(2.2rem, 7vw, 2.8rem)', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', marginBottom: '1.5rem', color: 'var(--walnut-ink)' }}>
                   ₹0 <span style={{ fontSize: '0.85rem', color: 'var(--sepia-faded)', fontWeight: 600 }}>/ forever</span>
                 </div>
                 <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '0.85rem', fontWeight: 800 }}>
-                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} /> 3 Auto-scheduled meetings / month</li>
-                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} /> Full Rahu Kaalam & Nalla Neram folios</li>
-                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} /> 11 Global Observatory Hubs</li>
-                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: 0.4 }}>✕ Live In-Call Chronometer Extension</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} style={{ flexShrink: 0 }} /> 3 Auto-scheduled meetings / month</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} style={{ flexShrink: 0 }} /> Full Rahu Kaalam & Nalla Neram folios</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} style={{ flexShrink: 0 }} /> 11 Global Observatory Hubs</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: 0.4 }}><span style={{ flexShrink: 0, width: '16px', textAlign: 'center' }}>✕</span> Live In-Call Chronometer Extension</li>
                 </ul>
               </div>
 
@@ -651,14 +654,14 @@ export default function App() {
                 <p style={{ fontSize: '0.85rem', color: 'var(--sepia-medium)', marginBottom: '1.5rem', fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
                   For founders, sales executives, consultants & serious deal closers.
                 </p>
-                <div style={{ fontSize: '2.8rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', marginBottom: '1.5rem', color: 'var(--walnut-ink)' }}>
+                <div style={{ fontSize: 'clamp(2.2rem, 7vw, 2.8rem)', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', marginBottom: '1.5rem', color: 'var(--walnut-ink)' }}>
                   ₹599 <span style={{ fontSize: '0.85rem', color: 'var(--sepia-faded)', fontWeight: 600 }}>/ month ($15/mo)</span>
                 </div>
                 <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '0.85rem', fontWeight: 800 }}>
-                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} color="var(--patina-sage)" /> <strong>Unlimited</strong> Auto-Scheduled Google Meet & Zoom calls</li>
-                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} color="var(--patina-sage)" /> <strong>Live In-Call Chronometer HUD</strong> for Meet & Zoom</li>
-                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} color="var(--patina-sage)" /> <strong>Two-Way Calendar Sync</strong> (Auto-filters Rahu Kaalam)</li>
-                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} color="var(--patina-sage)" /> Graceful Exit Window alert notifications</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} color="var(--patina-sage)" style={{ flexShrink: 0 }} /> <strong>Unlimited</strong> Auto-Scheduled Google Meet & Zoom calls</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} color="var(--patina-sage)" style={{ flexShrink: 0 }} /> <strong>Live In-Call Chronometer HUD</strong> for Meet & Zoom</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} color="var(--patina-sage)" style={{ flexShrink: 0 }} /> <strong>Two-Way Calendar Sync</strong> (Auto-filters Rahu Kaalam)</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} color="var(--patina-sage)" style={{ flexShrink: 0 }} /> Graceful Exit Window alert notifications</li>
                 </ul>
               </div>
 
@@ -681,14 +684,14 @@ export default function App() {
                 <p style={{ fontSize: '0.85rem', color: 'var(--sepia-faded)', marginBottom: '1.5rem', fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
                   For real estate brokerages, venture funds & trading partnerships.
                 </p>
-                <div style={{ fontSize: '2.8rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', marginBottom: '1.5rem', color: 'var(--walnut-ink)' }}>
+                <div style={{ fontSize: 'clamp(2.2rem, 7vw, 2.8rem)', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', marginBottom: '1.5rem', color: 'var(--walnut-ink)' }}>
                   ₹2,499 <span style={{ fontSize: '0.85rem', color: 'var(--sepia-faded)', fontWeight: 600 }}>/ month ($49/mo)</span>
                 </div>
                 <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '0.85rem', fontWeight: 800 }}>
-                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} /> Up to 5 team seats included</li>
-                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} /> Multi-party Chart & Kundli Harmony matching</li>
-                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} /> Custom company booking link (`nanneram.ai/brand`)</li>
-                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} /> Dedicated WhatsApp alert chronometer</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} style={{ flexShrink: 0 }} /> Up to 5 team seats included</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} style={{ flexShrink: 0 }} /> Multi-party Chart & Kundli Harmony matching</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} style={{ flexShrink: 0 }} /> Custom company booking link (`nanneram.ai/brand`)</li>
+                  <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} style={{ flexShrink: 0 }} /> Dedicated WhatsApp alert chronometer</li>
                 </ul>
               </div>
 
@@ -707,15 +710,8 @@ export default function App() {
 
       {/* GENERATE MEETING LINK MODAL */}
       {selectedSlotForModal && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 1000,
-          background: 'rgba(25, 18, 14, 0.75)', backdropFilter: 'blur(4px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem'
-        }}>
-          <div className="antique-card" style={{
-            maxWidth: '540px', width: '100%', padding: '2rem', background: '#fdfbf7',
-            boxShadow: '0 30px 60px rgba(0,0,0,0.35)'
-          }}>
+        <div className="modal-backdrop">
+          <div className="antique-card modal-card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.5rem', marginBottom: '1.5rem', borderBottom: '2px solid var(--ink-border-heavy)', paddingBottom: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <Video size={22} color="var(--antique-brass)" />
@@ -723,7 +719,7 @@ export default function App() {
                   {platform.toUpperCase()} APPOINTMENT PASS
                 </h3>
               </div>
-              <button onClick={() => setSelectedSlotForModal(null)}>
+              <button onClick={() => setSelectedSlotForModal(null)} style={{ padding: '4px' }}>
                 <X size={22} />
               </button>
             </div>
@@ -756,20 +752,20 @@ export default function App() {
               <input 
                 readOnly
                 value={`https://${platform === 'Google Meet' ? 'meet.google.com/nan-neram-882' : 'zoom.us/j/9842107452'}`}
-                style={{ background: 'transparent', border: 'none', flex: 1, fontSize: '0.9rem', fontWeight: 800, color: '#000' }}
+                style={{ background: 'transparent', border: 'none', flex: 1, fontSize: '0.85rem', fontWeight: 800, color: '#000', minWidth: 0 }}
               />
               <button 
                 onClick={() => {
                   navigator.clipboard.writeText(`https://${platform === 'Google Meet' ? 'meet.google.com/nan-neram-882' : 'zoom.us/j/9842107452'}`);
                   triggerToast('Meeting URL copied!');
                 }}
-                className="wax-seal-tag" style={{ padding: '0.35rem 0.75rem', cursor: 'pointer' }}
+                className="wax-seal-tag" style={{ padding: '0.35rem 0.75rem', cursor: 'pointer', flexShrink: 0 }}
               >
                 Copy
               </button>
             </div>
 
-            <div style={{ display: 'flex', gap: '0.8rem' }}>
+            <div className="modal-actions" style={{ display: 'flex', gap: '0.8rem' }}>
               <button 
                 onClick={() => copyInviteText(selectedSlotForModal)}
                 className="btn-brass" 
@@ -796,15 +792,8 @@ export default function App() {
 
       {/* SCIENTIFIC PROOF MODAL */}
       {showProofModal && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 1000,
-          background: 'rgba(25, 18, 14, 0.75)', backdropFilter: 'blur(4px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem'
-        }}>
-          <div className="antique-card" style={{
-            maxWidth: '680px', width: '100%', maxHeight: '85vh', overflowY: 'auto',
-            padding: '2rem', background: '#fdfbf7', boxShadow: '0 30px 60px rgba(0,0,0,0.35)'
-          }}>
+        <div className="modal-backdrop">
+          <div className="antique-card modal-card" style={{ maxWidth: '680px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.5rem', marginBottom: '1.5rem', borderBottom: '2px solid var(--ink-border-heavy)', paddingBottom: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <ShieldCheck size={24} color="var(--antique-brass)" />
@@ -812,7 +801,7 @@ export default function App() {
                   OBSERVATORY EPHEMERIS AUDIT
                 </h3>
               </div>
-              <button onClick={() => setShowProofModal(false)}>
+              <button onClick={() => setShowProofModal(false)} style={{ padding: '4px' }}>
                 <X size={22} />
               </button>
             </div>
@@ -843,7 +832,7 @@ export default function App() {
 
             <div style={{ background: 'var(--aged-parchment-light)', padding: '1.2rem', borderRadius: '6px', border: '2px solid var(--ink-border-heavy)', marginBottom: '1.5rem' }}>
               <h4 style={{ marginBottom: '0.4rem', fontSize: '1rem', fontFamily: 'var(--font-antique-serif)' }}>3. Live Observatory Audit ({selectedCity.name})</h4>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem', fontSize: '0.85rem', fontWeight: 800, fontFamily: 'var(--font-chrono-mono)' }}>
+              <div className="audit-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem', fontSize: '0.85rem', fontWeight: 800, fontFamily: 'var(--font-chrono-mono)' }}>
                 <div>Latitude: {selectedCity.lat}°</div>
                 <div>Longitude: {selectedCity.lng}°</div>
                 <div>Calculated Dawn: {formatTime(vedicData.sunriseMin)}</div>
@@ -866,15 +855,8 @@ export default function App() {
 
       {/* CONNECT CALENDAR MODAL */}
       {showConnectModal && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 1000,
-          background: 'rgba(25, 18, 14, 0.75)', backdropFilter: 'blur(4px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem'
-        }}>
-          <div className="antique-card" style={{
-            maxWidth: '500px', width: '100%', padding: '2rem', background: '#fdfbf7',
-            boxShadow: '0 30px 60px rgba(0,0,0,0.35)'
-          }}>
+        <div className="modal-backdrop">
+          <div className="antique-card modal-card" style={{ maxWidth: '500px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.5rem', marginBottom: '1.5rem', borderBottom: '2px solid var(--ink-border-heavy)', paddingBottom: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <Compass size={22} color="var(--antique-brass)" />
@@ -882,7 +864,7 @@ export default function App() {
                   CHRONO-SYNCHRONIZATION
                 </h3>
               </div>
-              <button onClick={() => setShowConnectModal(false)}>
+              <button onClick={() => setShowConnectModal(false)} style={{ padding: '4px' }}>
                 <X size={22} />
               </button>
             </div>
