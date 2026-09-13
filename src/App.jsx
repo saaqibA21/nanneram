@@ -11,6 +11,14 @@ import {
 import HorologyClockHero from './components/HorologyClockHero';
 import CosmicDeck from './components/CosmicDeck';
 import OracleChatbot from './components/OracleChatbot';
+import ZoomConnectModal from './components/ZoomConnectModal';
+import { 
+  loadZoomConfig, 
+  getZoomJoinUrl, 
+  formatZoomId, 
+  generateICSContent, 
+  downloadICSFile 
+} from './utils/zoomIntegration';
 
 export default function App() {
   // State
@@ -24,6 +32,8 @@ export default function App() {
   const [showProofModal, setShowProofModal] = useState(false);
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [connectedCalendar, setConnectedCalendar] = useState(false);
+  const [zoomConfig, setZoomConfig] = useState(() => loadZoomConfig());
+  const [showZoomModal, setShowZoomModal] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
   // Toast Helper
@@ -52,6 +62,13 @@ export default function App() {
     { title: 'Creative UX / Brand Review' }
   ];
 
+  // Dynamic Meeting Join URL helper
+  const getCurrentMeetingUrl = () => {
+    return platform === 'Zoom'
+      ? getZoomJoinUrl(zoomConfig)
+      : 'https://meet.google.com/nan-neram-882';
+  };
+
   // Google Calendar URL generator
   const getGoogleCalendarUrl = (slot) => {
     const d = new Date(targetDateStr + 'T00:00:00');
@@ -67,6 +84,7 @@ export default function App() {
 
     const startISO = `${y}${m}${day}T${pad(startHour)}${pad(startMins)}00`;
     const endISO = `${y}${m}${day}T${pad(endHour)}${pad(endMins)}00`;
+    const meetingUrl = getCurrentMeetingUrl();
 
     const title = encodeURIComponent(`${meetingPurpose} (${platform}) - Nanneram Auspicious Window`);
     const details = encodeURIComponent(
@@ -75,13 +93,14 @@ export default function App() {
       `• Graceful Exit Window: ${slot.gracefulExitWindow} (Wrap before planetary shift)\n` +
       `• Active Transit: ${slot.hora.name} & ${slot.gowri.name}\n` +
       `• Astronomical Strategy: ${slot.recommendation}\n\n` +
-      `Join ${platform}: https://meet.google.com/nan-neram-${Math.random().toString(36).substring(7)}`
+      `Join ${platform}: ${meetingUrl}`
     );
 
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startISO}/${endISO}&details=${details}`;
   };
 
   const copyInviteText = (slot) => {
+    const meetingUrl = getCurrentMeetingUrl();
     const invite = 
       `Astronomical Appointment: ${meetingPurpose}\n` +
       `Platform: ${platform}\n` +
@@ -89,13 +108,29 @@ export default function App() {
       `Auspicious Window: ${slot.startTimeFormatted} – ${slot.endTimeFormatted} (Observatory: ${selectedCity.name})\n` +
       `Graceful Exit Window: ${slot.gracefulExitWindow}\n` +
       `Ruling Planet: ${slot.hora.name} | ${slot.gowri.name}\n` +
-      `Meeting Pass: https://${platform === 'Google Meet' ? 'meet.google.com/nan-neram-882' : 'zoom.us/j/9842107452'}\n\n` +
+      `Meeting Pass: ${meetingUrl}\n\n` +
       `*Timed via Nanneram Horologium — Calibrated to NOAA Solar Equations & NASA JPL Ephemeris.*`;
 
     navigator.clipboard.writeText(invite);
     setCopied(true);
     triggerToast('Appointment invite copied to parchment!');
     setTimeout(() => setCopied(false), 2500);
+  };
+
+  // Apple Calendar (.ics) download for iOS / macOS / Outlook
+  const handleDownloadAppleCalendar = (slot) => {
+    const meetingUrl = getCurrentMeetingUrl();
+    const icsContent = generateICSContent({
+      meetingPurpose,
+      platform,
+      slot,
+      targetDateStr,
+      selectedCityName: selectedCity.name,
+      meetingUrl
+    });
+    const filename = `Nanneram_${meetingPurpose.replace(/[^a-zA-Z0-9]/g, '_')}_${targetDateStr}.ics`;
+    downloadICSFile(icsContent, filename);
+    triggerToast('Apple Calendar (.ics) pass downloaded!');
   };
 
   return (
@@ -465,6 +500,49 @@ export default function App() {
                 >
                   Zoom Video
                 </button>
+
+                {platform === 'Zoom' && (
+                  <div style={{
+                    marginTop: '0.2rem',
+                    padding: '0.45rem 0.75rem',
+                    background: '#ffffff',
+                    border: '1.5px solid var(--antique-brass-light)',
+                    borderRadius: '5px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '0.5rem',
+                    fontSize: '0.72rem'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', minWidth: 0, overflow: 'hidden' }}>
+                      <span style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        background: zoomConfig.connected ? '#16a34a' : '#ea580c',
+                        flexShrink: 0
+                      }} />
+                      <span style={{ fontWeight: 800, color: 'var(--walnut-ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {zoomConfig.connected ? `PMI: ${formatZoomId(zoomConfig.pmi)}` : 'Default Test Room'}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setShowZoomModal(true)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--antique-brass-deep)',
+                        fontWeight: 900,
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                        flexShrink: 0,
+                        fontSize: '0.72rem'
+                      }}
+                    >
+                      Configure ⚙️
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -775,16 +853,16 @@ export default function App() {
             </label>
             <div style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#ffffff',
-              border: '2px solid var(--ink-border-heavy)', padding: '0.6rem 0.8rem', borderRadius: '6px', marginBottom: '1.5rem'
+              border: '2px solid var(--ink-border-heavy)', padding: '0.6rem 0.8rem', borderRadius: '6px', marginBottom: '1rem'
             }}>
               <input 
                 readOnly
-                value={`https://${platform === 'Google Meet' ? 'meet.google.com/nan-neram-882' : 'zoom.us/j/9842107452'}`}
+                value={getCurrentMeetingUrl()}
                 style={{ background: 'transparent', border: 'none', flex: 1, fontSize: '0.85rem', fontWeight: 800, color: '#000', minWidth: 0 }}
               />
               <button 
                 onClick={() => {
-                  navigator.clipboard.writeText(`https://${platform === 'Google Meet' ? 'meet.google.com/nan-neram-882' : 'zoom.us/j/9842107452'}`);
+                  navigator.clipboard.writeText(getCurrentMeetingUrl());
                   triggerToast('Meeting URL copied!');
                 }}
                 className="wax-seal-tag" style={{ padding: '0.35rem 0.75rem', cursor: 'pointer', flexShrink: 0 }}
@@ -793,25 +871,79 @@ export default function App() {
               </button>
             </div>
 
-            <div className="modal-actions" style={{ display: 'flex', gap: '0.8rem' }}>
-              <button 
-                onClick={() => copyInviteText(selectedSlotForModal)}
-                className="btn-brass" 
-                style={{ flex: 1, justifyContent: 'center' }}
+            {platform === 'Zoom' && (
+              <div style={{
+                marginBottom: '1.25rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                fontSize: '0.78rem',
+                background: '#f5edd6',
+                padding: '0.5rem 0.8rem',
+                borderRadius: '5px',
+                border: '1.5px solid var(--antique-brass-light)'
+              }}>
+                <span style={{ color: 'var(--walnut-ink)', fontWeight: 700 }}>
+                  Zoom Apparatus: {zoomConfig.connected ? `PMI (${formatZoomId(zoomConfig.pmi)})` : 'Default Test Room'}
+                </span>
+                <button
+                  onClick={() => setShowZoomModal(true)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--antique-brass-deep)',
+                    textDecoration: 'underline',
+                    fontWeight: 800,
+                    cursor: 'pointer'
+                  }}
+                >
+                  Configure Zoom ⚙️
+                </button>
+              </div>
+            )}
+
+            <div className="modal-actions" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <button 
+                  onClick={() => copyInviteText(selectedSlotForModal)}
+                  className="btn-brass" 
+                  style={{ flex: '1 1 140px', justifyContent: 'center' }}
+                >
+                  {copied ? <Check size={16} /> : <Copy size={16} />}
+                  {copied ? 'Copied!' : 'Copy Invitation'}
+                </button>
+                <a 
+                  href={getGoogleCalendarUrl(selectedSlotForModal)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-walnut" 
+                  style={{ flex: '1 1 140px', justifyContent: 'center' }}
+                >
+                  <Calendar size={16} color="var(--antique-brass)" />
+                  Google Calendar
+                </a>
+              </div>
+
+              <button
+                onClick={() => handleDownloadAppleCalendar(selectedSlotForModal)}
+                className="wax-seal-tag"
+                style={{
+                  width: '100%',
+                  justifyContent: 'center',
+                  padding: '0.7rem 1rem',
+                  background: '#ffffff',
+                  cursor: 'pointer',
+                  border: '1.5px solid var(--ink-border-heavy)',
+                  fontWeight: 800,
+                  fontSize: '0.82rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
               >
-                {copied ? <Check size={16} /> : <Copy size={16} />}
-                {copied ? 'Copied!' : 'Copy Invitation'}
+                <Download size={15} color="var(--antique-brass)" />
+                Apple Calendar (.ics) / Outlook Pass
               </button>
-              <a 
-                href={getGoogleCalendarUrl(selectedSlotForModal)}
-                target="_blank"
-                rel="noreferrer"
-                className="btn-walnut" 
-                style={{ flex: 1, justifyContent: 'center' }}
-              >
-                <Calendar size={16} color="var(--antique-brass)" />
-                Add to Calendar
-              </a>
             </div>
 
           </div>
@@ -898,7 +1030,7 @@ export default function App() {
             </div>
 
             <p style={{ color: 'var(--sepia-medium)', fontSize: '0.9rem', lineHeight: 1.5, marginBottom: '1.5rem', fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
-              Synchronize Nanneram with your Google Calendar or Microsoft Outlook. The chronometer will automatically flag inauspicious hours (Rahu Kaalam) directly upon your calendar parchment.
+              Synchronize Nanneram with your Google Calendar, Microsoft Outlook, or Zoom Video apparatus. The chronometer will automatically flag inauspicious hours (Rahu Kaalam) directly upon your calendar parchment.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginBottom: '1.5rem' }}>
@@ -927,6 +1059,39 @@ export default function App() {
                 <Calendar size={18} color="#0078d4" />
                 Continue with Outlook Calendar
               </button>
+
+              <div style={{ margin: '0.3rem 0', borderTop: '1px dashed var(--ink-border-heavy)', position: 'relative' }}>
+                <span style={{ position: 'absolute', top: '-9px', left: '50%', transform: 'translateX(-50%)', background: '#faf4e6', padding: '0 0.5rem', fontSize: '0.68rem', color: 'var(--sepia-faded)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 800 }}>
+                  Video Apparatus & Apple
+                </span>
+              </div>
+
+              <button 
+                onClick={() => {
+                  setShowConnectModal(false);
+                  setShowZoomModal(true);
+                }}
+                className="wax-seal-tag" 
+                style={{
+                  padding: '0.85rem', justifyContent: 'center', gap: '0.8rem', cursor: 'pointer',
+                  background: zoomConfig.connected ? '#e8f5e9' : '#ffffff',
+                  border: zoomConfig.connected ? '2px solid #2e7d32' : '2px solid var(--ink-border-heavy)'
+                }}
+              >
+                <Video size={18} color="#2D8CFF" />
+                <span style={{ fontWeight: 800 }}>
+                  {zoomConfig.connected ? `Zoom Apparatus Linked (${formatZoomId(zoomConfig.pmi)})` : 'Configure Zoom Video Apparatus'}
+                </span>
+              </button>
+
+              <div style={{
+                padding: '0.65rem 0.85rem', background: 'var(--aged-parchment-light)',
+                border: '1.5px solid var(--ink-border-heavy)', borderRadius: '6px',
+                fontSize: '0.78rem', color: 'var(--sepia-medium)', display: 'flex', alignItems: 'center', gap: '0.6rem'
+              }}>
+                <span style={{ fontSize: '1.15rem' }}>🍎</span>
+                <span><strong>Apple Users (iOS / macOS):</strong> Meeting passes include a native <code>.ics</code> download that opens instantly in Apple Calendar with a pre-configured exit alert.</span>
+              </div>
             </div>
 
             <div style={{ fontSize: '0.72rem', color: 'var(--sepia-faded)', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
@@ -936,6 +1101,15 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* ZOOM CONNECT MODAL */}
+      <ZoomConnectModal
+        isOpen={showZoomModal}
+        onClose={() => setShowZoomModal(false)}
+        zoomConfig={zoomConfig}
+        setZoomConfig={setZoomConfig}
+        triggerToast={triggerToast}
+      />
 
       {/* VINTAGE COLOPHON & FOOTER */}
       <footer style={{ marginTop: 'auto', background: 'var(--ink-border-heavy)', color: '#f5edd6', padding: '4rem 1.5rem 2.5rem' }}>
