@@ -26,7 +26,8 @@ export default function ZoomConnectModal({
   const previewUrl = getZoomJoinUrl({
     vanityUrl,
     meetingId,
-    passcode
+    passcode,
+    clientId
   });
 
   const handleSave = () => {
@@ -252,36 +253,19 @@ export default function ZoomConnectModal({
         {activeTab === 'oauth' && (
           <div>
             <p style={{ fontSize: '0.85rem', color: 'var(--sepia-medium)', lineHeight: 1.5, marginBottom: '1.2rem', fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
-              For enterprise and venture teams. Connects via Zoom Marketplace Server-to-Server OAuth (`marketplace.zoom.us`) to provision a fresh, isolated meeting room for every celestial appointment.
+              Connect your Zoom Marketplace App (`marketplace.zoom.us`) to automatically provision verified Zoom video rooms for every celestial appointment.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', marginBottom: '1.5rem' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem', fontFamily: 'var(--font-antique-serif)' }}>
-                  Zoom Account ID:
-                </label>
-                <input 
-                  type="text"
-                  value={accountId}
-                  onChange={(e) => setAccountId(e.target.value)}
-                  placeholder="e.g. aBcDeFgHiJkLmNoP"
-                  style={{
-                    width: '100%', padding: '0.6rem 0.8rem', background: '#fff',
-                    border: '2px solid var(--ink-border-heavy)', borderRadius: '6px',
-                    fontSize: '0.85rem', fontWeight: 700
-                  }}
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem', fontFamily: 'var(--font-antique-serif)' }}>
-                  Client ID:
+                  Client ID (From Zoom Marketplace):
                 </label>
                 <input 
                   type="text"
                   value={clientId}
                   onChange={(e) => setClientId(e.target.value)}
-                  placeholder="e.g. zOOm_cLiEnT_iD_8829"
+                  placeholder="e.g. ZFTS0RgwT1OFEEkhFsXxA"
                   style={{
                     width: '100%', padding: '0.6rem 0.8rem', background: '#fff',
                     border: '2px solid var(--ink-border-heavy)', borderRadius: '6px',
@@ -292,19 +276,64 @@ export default function ZoomConnectModal({
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem', fontFamily: 'var(--font-antique-serif)' }}>
-                  Client Secret:
+                  Client Secret (From Zoom Marketplace):
                 </label>
                 <input 
                   type="password"
                   value={clientSecret}
                   onChange={(e) => setClientSecret(e.target.value)}
-                  placeholder="••••••••••••••••••••••••"
+                  placeholder="Paste Client Secret..."
                   style={{
                     width: '100%', padding: '0.6rem 0.8rem', background: '#fff',
                     border: '2px solid var(--ink-border-heavy)', borderRadius: '6px',
                     fontSize: '0.85rem', fontWeight: 700
                   }}
                 />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem', fontFamily: 'var(--font-antique-serif)', color: 'var(--sepia-faded)' }}>
+                  Account ID (Optional — Only needed for Server-to-Server Apps):
+                </label>
+                <input 
+                  type="text"
+                  value={accountId}
+                  onChange={(e) => setAccountId(e.target.value)}
+                  placeholder="Leave empty for User-managed apps"
+                  style={{
+                    width: '100%', padding: '0.6rem 0.8rem', background: '#fbf8f0',
+                    border: '1.5px solid var(--ink-border-heavy)', borderRadius: '6px',
+                    fontSize: '0.82rem', color: 'var(--sepia-medium)'
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Real-Time Live Preview Box */}
+            <div style={{
+              background: 'var(--aged-parchment-light)', border: '1.5px solid var(--ink-border-heavy)',
+              padding: '0.9rem', borderRadius: '6px', marginBottom: '1.5rem'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                <span style={{ fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase', color: 'var(--sepia-faded)' }}>
+                  CALCULATED APPARATUS ROOM LINK:
+                </span>
+                <button 
+                  onClick={handleTestCall}
+                  style={{
+                    fontSize: '0.72rem', fontWeight: 800, color: '#0b5cff', display: 'flex',
+                    alignItems: 'center', gap: '0.3rem', cursor: 'pointer', background: 'none', border: 'none'
+                  }}
+                >
+                  <ExternalLink size={12} /> Test Launch Zoom
+                </button>
+              </div>
+
+              <div style={{
+                fontSize: '0.82rem', fontWeight: 800, wordBreak: 'break-all',
+                color: 'var(--walnut-ink)', fontFamily: 'var(--font-chrono-mono)'
+              }}>
+                {previewUrl}
               </div>
             </div>
 
@@ -314,7 +343,7 @@ export default function ZoomConnectModal({
               display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: 'var(--patina-sage)'
             }}>
               <ShieldCheck size={16} style={{ flexShrink: 0 }} />
-              <span>OAuth 2.0 Token Vault ready. Scopes: <code>meeting:write</code>, <code>meeting:read</code>.</span>
+              <span>OAuth 2.0 Credentials encrypted locally. Scopes: <code>meeting:write</code>, <code>meeting:read</code>.</span>
             </div>
 
           </div>

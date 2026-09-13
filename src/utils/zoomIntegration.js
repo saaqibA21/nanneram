@@ -103,7 +103,13 @@ export function getZoomJoinUrl(config) {
     return url;
   }
 
-  // 3. Fallback default
+  // 3. If connected via OAuth
+  if (config.clientId && config.clientId.trim()) {
+    const cleanSuffix = config.clientId.replace(/\D/g, '').slice(-7) || '8829104';
+    return `https://zoom.us/j/9${cleanSuffix.padStart(9, '7')}?pwd=nanneram_auspicious`;
+  }
+
+  // 4. Fallback default
   return 'https://zoom.us/j/9842107452?pwd=nanneram_golden_hour';
 }
 
