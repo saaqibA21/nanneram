@@ -5,12 +5,13 @@
    ========================================================================== */
 
 :root {
-  /* Antique Parchment & Deep Sepia Palette ("A Little Old") */
-  --aged-parchment: #f2ebd9;
-  --aged-parchment-light: #faf6ec;
-  --aged-parchment-dark: #e5dcc7;
-  --aged-paper-card: #fdfbf7;
-  
+  /* Antique Parchment & Deep Sepia Palette — warmed toward the video clock's
+     brownish old-gold tones ("A Little Old", now a little older) */
+  --aged-parchment: #ecdfbd;
+  --aged-parchment-light: #f5ecd3;
+  --aged-parchment-dark: #ddc89a;
+  --aged-paper-card: #fbf3e2;
+
   /* Antique Inks */
   --walnut-ink: #1f1813;
   --sepia-dark: #2d241c;
@@ -19,10 +20,12 @@
   --ink-hairline: rgba(45, 36, 28, 0.18);
   --ink-border-heavy: #241c15;
 
-  /* Antique Metals & Horology Accents */
-  --antique-brass: #b89347;
-  --antique-brass-light: #d4af58;
-  --antique-brass-glow: rgba(184, 147, 71, 0.25);
+  /* Antique Metals & Horology Accents — sampled from the clock dial:
+     old gold medallions, bronze rings, deep mahogany hub */
+  --antique-brass: #a97c3f;
+  --antique-brass-light: #d7a94f;
+  --antique-brass-glow: rgba(191, 145, 79, 0.28);
+  --antique-brass-deep: #6b4423;
   --antique-copper: #a65839;
   --wax-seal-crimson: #841b1b;
   --wax-seal-bg: #fae8e8;
@@ -79,83 +82,111 @@ button {
   transition: all 0.2s ease;
 }
 
-/* Antique Wax Seal & Brass Plaque Buttons */
+/* Antique Wax Seal & Brass Plaque Buttons — stamped plaque silhouette (corners
+   diagonally cut, not a rounded pill) with a cast-metal bevel */
 .btn-brass {
-  background: linear-gradient(180deg, #c9a75c 0%, #a48135 100%);
+  background: linear-gradient(180deg, #e0b45f 0%, #8a6024 55%, #7a5220 100%);
   color: #171109;
   border: 2px solid var(--ink-border-heavy);
   font-family: var(--font-antique-serif);
   font-weight: 800;
-  padding: 0.8rem 1.6rem;
-  border-radius: 6px;
+  padding: 0.8rem 1.7rem;
+  border-radius: 0;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  box-shadow: 3px 3px 0px var(--ink-border-heavy);
+  box-shadow: 0 3px 10px rgba(31, 24, 19, 0.35), inset 0 1.5px 0 rgba(255, 255, 255, 0.45), inset 0 -3px 5px rgba(0, 0, 0, 0.3);
   letter-spacing: 1px;
   text-transform: uppercase;
   font-size: 0.85rem;
 }
 
 .btn-brass:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px var(--ink-border-heavy);
-  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(31, 24, 19, 0.4), inset 0 1.5px 0 rgba(255, 255, 255, 0.5), inset 0 -3px 5px rgba(0, 0, 0, 0.25);
+  filter: brightness(1.06);
 }
 
 .btn-walnut {
-  background: var(--ink-border-heavy);
+  background: linear-gradient(180deg, #2c2118 0%, #17110b 100%);
   color: #f7f1e1;
   border: 2px solid var(--ink-border-heavy);
   font-family: var(--font-antique-serif);
   font-weight: 800;
-  padding: 0.8rem 1.6rem;
-  border-radius: 6px;
+  padding: 0.8rem 1.7rem;
+  border-radius: 0;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3), inset 0 1.5px 0 rgba(255, 255, 255, 0.08), inset 0 -3px 6px rgba(0, 0, 0, 0.5);
   letter-spacing: 1px;
   text-transform: uppercase;
   font-size: 0.85rem;
 }
 
 .btn-walnut:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px #000;
-  background: #110c08;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4), inset 0 1.5px 0 rgba(255, 255, 255, 0.1), inset 0 -3px 6px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(180deg, #241a12 0%, #110c08 100%);
 }
 
-/* Antique Parchment Card */
+/* Antique Parchment Card — framed with brass corner brackets, like a mounted
+   manuscript plate, instead of a plain rounded rectangle */
 .antique-card {
   background: var(--aged-paper-card);
   border: 2px solid var(--ink-border-heavy);
   border-radius: 8px;
-  box-shadow: 4px 4px 0px var(--ink-border-heavy);
+  box-shadow: 0 4px 14px rgba(31, 24, 19, 0.16), 0 1px 3px rgba(31, 24, 19, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.5);
   position: relative;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.antique-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px var(--ink-border-heavy);
+.antique-card::before,
+.antique-card::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-color: var(--antique-brass);
+  border-style: solid;
+  pointer-events: none;
 }
 
-/* Wax Seal Stamp Tag */
+.antique-card::before {
+  top: 7px;
+  left: 7px;
+  border-width: 2px 0 0 2px;
+}
+
+.antique-card::after {
+  bottom: 7px;
+  right: 7px;
+  border-width: 0 2px 2px 0;
+}
+
+.antique-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 34px rgba(31, 24, 19, 0.22), 0 4px 10px rgba(31, 24, 19, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Wax Seal Ribbon Tag — a notched banner silhouette, not a rounded pill */
 .wax-seal-tag {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.35rem 0.85rem;
+  padding: 0.35rem 1.2rem;
   border: 1.5px solid var(--ink-border-heavy);
-  border-radius: 4px;
+  border-radius: 0;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 50%, 100% 100%, 0 100%, 8px 50%);
   font-family: var(--font-antique-serif);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
   background: var(--aged-parchment-light);
-  box-shadow: 2px 2px 0px var(--ink-border-heavy);
+  box-shadow: 0 2px 6px rgba(31, 24, 19, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -1px 2px rgba(31, 24, 19, 0.1);
 }
 
 /* Antique Clock Dial Animation */
@@ -197,4 +228,324 @@ button {
   max-width: 1240px;
   margin: 0 auto;
   padding: 0 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 0 1.1rem;
+  }
+}
+
+/* Accessible focus states, brass-toned to match the antique metals */
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--antique-brass);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   RESPONSIVE LAYOUT — keeps the antique composition intact while preventing
+   overflow/orphan-row breakage at narrower widths.
+   ========================================================================== */
+
+/* Master navigation */
+.site-nav {
+  flex-wrap: wrap;
+  row-gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .site-nav {
+    padding: 0.85rem 1.1rem !important;
+  }
+}
+
+.nav-live-coords {
+  order: 3;
+}
+
+@media (max-width: 880px) {
+  .nav-live-coords {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-brand-sub {
+    display: none !important;
+  }
+}
+
+.nav-actions {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .nav-actions {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem !important;
+  }
+  .nav-actions .wax-seal-tag,
+  .nav-actions .btn-walnut {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.68rem !important;
+    padding: 0.55rem 0.6rem !important;
+    white-space: nowrap;
+  }
+}
+
+/* Ticker tape */
+.ticker-tape {
+  font-size: 0.78rem;
+}
+
+@media (max-width: 640px) {
+  .ticker-tape {
+    font-size: 0.66rem;
+  }
+}
+
+/* Hero observatory/date tuner */
+.hero-tuner select,
+.hero-tuner input[type='date'] {
+  max-width: 100%;
+}
+
+@media (max-width: 560px) {
+  .hero-tuner {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .hero-tuner .tuner-field {
+    width: 100%;
+  }
+  .hero-tuner .tuner-control {
+    width: 100%;
+  }
+  .hero-tuner select,
+  .hero-tuner input[type='date'] {
+    width: 100%;
+  }
+  .hero-tuner .tuner-divider {
+    display: none;
+  }
+}
+
+/* Master horological clock — scales down before it can overflow small phones */
+.clock-assembly {
+  transform-origin: top center;
+}
+
+@media (max-width: 420px) {
+  .clock-assembly {
+    transform: scale(0.85);
+    margin-bottom: -48px;
+  }
+}
+
+@media (max-width: 360px) {
+  .clock-assembly {
+    transform: scale(0.72);
+    margin-bottom: -88px;
+  }
+}
+
+/* Daily ephemeris register — 4 stat cards */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 1000px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .stat-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Appointment scheduler layout */
+.scheduler-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+}
+
+@media (max-width: 900px) {
+  .scheduler-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Guild pricing cards */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 980px) {
+  .pricing-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .pricing-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Scheduler control toolbar — a full-width strip of criteria fields, replacing
+   the generic "sidebar filters + results list" split with a console-style bar */
+.criteria-toolbar {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 0.9fr 0.9fr;
+  gap: 2rem;
+}
+
+@media (max-width: 980px) {
+  .criteria-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 1.75rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .criteria-toolbar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.criteria-toolbar .toolbar-divider {
+  width: 1px;
+  background: var(--ink-hairline);
+  align-self: stretch;
+  margin: 0 auto;
+}
+
+@media (max-width: 980px) {
+  .criteria-toolbar .toolbar-divider {
+    display: none;
+  }
+}
+
+/* Appointment results gallery */
+.appointments-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 780px) {
+  .appointments-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Cosmic deck almanac cards */
+.cosmic-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 980px) {
+  .cosmic-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .cosmic-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Footer columns */
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .footer-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ==========================================================================
+   COSMIC HERO — the actual "Nalla Neram" video plays as the hero backdrop,
+   recolored to the clock's own brownish old-gold palette (sampled from the
+   dial: bronze rings, old-gold medallions, deep mahogany hub) so the hero
+   reads as an extension of the site's wooden/gold antique theme rather than
+   a colder cosmic night scene. Scoped to the master clock hero only.
+   ========================================================================== */
+
+.cosmic-hero {
+  --cosmic-gold: #f0c878;
+  --cosmic-gold-soft: rgba(215, 169, 79, 0.4);
+  --cosmic-cream: #f7ecd8;
+  --cosmic-lavender: #e4d3ae;
+  background: var(--walnut-ink);
+}
+
+.cosmic-video-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 68% center;
+  z-index: 0;
+  filter: sepia(0.35) saturate(1.15) brightness(0.95);
+}
+
+.cosmic-video-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(24, 14, 6, 0.6) 0%, rgba(24, 14, 6, 0.42) 35%, rgba(24, 14, 6, 0.68) 100%);
+}
+
+.cosmic-clock-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 440px;
+  height: 440px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(240, 200, 120, 0.55) 0%, rgba(215, 169, 79, 0.18) 42%, transparent 72%);
+  pointer-events: none;
+  z-index: 0;
+  animation: cosmicGlowPulse 4s ease-in-out infinite;
+}
+
+@keyframes cosmicGlowPulse {
+  0%, 100% { transform: scale(0.94); opacity: 0.85; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
+.cosmic-card {
+  background: linear-gradient(165deg, #2f1d10 0%, #1a1108 100%);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -3px 8px rgba(0, 0, 0, 0.4);
+}
+
+.cosmic-card:hover {
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -3px 8px rgba(0, 0, 0, 0.35);
 }

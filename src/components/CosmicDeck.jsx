@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Compass, Sparkles, Clock } from 'lucide-react';
 
 const VINTAGE_DECK_CARDS = [
@@ -105,6 +105,23 @@ const VINTAGE_DECK_CARDS = [
 export default function CosmicDeck() {
   const [activeTab, setActiveTab] = useState('3D');
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [isNarrow, setIsNarrow] = useState(false);
+
+  useEffect(() => {
+    // Matches the breakpoint where .cosmic-grid drops below 3 columns (see
+    // index.css). At 1-2 columns the stack is tall enough that rotating it
+    // in 3D space pushes the bounding box past the viewport edge, so the
+    // isometric tilt is only safe at the full 3-column width.
+    const mq = window.matchMedia('(max-width: 980px)');
+    const update = () => setIsNarrow(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  // Falls back to the flat view below the 3-column breakpoint regardless of
+  // the user's tab choice (see effect above).
+  const effectiveTab = isNarrow ? 'GRID' : activeTab;
 
   return (
     <section style={{
@@ -183,15 +200,14 @@ export default function CosmicDeck() {
 
         {/* 3D DECK CONTAINER */}
         <div style={{
-          perspective: activeTab === '3D' ? '1400px' : 'none',
-          padding: activeTab === '3D' ? '2rem 0 3rem' : '0'
+          perspective: effectiveTab === '3D' ? '1400px' : 'none',
+          padding: effectiveTab === '3D' ? '2rem 0 3rem' : '0',
+          overflowX: 'hidden'
         }}>
-          
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))',
+
+          <div className="cosmic-grid" style={{
             gap: '2.5rem',
-            transform: activeTab === '3D' ? 'rotateX(18deg) rotateZ(-5deg) scale(0.96)' : 'none',
+            transform: effectiveTab === '3D' ? 'rotateX(18deg) rotateZ(-5deg) scale(0.96)' : 'none',
             transformOrigin: 'center center',
             transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
           }}>
@@ -210,9 +226,9 @@ export default function CosmicDeck() {
                     borderRadius: '16px',
                     padding: '1.8rem 1.5rem 1.5rem',
                     border: '2.5px solid #241c15',
-                    boxShadow: isHovered 
-                      ? '0 25px 50px rgba(0, 0, 0, 0.6), 8px 8px 0px var(--antique-brass)'
-                      : '6px 6px 0px #0a0806, 0 15px 30px rgba(0,0,0,0.4)',
+                    boxShadow: isHovered
+                      ? '0 30px 55px rgba(0, 0, 0, 0.55), 0 10px 24px rgba(184, 147, 71, 0.35)'
+                      : '0 15px 30px rgba(0,0,0,0.4), 0 4px 10px rgba(0,0,0,0.3)',
                     transform: isHovered ? 'translateY(-16px) scale(1.03)' : 'translateY(0)',
                     transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                     position: 'relative',
@@ -222,7 +238,7 @@ export default function CosmicDeck() {
                   }}
                 >
                   {/* Top Month + Engraved Seal */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.4rem', marginBottom: '0.8rem' }}>
                     <span style={{
                       fontSize: '0.8rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)',
                       textTransform: 'uppercase', color: 'var(--sepia-faded)', letterSpacing: '1.5px'
@@ -263,7 +279,7 @@ export default function CosmicDeck() {
                   {/* Antique Calendar Matrix */}
                   <div style={{
                     background: '#ffffff', border: '1.5px solid var(--ink-border-heavy)', borderRadius: '8px',
-                    padding: '0.65rem', marginBottom: '1rem', boxShadow: '2px 2px 0px rgba(0,0,0,0.1)'
+                    padding: '0.65rem', marginBottom: '1rem', boxShadow: '0 2px 6px rgba(0,0,0,0.08)'
                   }}>
                     <div style={{
                       display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '3px',

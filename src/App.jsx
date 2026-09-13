@@ -44,11 +44,11 @@ export default function App() {
 
   // Presets for quick selection
   const presets = [
-    { title: 'VC Pitch / Investor Call', icon: '💼', tag: 'Sun + Mercury' },
-    { title: 'Salary / Compensation Negotiation', icon: '💰', tag: 'Mercury + Jupiter' },
-    { title: 'Client Contract Sign-off', icon: '📝', tag: 'Mercury' },
-    { title: 'Executive Hiring Interview', icon: '🎯', tag: 'Jupiter + Sun' },
-    { title: 'Creative UX / Brand Review', icon: '🎨', tag: 'Venus' }
+    { title: 'VC Pitch / Investor Call' },
+    { title: 'Salary / Compensation Negotiation' },
+    { title: 'Client Contract Sign-off' },
+    { title: 'Executive Hiring Interview' },
+    { title: 'Creative UX / Brand Review' }
   ];
 
   // Google Calendar URL generator
@@ -105,7 +105,7 @@ export default function App() {
         <div style={{
           position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 9999,
           background: 'var(--ink-border-heavy)', color: '#f5edd6', border: '2px solid var(--antique-brass)',
-          boxShadow: '4px 4px 0px rgba(0,0,0,0.4)',
+          boxShadow: '0 10px 26px rgba(0,0,0,0.35)',
           padding: '0.9rem 1.4rem', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '0.6rem',
           fontWeight: 800, fontSize: '0.85rem', fontFamily: 'var(--font-antique-serif)'
         }}>
@@ -115,10 +115,10 @@ export default function App() {
       )}
 
       {/* VINTAGE HOROLOGICAL TICKER TAPE */}
-      <div style={{
+      <div className="ticker-tape" style={{
         background: 'var(--ink-border-heavy)', color: 'var(--antique-brass-light)',
         borderBottom: '2px solid #000', padding: '0.55rem 0',
-        fontFamily: 'var(--font-antique-serif)', fontSize: '0.78rem', fontWeight: 800, letterSpacing: '1.5px',
+        fontFamily: 'var(--font-antique-serif)', fontWeight: 800, letterSpacing: '1.5px',
         overflow: 'hidden', whiteSpace: 'nowrap'
       }}>
         <div style={{ display: 'inline-block', whiteSpace: 'nowrap', animation: 'ticker 40s linear infinite' }}>
@@ -127,7 +127,7 @@ export default function App() {
       </div>
 
       {/* VINTAGE MASTER NAVIGATION BAR */}
-      <nav style={{
+      <nav className="site-nav" style={{
         background: 'var(--aged-paper-card)', borderBottom: '2px solid var(--ink-border-heavy)',
         padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         position: 'sticky', top: 0, zIndex: 100
@@ -137,7 +137,7 @@ export default function App() {
             width: '38px', height: '38px', borderRadius: '6px', background: 'var(--ink-border-heavy)',
             border: '2px solid var(--antique-brass)', display: 'flex', alignItems: 'center',
             justifyContent: 'center', color: 'var(--antique-brass-light)', fontWeight: 900, fontSize: '1.2rem',
-            boxShadow: '2px 2px 0px rgba(0,0,0,0.3)'
+            boxShadow: '0 2px 8px rgba(0,0,0,0.3)', flexShrink: 0
           }}>
             ☿
           </div>
@@ -145,14 +145,14 @@ export default function App() {
             <span style={{ fontSize: '1.35rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', letterSpacing: '0.04em', color: 'var(--walnut-ink)' }}>
               NANNERAM<span style={{ color: 'var(--antique-brass)' }}>.HORA</span>
             </span>
-            <span style={{ display: 'block', fontSize: '0.62rem', fontWeight: 800, color: 'var(--sepia-faded)', letterSpacing: '1px' }}>
+            <span className="nav-brand-sub" style={{ display: 'block', fontSize: '0.62rem', fontWeight: 800, color: 'var(--sepia-faded)', letterSpacing: '1px' }}>
               ANCIENT ASTRONOMICAL CHRONOMETER
             </span>
           </div>
         </div>
 
         {/* Center Live Coordinates */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div className="nav-live-coords" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <div className="wax-seal-tag">
             <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--patina-sage)' }} />
             <span>{selectedCity.name}: {formatTime(vedicData.sunriseMin)} DAWN</span>
@@ -160,18 +160,18 @@ export default function App() {
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-          <button 
-            onClick={() => setShowProofModal(true)} 
+        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+          <button
+            onClick={() => setShowProofModal(true)}
             className="wax-seal-tag"
             style={{ cursor: 'pointer', background: '#fff' }}
           >
             <ShieldCheck size={14} color="var(--antique-brass)" />
             Examine Ephemeris
           </button>
-          
-          <button 
-            onClick={() => setShowConnectModal(true)} 
+
+          <button
+            onClick={() => setShowConnectModal(true)}
             className={connectedCalendar ? "wax-seal-tag" : "btn-walnut"}
             style={{ fontSize: '0.78rem', padding: '0.5rem 1.1rem' }}
           >
@@ -244,11 +244,11 @@ export default function App() {
           </div>
 
           {/* 4 Antique Parchment Cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
+          <div className="stat-grid" style={{ gap: '1.5rem', marginBottom: '2.5rem' }}>
             
             {/* Rahu Kaalam Card */}
             <div className="antique-card" style={{ padding: '1.5rem', borderLeft: '6px solid var(--wax-seal-crimson)', background: 'var(--wax-seal-bg)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.4rem', marginBottom: '0.6rem' }}>
                 <span className="wax-seal-tag" style={{ background: 'var(--wax-seal-crimson)', color: '#ffffff', borderColor: '#000' }}>
                   WAX SEAL AVOIDANCE
                 </span>
@@ -264,7 +264,7 @@ export default function App() {
 
             {/* Nalla Neram Card */}
             <div className="antique-card" style={{ padding: '1.5rem', borderLeft: '6px solid var(--antique-brass)', background: 'var(--aged-parchment-light)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.4rem', marginBottom: '0.6rem' }}>
                 <span className="wax-seal-tag" style={{ background: 'var(--antique-brass)', color: '#171109' }}>
                   ✦ NALLA NERAM
                 </span>
@@ -280,7 +280,7 @@ export default function App() {
 
             {/* Yamagandam */}
             <div className="antique-card" style={{ padding: '1.5rem', borderLeft: '6px solid var(--ink-border-heavy)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.4rem', marginBottom: '0.6rem' }}>
                 <span className="wax-seal-tag">
                   YAMAGANDAM
                 </span>
@@ -296,7 +296,7 @@ export default function App() {
 
             {/* Gulika Kaalam */}
             <div className="antique-card" style={{ padding: '1.5rem', borderLeft: '6px solid var(--ink-border-heavy)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.4rem', marginBottom: '0.6rem' }}>
                 <span className="wax-seal-tag">
                   GULIKA KAALAM
                 </span>
@@ -321,7 +321,7 @@ export default function App() {
                   12-HORA DAYTIME CELESTIAL RULER
                 </span>
               </div>
-              <div style={{ display: 'flex', gap: '1rem', fontSize: '0.75rem', fontWeight: 800, fontFamily: 'var(--font-antique-serif)' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem 1rem', fontSize: '0.75rem', fontWeight: 800, fontFamily: 'var(--font-antique-serif)' }}>
                 <span style={{ color: 'var(--antique-brass)' }}>● MERCURY (DEALS)</span>
                 <span>● JUPITER (WISDOM)</span>
                 <span>● SUN (AUTHORITY)</span>
@@ -331,18 +331,19 @@ export default function App() {
 
             <div style={{
               display: 'flex', border: '2px solid var(--ink-border-heavy)', borderRadius: '6px', overflow: 'hidden', height: '42px',
-              boxShadow: '3px 3px 0px rgba(0,0,0,0.15)'
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
             }}>
               {vedicData.horas.map((h, i) => (
                 <div 
                   key={i}
                   title={`${h.name}: ${formatTime(h.start)} - ${formatTime(h.end)}`}
                   style={{
-                    flex: 1,
+                    flex: '1 1 0%',
+                    minWidth: 0,
                     background: h.planet === 'Mercury' ? 'var(--aged-parchment-dark)' : h.planet === 'Jupiter' ? '#e2d6be' : h.planet === 'Mars' || h.planet === 'Saturn' ? '#f5d5d5' : '#ffffff',
                     borderRight: i < 11 ? '1.5px solid var(--ink-border-heavy)' : 'none',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '0.75rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', color: '#000', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+                    fontSize: '0.7rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', color: '#000', cursor: 'pointer',
                     userSelect: 'none'
                   }}
                 >
@@ -380,22 +381,15 @@ export default function App() {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1.4fr', gap: '2.5rem', alignItems: 'start' }}>
-            
-            {/* Left Control Panel */}
-            <div className="antique-card" style={{ padding: '2rem', background: 'var(--aged-paper-card)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.5rem', borderBottom: '2px solid var(--ink-border-heavy)', paddingBottom: '0.75rem' }}>
-                <Clock size={20} color="var(--antique-brass)" />
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)' }}>
-                  APPOINTMENT CRITERIA
-                </h3>
-              </div>
+          {/* Control Toolbar — full-width console strip, not a sidebar */}
+          <div className="antique-card criteria-toolbar" style={{ padding: '1.75rem 2rem', background: 'var(--aged-paper-card)', marginBottom: '2.5rem' }}>
 
-              {/* Quick Presets */}
+            {/* I. Objective */}
+            <div>
               <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--sepia-faded)', marginBottom: '0.6rem', fontFamily: 'var(--font-antique-serif)' }}>
-                SELECT OBJECTIVE:
+                <span style={{ color: 'var(--antique-brass)' }}>I.</span> Select Objective
               </label>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
                 {presets.map((p, idx) => (
                   <button
                     key={idx}
@@ -407,111 +401,118 @@ export default function App() {
                       color: meetingPurpose === p.title ? 'var(--antique-brass-light)' : '#000000'
                     }}
                   >
-                    <span>{p.icon}</span> {p.title}
+                    {p.title}
                   </button>
                 ))}
               </div>
-
-              {/* Custom Input */}
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--sepia-faded)', marginBottom: '0.5rem', fontFamily: 'var(--font-antique-serif)' }}>
-                  CUSTOM OBJECTIVE:
-                </label>
-                <input 
-                  type="text"
-                  value={meetingPurpose}
-                  onChange={(e) => setMeetingPurpose(e.target.value)}
-                  placeholder="e.g. Contract Sign-off, Compensation Review..."
-                  style={{
-                    width: '100%', padding: '0.85rem 1rem', background: '#ffffff',
-                    border: '2px solid var(--ink-border-heavy)', borderRadius: '6px', fontSize: '0.95rem',
-                    fontWeight: 700, boxShadow: '3px 3px 0px rgba(0,0,0,0.1)'
-                  }}
-                />
-              </div>
-
-              {/* Video Platform Switcher */}
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--sepia-faded)', marginBottom: '0.5rem', fontFamily: 'var(--font-antique-serif)' }}>
-                  CONFERENCE APPARATUS:
-                </label>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
-                  <button
-                    onClick={() => setPlatform('Google Meet')}
-                    className="wax-seal-tag"
-                    style={{
-                      padding: '0.75rem', justifyContent: 'center', cursor: 'pointer',
-                      background: platform === 'Google Meet' ? 'var(--ink-border-heavy)' : '#ffffff',
-                      color: platform === 'Google Meet' ? '#ffffff' : '#000000'
-                    }}
-                  >
-                    <Video size={16} color={platform === 'Google Meet' ? 'var(--antique-brass)' : '#000'} />
-                    Google Meet
-                  </button>
-                  <button
-                    onClick={() => setPlatform('Zoom')}
-                    className="wax-seal-tag"
-                    style={{
-                      padding: '0.75rem', justifyContent: 'center', cursor: 'pointer',
-                      background: platform === 'Zoom' ? 'var(--ink-border-heavy)' : '#ffffff',
-                      color: platform === 'Zoom' ? '#ffffff' : '#000000'
-                    }}
-                  >
-                    <Video size={16} color={platform === 'Zoom' ? 'var(--antique-brass)' : '#000'} />
-                    Zoom Video
-                  </button>
-                </div>
-              </div>
-
-              {/* Duration Switcher */}
-              <div>
-                <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--sepia-faded)', marginBottom: '0.5rem', fontFamily: 'var(--font-antique-serif)' }}>
-                  DURATION:
-                </label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
-                  {[15, 30, 45, 60].map((mins) => (
-                    <button
-                      key={mins}
-                      onClick={() => setDurationMins(mins)}
-                      className="wax-seal-tag"
-                      style={{
-                        padding: '0.65rem 0', justifyContent: 'center', cursor: 'pointer',
-                        background: durationMins === mins ? 'var(--antique-brass)' : '#ffffff',
-                        color: durationMins === mins ? '#171109' : '#000000',
-                        fontWeight: 900
-                      }}
-                    >
-                      {mins}m
-                    </button>
-                  ))}
-                </div>
-              </div>
-
+              <input
+                type="text"
+                value={meetingPurpose}
+                onChange={(e) => setMeetingPurpose(e.target.value)}
+                placeholder="Or name a custom objective..."
+                style={{
+                  width: '100%', padding: '0.65rem 0.9rem', background: '#ffffff',
+                  border: '2px solid var(--ink-border-heavy)', borderRadius: '6px', fontSize: '0.85rem',
+                  fontWeight: 700, boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                }}
+              />
             </div>
 
-            {/* Right Results: Antique Appointment Folios */}
+            <div className="toolbar-divider" />
+
+            {/* II. Conference Apparatus */}
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)' }}>
-                  ASTRONOMICAL APPOINTMENTS ({vedicData.dayName.toUpperCase()})
-                </h3>
+              <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--sepia-faded)', marginBottom: '0.6rem', fontFamily: 'var(--font-antique-serif)' }}>
+                <span style={{ color: 'var(--antique-brass)' }}>II.</span> Conference Apparatus
+              </label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                <button
+                  onClick={() => setPlatform('Google Meet')}
+                  className="wax-seal-tag"
+                  style={{
+                    padding: '0.65rem', justifyContent: 'center', cursor: 'pointer',
+                    background: platform === 'Google Meet' ? 'var(--ink-border-heavy)' : '#ffffff',
+                    color: platform === 'Google Meet' ? '#ffffff' : '#000000'
+                  }}
+                >
+                  Google Meet
+                </button>
+                <button
+                  onClick={() => setPlatform('Zoom')}
+                  className="wax-seal-tag"
+                  style={{
+                    padding: '0.65rem', justifyContent: 'center', cursor: 'pointer',
+                    background: platform === 'Zoom' ? 'var(--ink-border-heavy)' : '#ffffff',
+                    color: platform === 'Zoom' ? '#ffffff' : '#000000'
+                  }}
+                >
+                  Zoom Video
+                </button>
+              </div>
+            </div>
+
+            <div className="toolbar-divider" />
+
+            {/* III. Duration */}
+            <div>
+              <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--sepia-faded)', marginBottom: '0.6rem', fontFamily: 'var(--font-antique-serif)' }}>
+                <span style={{ color: 'var(--antique-brass)' }}>III.</span> Duration
+              </label>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem' }}>
+                {[15, 30, 45, 60].map((mins) => (
+                  <button
+                    key={mins}
+                    onClick={() => setDurationMins(mins)}
+                    className="wax-seal-tag"
+                    style={{
+                      padding: '0.5rem 0', justifyContent: 'center', cursor: 'pointer',
+                      background: durationMins === mins ? 'var(--antique-brass)' : '#ffffff',
+                      color: durationMins === mins ? '#171109' : '#000000',
+                      fontWeight: 900
+                    }}
+                  >
+                    {mins}m
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="toolbar-divider" />
+
+            {/* IV. Status readout */}
+            <div>
+              <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--sepia-faded)', marginBottom: '0.6rem', fontFamily: 'var(--font-antique-serif)' }}>
+                <span style={{ color: 'var(--antique-brass)' }}>IV.</span> Filing Status
+              </label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-start' }}>
                 <span className="wax-seal-tag" style={{ background: 'var(--patina-sage)', color: '#fff' }}>
-                  ✓ RAHU FILTERED
+                  Rahu Filtered
+                </span>
+                <span style={{ fontSize: '0.78rem', color: 'var(--sepia-medium)', fontFamily: 'var(--font-antique-serif)', fontWeight: 800 }}>
+                  {vedicData.dayName.toUpperCase()} FOLIO
                 </span>
               </div>
+            </div>
 
-              {optimalSlots.length === 0 ? (
-                <div className="antique-card" style={{ padding: '3rem', textAlign: 'center' }}>
-                  <ShieldAlert size={36} color="var(--wax-seal-crimson)" style={{ margin: '0 auto 1rem' }} />
-                  <h4>NO FAVORABLE PASSES AVAILABLE</h4>
-                  <p style={{ color: 'var(--sepia-faded)', fontSize: '0.9rem' }}>Choose an alternate date or adjust meeting duration.</p>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-                  {optimalSlots.map((slot, idx) => (
-                    <div key={idx} className="antique-card" style={{ padding: '1.5rem', background: '#ffffff', borderLeft: '6px solid var(--antique-brass)' }}>
+          </div>
+
+          {/* Results: Antique Appointment Folios, full width */}
+          <div>
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', marginBottom: '1.2rem' }}>
+              Astronomical Appointments ({vedicData.dayName})
+            </h3>
+
+            {optimalSlots.length === 0 ? (
+              <div className="antique-card" style={{ padding: '3rem', textAlign: 'center' }}>
+                <h4 style={{ color: 'var(--wax-seal-crimson)' }}>No Favorable Passes Available</h4>
+                <p style={{ color: 'var(--sepia-faded)', fontSize: '0.9rem' }}>Choose an alternate date or adjust meeting duration.</p>
+              </div>
+            ) : (
+              <div className="appointments-grid" style={{ gap: '1.2rem' }}>
+                {optimalSlots.map((slot, idx) => (
+                  <div key={idx} className="antique-card" style={{ padding: '1.5rem', background: '#ffffff', borderLeft: '6px solid var(--antique-brass)' }}>
                       
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.4rem', marginBottom: '0.6rem' }}>
                         <div>
                           <span style={{ fontSize: '0.7rem', fontWeight: 900, color: 'var(--sepia-faded)', fontFamily: 'var(--font-antique-serif)', letterSpacing: '1px' }}>
                             FOLIO APPOINTMENT #00{idx + 1} • {platform.toUpperCase()}
@@ -532,7 +533,7 @@ export default function App() {
                         )}
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '1rem', marginBottom: '0.8rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: '0.6rem 1rem', marginBottom: '0.8rem' }}>
                         <span style={{ fontSize: '2.2rem', fontWeight: 900, fontFamily: 'var(--font-antique-serif)', letterSpacing: '-0.02em' }}>
                           {slot.startTimeFormatted}
                         </span>
@@ -552,7 +553,6 @@ export default function App() {
                         display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.82rem', fontWeight: 800,
                         fontFamily: 'var(--font-antique-serif)'
                       }}>
-                        <Clock size={16} color="var(--antique-brass)" />
                         <span><strong>Graceful Exit Window:</strong> {slot.gracefulExitWindow} (Conclude remarks before planetary flip)</span>
                       </div>
 
@@ -566,7 +566,6 @@ export default function App() {
                           className="btn-brass" 
                           style={{ fontSize: '0.8rem', padding: '0.6rem 1.2rem' }}
                         >
-                          <Video size={16} />
                           Issue {platform} Pass
                         </button>
                         
@@ -577,7 +576,6 @@ export default function App() {
                           className="btn-walnut" 
                           style={{ fontSize: '0.8rem', padding: '0.6rem 1.1rem' }}
                         >
-                          <Calendar size={16} color="var(--antique-brass)" />
                           Engrave in Calendar
                         </a>
                       </div>
@@ -586,8 +584,6 @@ export default function App() {
                   ))}
                 </div>
               )}
-            </div>
-
           </div>
 
         </div>
@@ -609,12 +605,12 @@ export default function App() {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+          <div className="pricing-grid" style={{ gap: '2rem' }}>
             
             {/* The Apprentice Folio */}
             <div className="antique-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: '#ffffff' }}>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.4rem', marginBottom: '0.5rem' }}>
                   <h3 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-antique-serif)', fontWeight: 800 }}>The Apprentice</h3>
                   <span className="wax-seal-tag">FREE</span>
                 </div>
@@ -645,10 +641,10 @@ export default function App() {
             <div className="antique-card" style={{
               padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
               background: '#fcf8ee', border: '3px solid var(--ink-border-heavy)',
-              boxShadow: '8px 8px 0px var(--ink-border-heavy)'
+              boxShadow: '0 20px 40px rgba(31,24,19,0.28), 0 6px 16px rgba(31,24,19,0.18)'
             }}>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.4rem', marginBottom: '0.5rem' }}>
                   <h3 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-antique-serif)', fontWeight: 900 }}>Master Horologist</h3>
                   <span className="wax-seal-tag" style={{ background: 'var(--antique-brass)', color: '#171109' }}>PRO GUILD</span>
                 </div>
@@ -678,7 +674,7 @@ export default function App() {
             {/* The Sovereign Guild Pass */}
             <div className="antique-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: '#ffffff' }}>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.4rem', marginBottom: '0.5rem' }}>
                   <h3 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-antique-serif)', fontWeight: 800 }}>Sovereign Guild</h3>
                   <span className="wax-seal-tag">ENTERPRISE</span>
                 </div>
@@ -718,9 +714,9 @@ export default function App() {
         }}>
           <div className="antique-card" style={{
             maxWidth: '540px', width: '100%', padding: '2rem', background: '#fdfbf7',
-            boxShadow: '10px 10px 0px #000'
+            boxShadow: '0 30px 60px rgba(0,0,0,0.35)'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '2px solid var(--ink-border-heavy)', paddingBottom: '0.75rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.5rem', marginBottom: '1.5rem', borderBottom: '2px solid var(--ink-border-heavy)', paddingBottom: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <Video size={22} color="var(--antique-brass)" />
                 <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-antique-serif)', fontWeight: 900 }}>
@@ -807,9 +803,9 @@ export default function App() {
         }}>
           <div className="antique-card" style={{
             maxWidth: '680px', width: '100%', maxHeight: '85vh', overflowY: 'auto',
-            padding: '2rem', background: '#fdfbf7', boxShadow: '10px 10px 0px #000'
+            padding: '2rem', background: '#fdfbf7', boxShadow: '0 30px 60px rgba(0,0,0,0.35)'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '2px solid var(--ink-border-heavy)', paddingBottom: '0.75rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.5rem', marginBottom: '1.5rem', borderBottom: '2px solid var(--ink-border-heavy)', paddingBottom: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <ShieldCheck size={24} color="var(--antique-brass)" />
                 <h3 style={{ fontSize: '1.35rem', fontFamily: 'var(--font-antique-serif)', fontWeight: 900 }}>
@@ -877,9 +873,9 @@ export default function App() {
         }}>
           <div className="antique-card" style={{
             maxWidth: '500px', width: '100%', padding: '2rem', background: '#fdfbf7',
-            boxShadow: '10px 10px 0px #000'
+            boxShadow: '0 30px 60px rgba(0,0,0,0.35)'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '2px solid var(--ink-border-heavy)', paddingBottom: '0.75rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.5rem', marginBottom: '1.5rem', borderBottom: '2px solid var(--ink-border-heavy)', paddingBottom: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <Compass size={22} color="var(--antique-brass)" />
                 <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-antique-serif)', fontWeight: 900 }}>
@@ -933,7 +929,7 @@ export default function App() {
 
       {/* VINTAGE COLOPHON & FOOTER */}
       <footer style={{ marginTop: 'auto', background: 'var(--ink-border-heavy)', color: '#f5edd6', padding: '4rem 1.5rem 2.5rem' }}>
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2.5rem', marginBottom: '3rem' }}>
+        <div className="container footer-grid" style={{ gap: '2.5rem', marginBottom: '3rem' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
               <div style={{ width: '28px', height: '28px', borderRadius: '4px', background: 'var(--antique-brass)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#171109', fontWeight: 900 }}>

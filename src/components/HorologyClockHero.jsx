@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Clock, Compass, ShieldAlert, Video, Calendar, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
 import { formatTime, CITIES } from '../utils/vedicTiming';
 
 export default function HorologyClockHero({
@@ -34,34 +33,51 @@ export default function HorologyClockHero({
   const activeHora = vedicData.horas.find(h => currentMinutesFromMidnight >= h.start && currentMinutesFromMidnight < h.end) || vedicData.horas[0];
 
   return (
-    <section style={{
-      background: 'var(--aged-parchment)',
+    <section className="cosmic-hero" style={{
       borderBottom: '3px solid var(--ink-border-heavy)',
       padding: '3.5rem 1.5rem 4.5rem',
       position: 'relative',
       overflow: 'hidden'
     }}>
-      
-      {/* Antique Header Ribbon */}
-      <div className="container" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-        <div className="wax-seal-tag" style={{ marginBottom: '1rem', background: 'var(--aged-parchment-light)' }}>
-          <Compass size={14} color="var(--antique-brass)" />
-          <span>ESTABLISHED ON VEDIC SOLAR ASTRONOMY • 100% DETERMINISTIC CELESTIAL TIME</span>
+
+      {/* Nalla Neram video backdrop, tinted toward the clock's own old-gold palette */}
+      <video
+        className="cosmic-video-bg"
+        src="/assets/video/nalla-neram-hero.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+      />
+      <div className="cosmic-video-overlay" />
+
+      {/* Cosmic Header — manuscript-style flourish kicker, no icon/badge box */}
+      <div className="container" style={{ textAlign: 'center', marginBottom: '2.5rem', position: 'relative', zIndex: 1 }}>
+        <div className="ornate-rule" style={{
+          maxWidth: '620px', margin: '0 auto 1.5rem', color: 'var(--cosmic-gold)',
+          fontFamily: 'var(--font-antique-serif)', fontSize: '0.75rem', fontWeight: 800, letterSpacing: '2px'
+        }}>
+          <span>Established on Vedic Solar Astronomy · 100% Deterministic Celestial Time</span>
         </div>
 
         <h1 style={{
           fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)',
           fontWeight: 900,
-          color: 'var(--walnut-ink)',
+          color: 'var(--cosmic-cream)',
           lineHeight: 1.15,
-          marginBottom: '1rem'
+          marginBottom: '1.25rem',
+          textShadow: '0 0 30px rgba(215, 169, 79, 0.5), 0 0 70px rgba(215, 169, 79, 0.22)'
         }}>
           The Astronomical Chronometer of Fate.
         </h1>
 
+        <div aria-hidden="true" style={{ color: 'var(--cosmic-gold)', fontSize: '0.9rem', letterSpacing: '0.4rem', marginBottom: '1.25rem' }}>
+          ✦
+        </div>
+
         <p style={{
           fontSize: '1.15rem',
-          color: 'var(--sepia-medium)',
+          color: 'var(--cosmic-lavender)',
           maxWidth: '720px',
           margin: '0 auto 2rem',
           lineHeight: 1.6,
@@ -71,16 +87,15 @@ export default function HorologyClockHero({
           “Every hour is ruled by a celestial lord. The ancients never negotiated in Rahu Kaalam, nor signed agreements outside of Budha Hora. We synchronize your Google Meet & Zoom appointments with the auspicious seconds of victory.”
         </p>
 
-        {/* Vintage Brass Coordinate Tuner (City & Date) */}
-        <div style={{
+        {/* Old-Gold Coordinate Tuner (City & Date) */}
+        <div className="hero-tuner cosmic-card" style={{
           display: 'inline-flex', flexWrap: 'wrap', gap: '1.2rem', alignItems: 'center', justifyContent: 'center',
-          background: 'var(--aged-paper-card)', border: '2px solid var(--ink-border-heavy)',
-          padding: '0.9rem 1.6rem', borderRadius: '8px', boxShadow: '4px 4px 0px var(--ink-border-heavy)'
+          border: '1.5px solid var(--cosmic-gold-soft)',
+          padding: '0.9rem 1.6rem', borderRadius: '8px', boxShadow: '0 10px 30px rgba(0,0,0,0.4), 0 0 30px rgba(215,169,79,0.14)'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Compass size={18} color="var(--antique-brass)" />
-            <div style={{ textAlign: 'left' }}>
-              <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--sepia-faded)' }}>OBSERVATORY LOCATION</label>
+          <div className="tuner-field" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div className="tuner-control" style={{ textAlign: 'left' }}>
+              <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--cosmic-lavender)' }}>OBSERVATORY LOCATION</label>
               <select
                 value={selectedCity.name}
                 onChange={(e) => {
@@ -88,30 +103,30 @@ export default function HorologyClockHero({
                   if (found) setSelectedCity(found);
                 }}
                 style={{
-                  background: 'transparent', border: 'none', borderBottom: '1px solid var(--ink-border-heavy)',
-                  fontSize: '0.95rem', fontWeight: 800, color: 'var(--walnut-ink)', cursor: 'pointer', padding: '2px 0'
+                  background: 'transparent', border: 'none', borderBottom: '1px solid var(--cosmic-gold-soft)',
+                  fontSize: '0.95rem', fontWeight: 800, color: 'var(--cosmic-cream)', cursor: 'pointer', padding: '2px 0'
                 }}
               >
                 {CITIES.map(c => (
-                  <option key={c.name} value={c.name}>{c.name} ({c.lat}° N, {c.lng}° E)</option>
+                  <option key={c.name} value={c.name} style={{ color: '#111' }}>{c.name} ({c.lat}° N, {c.lng}° E)</option>
                 ))}
               </select>
             </div>
           </div>
 
-          <div style={{ width: '1px', height: '32px', background: 'var(--ink-hairline)' }} />
+          <div className="tuner-divider" style={{ width: '1px', height: '32px', background: 'var(--cosmic-gold-soft)' }} />
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Calendar size={18} color="var(--antique-brass)" />
-            <div style={{ textAlign: 'left' }}>
-              <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--sepia-faded)' }}>CHRONO-DATE</label>
-              <input 
+          <div className="tuner-field" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div className="tuner-control" style={{ textAlign: 'left' }}>
+              <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--cosmic-lavender)' }}>CHRONO-DATE</label>
+              <input
                 type="date"
                 value={targetDateStr}
                 onChange={(e) => setTargetDateStr(e.target.value)}
                 style={{
-                  background: 'transparent', border: 'none', borderBottom: '1px solid var(--ink-border-heavy)',
-                  fontSize: '0.95rem', fontWeight: 800, color: 'var(--walnut-ink)', cursor: 'pointer', padding: '2px 0'
+                  background: 'transparent', border: 'none', borderBottom: '1px solid var(--cosmic-gold-soft)',
+                  fontSize: '0.95rem', fontWeight: 800, color: 'var(--cosmic-cream)', cursor: 'pointer', padding: '2px 0',
+                  colorScheme: 'dark'
                 }}
               />
             </div>
@@ -120,23 +135,25 @@ export default function HorologyClockHero({
       </div>
 
       {/* THE MASTER HOROLOGICAL CLOCK & ASTROLABE STAGE */}
-      <div className="container" style={{ maxWidth: '1040px' }}>
+      <div className="container" style={{ maxWidth: '1040px', position: 'relative', zIndex: 1 }}>
         <div style={{
           display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
           gap: '2.5rem', alignItems: 'center'
         }}>
-          
+
           {/* LEFT: THE ASTRONOMICAL MASTER CLOCK */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            
+          <div className="clock-assembly" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+
+            <div className="cosmic-clock-glow" style={{ top: '160px' }} />
+
             <div style={{
               width: '320px', height: '320px', borderRadius: '50%',
-              background: 'radial-gradient(circle, #fcf8ee 50%, #e2d6be 95%, #bfa15f 100%)',
+              background: 'radial-gradient(circle, #fcf3dc 45%, #dcb977 90%, #8a6024 100%)',
               border: '6px solid var(--ink-border-heavy)',
-              boxShadow: 'inset 0 0 20px rgba(0,0,0,0.15), 8px 8px 0px var(--ink-border-heavy), 0 20px 40px rgba(0,0,0,0.15)',
+              boxShadow: 'inset 0 0 20px rgba(0,0,0,0.15), 0 24px 48px rgba(31,24,19,0.28), 0 8px 20px rgba(0,0,0,0.18)',
               position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
-              
+
               {/* Outer Roman Numerals & Planetary Ring */}
               <div style={{ position: 'absolute', inset: '12px', borderRadius: '50%', border: '1px dashed var(--antique-brass)' }} />
 
@@ -155,7 +172,7 @@ export default function HorologyClockHero({
                 { label: 'X', deg: 300 },
                 { label: 'XI', deg: 330 },
               ].map((num, i) => (
-                <span 
+                <span
                   key={i}
                   style={{
                     position: 'absolute',
@@ -174,7 +191,7 @@ export default function HorologyClockHero({
               <div style={{
                 width: '120px', height: '120px', borderRadius: '50%',
                 border: '1.5px solid var(--antique-brass)',
-                background: 'radial-gradient(circle, rgba(184, 147, 71, 0.12) 0%, transparent 80%)',
+                background: 'radial-gradient(circle, rgba(169, 124, 63, 0.16) 0%, transparent 80%)',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 textAlign: 'center', zIndex: 1
               }}>
@@ -213,7 +230,7 @@ export default function HorologyClockHero({
               {/* Brass Center Pivot */}
               <div style={{
                 width: '16px', height: '16px', borderRadius: '50%',
-                background: 'radial-gradient(circle, #f5d77f 0%, #a48135 100%)',
+                background: 'radial-gradient(circle, #e8c06a 0%, #8a6024 100%)',
                 border: '2px solid var(--ink-border-heavy)',
                 position: 'absolute', zIndex: 10
               }} />
@@ -225,9 +242,9 @@ export default function HorologyClockHero({
               <div style={{ width: '3px', height: '70px', background: 'var(--antique-brass)' }} />
               <div style={{
                 width: '28px', height: '28px', borderRadius: '50%',
-                background: 'radial-gradient(circle, #f5d77f 0%, #a48135 100%)',
+                background: 'radial-gradient(circle, #e8c06a 0%, #8a6024 100%)',
                 border: '2px solid var(--ink-border-heavy)',
-                boxShadow: '2px 2px 0px rgba(0,0,0,0.3)'
+                boxShadow: '0 3px 8px rgba(0,0,0,0.35)'
               }} />
             </div>
 
@@ -235,62 +252,61 @@ export default function HorologyClockHero({
 
           {/* RIGHT: VINTAGE CHRONO-REGISTER CARDS */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-            
+
             {/* Card 1: Active Hour of Negotiation */}
-            <div className="antique-card" style={{ padding: '1.5rem', background: '#ffffff', borderLeft: '6px solid var(--antique-brass)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                <span className="wax-seal-tag" style={{ background: 'var(--aged-parchment)' }}>
+            <div className="antique-card cosmic-card" style={{ padding: '1.5rem', border: '1.5px solid var(--cosmic-gold-soft)', borderLeft: '6px solid var(--cosmic-gold)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.4rem', marginBottom: '0.4rem' }}>
+                <span className="wax-seal-tag" style={{ background: 'var(--cosmic-gold)', color: '#171109', borderColor: 'var(--cosmic-gold)' }}>
                   ACTIVE PLANETARY HOUR
                 </span>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--antique-brass)' }}>98% HARMONY</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--cosmic-gold)' }}>98% HARMONY</span>
               </div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--walnut-ink)', marginBottom: '0.2rem' }}>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--cosmic-cream)', marginBottom: '0.2rem' }}>
                 {activeHora ? activeHora.name : 'Mercury Hora (Budha)'}
               </h3>
-              <p style={{ fontSize: '0.85rem', color: 'var(--sepia-medium)', lineHeight: 1.5, marginBottom: '0.8rem' }}>
+              <p style={{ fontSize: '0.85rem', color: 'var(--cosmic-lavender)', lineHeight: 1.5, marginBottom: '0.8rem' }}>
                 The hour of trade, intellect, clear contracts, and persuasive articulation. Ideal for sales pitches and contract closures.
               </p>
               <div style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                fontFamily: 'monospace', fontWeight: 800, fontSize: '0.9rem',
-                background: 'var(--aged-parchment)', padding: '0.3rem 0.7rem', borderRadius: '4px', border: '1px solid var(--ink-border-heavy)'
+                fontFamily: 'monospace', fontWeight: 800, fontSize: '0.9rem', color: 'var(--cosmic-cream)',
+                background: 'rgba(0,0,0,0.28)', padding: '0.3rem 0.7rem', borderRadius: '4px', border: '1px solid var(--cosmic-gold-soft)'
               }}>
-                <Clock size={14} />
                 <span>ACTIVE WINDOW: {formatTime(activeHora.start)} – {formatTime(activeHora.end)}</span>
               </div>
             </div>
 
             {/* Card 2: Rahu Kaalam Avoidance Decree */}
-            <div className="antique-card" style={{ padding: '1.5rem', background: 'var(--wax-seal-bg)', borderLeft: '6px solid var(--wax-seal-crimson)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+            <div className="antique-card cosmic-card" style={{ padding: '1.5rem', border: '1.5px solid rgba(255,107,74,0.45)', borderLeft: '6px solid var(--wax-seal-crimson)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', rowGap: '0.4rem', marginBottom: '0.4rem' }}>
                 <span className="wax-seal-tag" style={{ background: 'var(--wax-seal-crimson)', color: '#ffffff', borderColor: '#000' }}>
                   WAX SEAL AVOIDANCE DECREE
                 </span>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--wax-seal-crimson)' }}>OCTANT {Math.round((vedicData.rahuKaalam.start - vedicData.sunriseMin) / vedicData.partDuration) + 1}/8</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#ff8a68' }}>OCTANT {Math.round((vedicData.rahuKaalam.start - vedicData.sunriseMin) / vedicData.partDuration) + 1}/8</span>
               </div>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--wax-seal-crimson)', marginBottom: '0.2rem' }}>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#ff8a68', marginBottom: '0.2rem' }}>
                 Rahu Kaalam: {formatTime(vedicData.rahuKaalam.start)} – {formatTime(vedicData.rahuKaalam.end)}
               </h3>
-              <p style={{ fontSize: '0.82rem', color: '#5c1b1b', lineHeight: 1.4 }}>
+              <p style={{ fontSize: '0.82rem', color: 'rgba(247, 236, 216, 0.8)', lineHeight: 1.4 }}>
                 Under ancient Vedic statutes, meetings initiated during this window encounter disputes, technical failures, or stalled contracts. Our engine guarantees no Google Meet will ever be booked here.
               </p>
             </div>
 
             {/* Quick Actions */}
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
-              <button 
+              <button
                 onClick={onOpenScheduleModal}
                 className="btn-brass"
+                style={{ boxShadow: '0 3px 10px rgba(31,24,19,0.35), 0 0 26px rgba(215,169,79,0.55)' }}
               >
-                <Zap size={16} />
                 Open Appointment Ledger
               </button>
 
-              <button 
+              <button
                 onClick={onOpenProofModal}
                 className="btn-walnut"
+                style={{ border: '2px solid var(--cosmic-gold-soft)' }}
               >
-                <ShieldCheck size={16} color="var(--antique-brass)" />
                 Examine Solar Physics
               </button>
             </div>
