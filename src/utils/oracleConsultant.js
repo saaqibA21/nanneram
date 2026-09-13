@@ -148,11 +148,13 @@ export function generateOracleConsultation({
   topic,
   goal,
   strategy,
+  prompt,
   vedicData,
   selectedCity,
   optimalSlots = []
 }) {
-  const archetype = detectMeetingArchetype(`${topic} ${goal} ${strategy}`);
+  const combinedText = prompt || `${topic || ''} ${goal || ''} ${strategy || ''}`;
+  const archetype = detectMeetingArchetype(combinedText);
 
   // Determine best matching slot based on archetype
   let chosenSlot = optimalSlots[0];
@@ -215,7 +217,7 @@ export function generateOracleConsultation({
 
   return {
     archetype,
-    topic: topic || 'High-Stakes Strategic Sync',
+    topic: prompt || topic || 'High-Stakes Strategic Sync',
     goal: goal || 'Flawless execution and binding agreement',
     strategy: strategy || 'Measured articulation with firm boundary control',
     city: selectedCity.name,

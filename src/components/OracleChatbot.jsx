@@ -13,9 +13,7 @@ export default function OracleChatbot({
   onAddToCalendar,
   triggerToast 
 }) {
-  const [topic, setTopic] = useState('');
-  const [goal, setGoal] = useState('');
-  const [strategy, setStrategy] = useState('');
+  const [prompt, setPrompt] = useState('');
   const [isConsulting, setIsConsulting] = useState(false);
   const [consultation, setConsultation] = useState(null);
   const [copied, setCopied] = useState(false);
@@ -23,37 +21,27 @@ export default function OracleChatbot({
   const presets = [
     {
       label: 'VC Investor Pitch',
-      topic: 'Seed Round Pitch to Lead Partner',
-      goal: 'Secure term sheet at $12M pre-money valuation without governance concessions',
-      strategy: 'Lead with 3.2x ARR growth, demonstrate enterprise pipeline, and introduce 2-week deadline'
+      text: 'Seed round pitch to lead partner at venture fund. Demanding $12M pre-money valuation without governance concessions. Leading with 3.2x ARR growth, enterprise pipeline, and 2-week commitment deadline.'
     },
     {
       label: 'Salary & Equity Hike',
-      topic: 'Annual Compensation Negotiation with VP',
-      goal: 'Secure 35% base compensation increase plus 0.25% refresh equity',
-      strategy: 'Quantify shipped infrastructure revenue impact, anchor high at $195k, and use strategic silence'
+      text: 'Annual executive compensation negotiation with VP. Demanding 35% base compensation increase plus 0.25% refresh equity. Quantifying infrastructure revenue impact, anchoring high, and using strategic silence.'
     },
     {
       label: 'Enterprise Contract Close',
-      topic: 'Final Commercial Sign-Off with Hesitant CFO',
-      goal: 'Close $85,000 annual contract before quarter-end without price discounting',
-      strategy: 'Trade scope adjustment for payment terms, present multi-year lock-in, and demand verbal sign-off'
+      text: 'Final commercial sign-off with enterprise CFO. Target: Close $85,000 annual contract before quarter-end without price discounting, trading scope for multi-year lock-in.'
     },
     {
       label: 'Co-Founder Demarcation',
-      topic: 'Equity & Operational Ownership Realignment',
-      goal: 'Establish clear CEO decision-making primacy and formalize 4-year vesting schedule',
-      strategy: 'Focus strictly on company survival metrics, avoid past emotional debates, and set firm milestone dates'
+      text: 'Equity & operational ownership realignment with co-founder. Establishing clear CEO decision-making primacy and formalizing 4-year milestone vesting.'
     }
   ];
 
-  const handleConsult = (customData = null) => {
-    const t = customData ? customData.topic : topic;
-    const g = customData ? customData.goal : goal;
-    const s = customData ? customData.strategy : strategy;
+  const handleConsult = (customText = null) => {
+    const inputVal = customText !== null ? customText : prompt;
 
-    if (!t && !g) {
-      triggerToast?.('Please specify the meeting topic or objective.');
+    if (!inputVal || !inputVal.trim()) {
+      triggerToast?.('Please describe your meeting or objective.');
       return;
     }
 
@@ -63,9 +51,7 @@ export default function OracleChatbot({
     // Astronomical calculation suspense
     setTimeout(() => {
       const result = generateOracleConsultation({
-        topic: t,
-        goal: g,
-        strategy: s,
+        prompt: inputVal.trim(),
         vedicData,
         selectedCity,
         optimalSlots
@@ -77,10 +63,8 @@ export default function OracleChatbot({
   };
 
   const handleApplyPreset = (p) => {
-    setTopic(p.topic);
-    setGoal(p.goal);
-    setStrategy(p.strategy);
-    handleConsult(p);
+    setPrompt(p.text);
+    handleConsult(p.text);
   };
 
   const copyFolioText = () => {
@@ -232,69 +216,26 @@ export default function OracleChatbot({
           marginBottom: '2.5rem'
         }}>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
-            
-            {/* 1. Meeting Topic */}
-            <div>
-              <label style={{
-                display: 'block', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase',
-                color: 'var(--antique-brass-light)', marginBottom: '0.45rem', fontFamily: 'var(--font-antique-serif)'
-              }}>
-                1. Nature of the Meeting & Counterparty
-              </label>
-              <input 
-                type="text"
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
-                placeholder="e.g. VC Pitch with Benchmark Partner, Salary Review, Enterprise Close..."
-                style={{
-                  width: '100%', padding: '0.75rem 0.9rem', background: '#17110c',
-                  border: '1.5px solid rgba(215, 169, 79, 0.3)', borderRadius: '6px',
-                  color: '#f8f2e4', fontSize: '0.88rem', fontWeight: 600
-                }}
-              />
-            </div>
-
-            {/* 2. Desired Goal / What you want */}
-            <div>
-              <label style={{
-                display: 'block', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase',
-                color: 'var(--antique-brass-light)', marginBottom: '0.45rem', fontFamily: 'var(--font-antique-serif)'
-              }}>
-                2. What Specific Outcome Do You Demand?
-              </label>
-              <input 
-                type="text"
-                value={goal}
-                onChange={(e) => setGoal(e.target.value)}
-                placeholder="e.g. $1.5M term sheet at $10M pre, 30% raise, signed contract today..."
-                style={{
-                  width: '100%', padding: '0.75rem 0.9rem', background: '#17110c',
-                  border: '1.5px solid rgba(215, 169, 79, 0.3)', borderRadius: '6px',
-                  color: '#f8f2e4', fontSize: '0.88rem', fontWeight: 600
-                }}
-              />
-            </div>
-
-          </div>
-
-          {/* 3. Your Planned Tactics & Strategy */}
+          {/* Single Unified Meeting Brief Input */}
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{
-              display: 'block', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase',
-              color: 'var(--antique-brass-light)', marginBottom: '0.45rem', fontFamily: 'var(--font-antique-serif)'
+              display: 'block', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase',
+              color: 'var(--antique-brass-light)', marginBottom: '0.6rem', fontFamily: 'var(--font-antique-serif)',
+              letterSpacing: '1px'
             }}>
-              3. What Are You Planning to Say or Do? (Tactical Strategy)
+              Describe Your Meeting, Counterparty & Desired Outcome
             </label>
-            <textarea 
-              rows={3}
-              value={strategy}
-              onChange={(e) => setStrategy(e.target.value)}
-              placeholder="e.g. I will show our customer retention graphs, state my compensation floor, and remain silent to let them respond..."
+            <textarea
+              rows={4}
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="e.g. VC Pitch with Benchmark lead partner. Aiming for $12M pre-money valuation term sheet without governance concessions. Leading with 3.2x ARR growth, enterprise pipeline, and a 2-week commitment deadline..."
               style={{
-                width: '100%', padding: '0.75rem 0.9rem', background: '#17110c',
-                border: '1.5px solid rgba(215, 169, 79, 0.3)', borderRadius: '6px',
-                color: '#f8f2e4', fontSize: '0.88rem', fontWeight: 600, resize: 'vertical'
+                width: '100%', padding: '0.9rem 1.1rem', background: '#17110c',
+                border: '1.5px solid rgba(215, 169, 79, 0.35)', borderRadius: '8px',
+                color: '#f8f2e4', fontSize: '0.92rem', fontWeight: 500, lineHeight: 1.6,
+                resize: 'vertical', fontFamily: 'inherit',
+                boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.45)'
               }}
             />
           </div>
