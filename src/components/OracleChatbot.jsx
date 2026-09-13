@@ -170,16 +170,8 @@ export default function OracleChatbot({
 
       <div className="container" style={{ maxWidth: '1080px', position: 'relative', zIndex: 1 }}>
 
-        {/* Header Ribbon */}
+        {/* Header Title & Subtitle */}
         <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 5vw, 3rem)' }}>
-          <div className="wax-seal-tag" style={{
-            background: 'rgba(215, 169, 79, 0.15)', borderColor: 'var(--antique-brass)',
-            color: 'var(--antique-brass-light)', marginBottom: '0.8rem'
-          }}>
-            <Sparkles size={13} color="var(--antique-brass-light)" />
-            <span>PRO GUILD EXCLUSIVE CONSULTANT</span>
-          </div>
-
           <h2 style={{
             fontSize: 'clamp(1.8rem, 5.5vw, 3rem)',
             fontFamily: 'var(--font-antique-serif)',
