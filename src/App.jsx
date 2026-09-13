@@ -87,7 +87,7 @@ export default function App() {
     if (platform === 'Zoom') {
       return getZoomJoinUrl(zoomConfig);
     }
-    return gmeetLink.trim() || 'https://meet.google.com/new';
+    return gmeetLink.trim() || 'Google Meet (Attached in Calendar invite)';
   };
 
   // Google Calendar URL generator
@@ -105,7 +105,9 @@ export default function App() {
 
     const startISO = `${y}${m}${day}T${pad(startHour)}${pad(startMins)}00`;
     const endISO = `${y}${m}${day}T${pad(endHour)}${pad(endMins)}00`;
-    const meetingUrl = getCurrentMeetingUrl();
+    const meetingUrl = platform === 'Zoom' 
+      ? getZoomJoinUrl(zoomConfig)
+      : (gmeetLink.trim() || 'Google Meet will be attached in this invite (click "Add Google Meet")');
 
     const title = encodeURIComponent(`${meetingPurpose} (${platform}) - Nanneram Auspicious Window`);
     const details = encodeURIComponent(
@@ -114,14 +116,16 @@ export default function App() {
       `• Graceful Exit Window: ${slot.gracefulExitWindow} (Wrap before planetary shift)\n` +
       `• Active Transit: ${slot.hora.name} & ${slot.gowri.name}\n` +
       `• Astronomical Strategy: ${slot.recommendation}\n\n` +
-      `Join ${platform}: ${meetingUrl}`
+      `Conference: ${meetingUrl}`
     );
 
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startISO}/${endISO}&details=${details}`;
   };
 
   const copyInviteText = (slot) => {
-    const meetingUrl = getCurrentMeetingUrl();
+    const meetingUrl = platform === 'Zoom' 
+      ? getZoomJoinUrl(zoomConfig) 
+      : (gmeetLink.trim() || 'Google Meet (Link will be attached in Calendar invite)');
     const invite = 
       `Astronomical Appointment: ${meetingPurpose}\n` +
       `Platform: ${platform}\n` +
@@ -943,26 +947,27 @@ export default function App() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 fontSize: '0.78rem',
-                background: '#e8f5e9',
-                padding: '0.5rem 0.8rem',
+                background: gmeetLink ? '#e8f5e9' : '#fff8e1',
+                padding: '0.55rem 0.85rem',
                 borderRadius: '5px',
-                border: '1.5px solid #2e7d32'
+                border: gmeetLink ? '1.5px solid #2e7d32' : '1.5px solid #f59e0b'
               }}>
-                <span style={{ color: '#1b5e20', fontWeight: 700 }}>
-                  Google Meet: {gmeetLink ? `Custom (${gmeetLink.replace('https://meet.google.com/', '')})` : 'Instant 0-Setup Room'}
+                <span style={{ color: gmeetLink ? '#1b5e20' : '#92400e', fontWeight: 700 }}>
+                  {gmeetLink ? `Google Meet: ${gmeetLink}` : '⚠️ Google Meet: Attached in Calendar invite (or click to set shared room)'}
                 </span>
                 <button
                   onClick={() => setShowGmeetModal(true)}
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: '#1b5e20',
+                    color: gmeetLink ? '#1b5e20' : '#b45309',
                     textDecoration: 'underline',
-                    fontWeight: 800,
-                    cursor: 'pointer'
+                    fontWeight: 900,
+                    cursor: 'pointer',
+                    flexShrink: 0
                   }}
                 >
-                  Configure ⚙️
+                  {gmeetLink ? 'Change ⚙️' : 'Set Room ⚙️'}
                 </button>
               </div>
             )}

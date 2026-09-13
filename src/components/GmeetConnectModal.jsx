@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Video, X, Check, ExternalLink, Sparkles, Trash2, Globe, ShieldCheck } from 'lucide-react';
+import { Video, X, Check, ExternalLink, Sparkles, Trash2, Globe, ShieldCheck, AlertCircle } from 'lucide-react';
 
 export default function GmeetConnectModal({
   isOpen,
@@ -27,7 +27,7 @@ export default function GmeetConnectModal({
     } catch (e) {
       console.error(e);
     }
-    triggerToast(clean ? 'Google Meet custom link saved & calibrated!' : 'Reset to instant Google Meet generation (meet.google.com/new)');
+    triggerToast(clean ? 'Google Meet room link saved!' : 'Reset to Google Calendar auto-attachment');
     onClose();
   };
 
@@ -39,18 +39,18 @@ export default function GmeetConnectModal({
     } catch (e) {
       console.error(e);
     }
-    triggerToast('Reset to default instant Google Meet rooms.');
+    triggerToast('Cleared custom Google Meet link.');
     onClose();
   };
 
-  const handleLaunchInstant = () => {
+  const handleOpenMeet = () => {
     window.open('https://meet.google.com/new', '_blank');
-    triggerToast('Launching fresh Google Meet room in new tab...');
+    triggerToast('Opening Google Meet to create your room code...');
   };
 
   return (
     <div className="modal-backdrop">
-      <div className="antique-card modal-card" style={{ maxWidth: '560px' }}>
+      <div className="antique-card modal-card" style={{ maxWidth: '580px' }}>
         
         {/* Modal Header */}
         <div style={{
@@ -66,10 +66,10 @@ export default function GmeetConnectModal({
             </div>
             <div>
               <h3 style={{ fontSize: '1.25rem', fontFamily: 'var(--font-antique-serif)', fontWeight: 900 }}>
-                GOOGLE MEET APPARATUS
+                GOOGLE MEET SHARED ROOM SETUP
               </h3>
               <span style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--sepia-faded)', letterSpacing: '1px' }}>
-                TELECONFERENCE ROOM CALIBRATION
+                ENSURE ALL INVITEES JOIN THE SAME CALL
               </span>
             </div>
           </div>
@@ -79,63 +79,62 @@ export default function GmeetConnectModal({
           </button>
         </div>
 
-        {/* Option 1: Instant Google Meet Room */}
+        {/* Notice explaining how Google Meet works */}
         <div style={{
-          background: '#e8f5e9', border: '2px solid #2e7d32',
-          borderRadius: '8px', padding: '1.1rem', marginBottom: '1.5rem'
+          background: '#fff8e1', border: '1.5px solid #f59e0b', borderRadius: '8px',
+          padding: '1rem', marginBottom: '1.5rem', display: 'flex', gap: '0.75rem'
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-            <span style={{ fontSize: '0.72rem', fontWeight: 900, textTransform: 'uppercase', color: '#1b5e20', letterSpacing: '1px', fontFamily: 'var(--font-antique-serif)' }}>
-              ★ INSTANT REAL ROOM GENERATION (DEFAULT)
-            </span>
-            <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#2e7d32' }}>Zero Setup Needed</span>
+          <AlertCircle size={20} color="#d97706" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div style={{ fontSize: '0.82rem', color: '#92400e', lineHeight: 1.45 }}>
+            <strong>Why a shared room link is needed:</strong><br />
+            Unlike Zoom (which has permanent 10-digit IDs), Google Meet generates a unique 10-letter room code (like <code>meet.google.com/abc-defg-hij</code>). Both you and your invitees must have the <strong>same room code</strong> to join together!
           </div>
+        </div>
 
-          <p style={{ fontSize: '0.82rem', color: '#1b5e20', lineHeight: 1.4, marginBottom: '0.75rem' }}>
-            Google Meet allows anyone with a Google account to launch a brand new live meeting in 1 second. Nanneram automatically uses this for all meeting passes by default.
+        {/* Step 1: Generate or Copy a Room */}
+        <div style={{
+          background: 'var(--aged-parchment-light)', border: '1.5px solid var(--ink-border-heavy)',
+          borderRadius: '8px', padding: '1.1rem', marginBottom: '1.25rem'
+        }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 900, textTransform: 'uppercase', color: 'var(--antique-brass-deep)', marginBottom: '0.4rem', fontFamily: 'var(--font-antique-serif)' }}>
+            STEP 1: CREATE A NEW GOOGLE MEET ROOM (OR USE AN EXISTING ONE)
+          </div>
+          <p style={{ fontSize: '0.82rem', color: 'var(--sepia-medium)', lineHeight: 1.4, marginBottom: '0.75rem' }}>
+            Click below to open Google Meet. Google will generate a live room code. Copy the link from the browser bar or from the "Meeting details" popup.
           </p>
-
           <button
-            onClick={handleLaunchInstant}
+            onClick={handleOpenMeet}
             className="btn-brass"
             style={{
-              width: '100%', padding: '0.75rem', fontSize: '0.88rem',
+              padding: '0.65rem 1rem', fontSize: '0.82rem',
               justifyContent: 'center', background: '#00897b', color: '#ffffff',
-              border: '2px solid #005b4f', cursor: 'pointer', display: 'flex',
-              alignItems: 'center', gap: '0.6rem', boxShadow: '0 3px 10px rgba(0, 137, 123, 0.25)'
+              border: '1.5px solid #005b4f', cursor: 'pointer', display: 'inline-flex',
+              alignItems: 'center', gap: '0.5rem'
             }}
           >
-            <ExternalLink size={16} />
-            <span>Launch Fresh Google Meet (meet.google.com/new)</span>
+            <ExternalLink size={15} />
+            <span>Generate Room on Google Meet</span>
           </button>
         </div>
 
-        {/* Separator */}
-        <div style={{ position: 'relative', margin: '1.5rem 0', textAlign: 'center' }}>
-          <div style={{ borderTop: '1px solid var(--ink-border-heavy)', position: 'absolute', top: '50%', left: 0, right: 0 }} />
-          <span style={{ position: 'relative', background: '#faf4e6', padding: '0 0.75rem', fontSize: '0.7rem', fontWeight: 800, color: 'var(--sepia-faded)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-            OR BIND YOUR PERMANENT GOOGLE MEET LINK
-          </span>
-        </div>
-
-        {/* Option 2: Custom Google Meet Link */}
+        {/* Step 2: Paste the Room Link */}
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.4rem', fontFamily: 'var(--font-antique-serif)' }}>
-            Custom / Reusable Google Meet URL:
+          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '0.4rem', color: 'var(--walnut-ink)', fontFamily: 'var(--font-antique-serif)' }}>
+            STEP 2: PASTE YOUR SHARED GOOGLE MEET ROOM LINK:
           </label>
           <input
             type="text"
             value={inputUrl}
             onChange={(e) => setInputUrl(e.target.value)}
-            placeholder="e.g. https://meet.google.com/abc-defg-hij"
+            placeholder="e.g. https://meet.google.com/xyz-pqrs-tuv"
             style={{
-              width: '100%', padding: '0.65rem 0.85rem', background: '#fff',
+              width: '100%', padding: '0.7rem 0.9rem', background: '#fff',
               border: '2px solid var(--ink-border-heavy)', borderRadius: '6px',
-              fontSize: '0.88rem', fontWeight: 700, marginBottom: '0.5rem'
+              fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.5rem'
             }}
           />
           <span style={{ fontSize: '0.72rem', color: 'var(--sepia-faded)', display: 'block', lineHeight: 1.4 }}>
-            💡 If your company or personal calendar already has a recurring Google Meet room, paste it here. Nanneram will embed this exact room in all passes and calendar invites.
+            Once pasted and saved, Nanneram embeds this exact URL into your passes, WhatsApp invites, and Apple/Google Calendar events so everyone enters the same room.
           </span>
         </div>
 
@@ -146,7 +145,7 @@ export default function GmeetConnectModal({
             className="btn-brass"
             style={{ flex: 1, justifyContent: 'center' }}
           >
-            <Check size={16} /> Save Google Meet Link
+            <Check size={16} /> Save & Bind Google Meet Room
           </button>
 
           {gmeetLink && (
@@ -159,7 +158,7 @@ export default function GmeetConnectModal({
                 fontWeight: 800, fontSize: '0.78rem'
               }}
             >
-              <Trash2 size={14} /> Clear Custom Link
+              <Trash2 size={14} /> Clear Room
             </button>
           )}
         </div>
