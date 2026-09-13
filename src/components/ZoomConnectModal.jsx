@@ -292,6 +292,26 @@ export default function ZoomConnectModal({
               </div>
 
               <div>
+                <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem', fontFamily: 'var(--font-antique-serif)' }}>
+                  Personal Meeting ID (PMI) to host meetings:
+                </label>
+                <input 
+                  type="text"
+                  value={meetingId}
+                  onChange={(e) => setMeetingId(e.target.value)}
+                  placeholder="e.g. 984 210 7452 (From your Zoom app or zoom.us/profile)"
+                  style={{
+                    width: '100%', padding: '0.6rem 0.8rem', background: '#fff',
+                    border: '2px solid var(--ink-border-heavy)', borderRadius: '6px',
+                    fontSize: '0.85rem', fontWeight: 700
+                  }}
+                />
+                <span style={{ fontSize: '0.7rem', color: 'var(--sepia-faded)', marginTop: '0.25rem', display: 'block' }}>
+                  💡 Open your Zoom Workplace app → click <strong>Meetings</strong> to see your 10-digit Personal Meeting ID.
+                </span>
+              </div>
+
+              <div>
                 <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem', fontFamily: 'var(--font-antique-serif)', color: 'var(--sepia-faded)' }}>
                   Account ID (Optional — Only needed for Server-to-Server Apps):
                 </label>

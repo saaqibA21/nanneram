@@ -96,21 +96,17 @@ export function getZoomJoinUrl(config) {
   // 2. If user provided a numeric Meeting ID (PMI)
   if (config.meetingId && config.meetingId.trim()) {
     const cleanId = config.meetingId.replace(/\D/g, '');
-    let url = `https://zoom.us/j/${cleanId}`;
-    if (config.passcode && config.passcode.trim()) {
-      url += `?pwd=${encodeURIComponent(config.passcode.trim())}`;
+    if (cleanId.length >= 9) {
+      let url = `https://zoom.us/j/${cleanId}`;
+      if (config.passcode && config.passcode.trim()) {
+        url += `?pwd=${encodeURIComponent(config.passcode.trim())}`;
+      }
+      return url;
     }
-    return url;
   }
 
-  // 3. If connected via OAuth
-  if (config.clientId && config.clientId.trim()) {
-    const cleanSuffix = config.clientId.replace(/\D/g, '').slice(-7) || '8829104';
-    return `https://zoom.us/j/9${cleanSuffix.padStart(9, '7')}?pwd=nanneram_auspicious`;
-  }
-
-  // 4. Fallback default
-  return 'https://zoom.us/j/9842107452?pwd=nanneram_golden_hour';
+  // 3. Fallback to Zoom's verified instant room launcher (never generates fake non-existent meeting IDs)
+  return 'https://zoom.us/start/videomeeting';
 }
 
 /**
