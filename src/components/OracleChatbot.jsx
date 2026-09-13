@@ -125,6 +125,42 @@ export default function OracleChatbot({
       overflow: 'hidden'
     }}>
 
+      {/* Kala Bhairava in Modern Attire — Left Side Background Oracle Art */}
+      <div className="oracle-left-bg" style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        width: 'clamp(340px, 46vw, 680px)',
+        pointerEvents: 'none',
+        zIndex: 0,
+        overflow: 'hidden'
+      }}>
+        <img
+          src="/assets/kala-bhairava-advisor.jpeg"
+          alt=""
+          aria-hidden="true"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center 20%',
+            opacity: 0.45,
+            filter: 'sepia(0.2) contrast(1.1) brightness(0.85)',
+            maskImage: 'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 45%, rgba(0,0,0,0.25) 78%, transparent 100%), linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 12%, rgba(0,0,0,1) 88%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 45%, rgba(0,0,0,0.25) 78%, transparent 100%), linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 12%, rgba(0,0,0,1) 88%, transparent 100%)',
+            maskComposite: 'intersect',
+            WebkitMaskComposite: 'destination-in'
+          }}
+        />
+        {/* Deep ambient walnut fade overlay */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(to right, rgba(28, 21, 15, 0.2) 0%, rgba(28, 21, 15, 0.6) 65%, #1c150f 100%)'
+        }} />
+      </div>
+
       {/* Decorative Gold Astrolabe Watermark */}
       <div style={{
         position: 'absolute', right: '-80px', top: '10%', width: '380px', height: '380px',
