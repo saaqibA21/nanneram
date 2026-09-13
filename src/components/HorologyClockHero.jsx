@@ -41,8 +41,20 @@ export default function HorologyClockHero({
     }}>
 
 
-
-      {/* Cosmic Header — manuscript-style flourish kicker, no icon/badge box */}
+      {/* Cosmic Animated Video Backdrop — framed to feature celestial dial & rishis while masking top text */}
+      <video
+        className="cosmic-video-bg"
+        src="/assets/video/nalla-neram-hero.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        disablePictureInPicture
+        disableRemotePlayback
+        tabIndex={-1}
+        aria-hidden="true"
+      />
+      <div className="cosmic-video-overlay" />
       <div className="container" style={{ textAlign: 'center', marginBottom: '2.5rem', position: 'relative', zIndex: 1 }}>
         <div className="ornate-rule" style={{
           maxWidth: '620px', margin: '0 auto 1.5rem', color: 'var(--cosmic-gold)',

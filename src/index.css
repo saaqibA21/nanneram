@@ -705,13 +705,19 @@ html, body {
 
 .cosmic-video-bg {
   position: absolute;
-  inset: 0;
+  top: -80px;
+  left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% + 120px);
   object-fit: cover;
-  object-position: 68% center;
+  object-position: center 30%;
   z-index: 0;
   filter: sepia(0.35) saturate(1.15) brightness(0.95);
+  pointer-events: none;
+  user-select: none;
+  /* Completely mask out top portion where regional text was carved */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 18%, rgba(0, 0, 0, 0.8) 28%, #000000 42%);
+  mask-image: linear-gradient(to bottom, transparent 0%, transparent 18%, rgba(0, 0, 0, 0.8) 28%, #000000 42%);
 }
 
 .cosmic-video-overlay {
@@ -720,7 +726,7 @@ html, body {
   z-index: 0;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(24, 14, 6, 0.6) 0%, rgba(24, 14, 6, 0.42) 35%, rgba(24, 14, 6, 0.68) 100%);
+    linear-gradient(180deg, rgba(13, 7, 2, 0.96) 0%, rgba(20, 13, 7, 0.6) 18%, rgba(24, 14, 6, 0.32) 45%, rgba(13, 7, 2, 0.8) 100%);
 }
 
 .cosmic-clock-glow {
