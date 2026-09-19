@@ -3,20 +3,112 @@
  * Implements NOAA Solar Equation for precision Sunrise/Sunset & Vedic Ashtama-bhaga divisions
  */
 
-// Preset global & Indian tech hubs
+// Preset global & Indian tech hubs. `timeZone` is an IANA zone; the UTC offset is
+// resolved per date so daylight saving is handled correctly.
 export const CITIES = [
-  { name: 'Chennai', state: 'Tamil Nadu', lat: 13.0827, lng: 80.2707, tz: 5.5 },
-  { name: 'Bengaluru', state: 'Karnataka', lat: 12.9716, lng: 77.5946, tz: 5.5 },
-  { name: 'Mumbai', state: 'Maharashtra', lat: 19.0760, lng: 72.8777, tz: 5.5 },
-  { name: 'New Delhi', state: 'Delhi NCR', lat: 28.6139, lng: 77.2090, tz: 5.5 },
-  { name: 'Hyderabad', state: 'Telangana', lat: 17.3850, lng: 78.4867, tz: 5.5 },
-  { name: 'Kolkata', state: 'West Bengal', lat: 22.5726, lng: 88.3639, tz: 5.5 },
-  { name: 'San Francisco', state: 'USA (PST)', lat: 37.7749, lng: -122.4194, tz: -7.0 },
-  { name: 'New York', state: 'USA (EST)', lat: 40.7128, lng: -74.0060, tz: -4.0 },
-  { name: 'London', state: 'UK (GMT/BST)', lat: 51.5074, lng: -0.1278, tz: 1.0 },
-  { name: 'Dubai', state: 'UAE (GST)', lat: 25.2048, lng: 55.2708, tz: 4.0 },
-  { name: 'Singapore', state: 'Singapore (SGT)', lat: 1.3521, lng: 103.8198, tz: 8.0 },
+  { name: 'Chennai', state: 'Tamil Nadu', lat: 13.0827, lng: 80.2707, timeZone: 'Asia/Kolkata' },
+  { name: 'Bengaluru', state: 'Karnataka', lat: 12.9716, lng: 77.5946, timeZone: 'Asia/Kolkata' },
+  { name: 'Mumbai', state: 'Maharashtra', lat: 19.0760, lng: 72.8777, timeZone: 'Asia/Kolkata' },
+  { name: 'New Delhi', state: 'Delhi NCR', lat: 28.6139, lng: 77.2090, timeZone: 'Asia/Kolkata' },
+  { name: 'Hyderabad', state: 'Telangana', lat: 17.3850, lng: 78.4867, timeZone: 'Asia/Kolkata' },
+  { name: 'Kolkata', state: 'West Bengal', lat: 22.5726, lng: 88.3639, timeZone: 'Asia/Kolkata' },
+  { name: 'San Francisco', state: 'USA (Pacific)', lat: 37.7749, lng: -122.4194, timeZone: 'America/Los_Angeles' },
+  { name: 'New York', state: 'USA (Eastern)', lat: 40.7128, lng: -74.0060, timeZone: 'America/New_York' },
+  { name: 'London', state: 'UK', lat: 51.5074, lng: -0.1278, timeZone: 'Europe/London' },
+  { name: 'Dubai', state: 'UAE (GST)', lat: 25.2048, lng: 55.2708, timeZone: 'Asia/Dubai' },
+  { name: 'Singapore', state: 'Singapore (SGT)', lat: 1.3521, lng: 103.8198, timeZone: 'Asia/Singapore' },
 ];
+
+/* ------------------------------------------------------------------ */
+/* Time-zone helpers (Intl based, DST aware)                           */
+/* ------------------------------------------------------------------ */
+
+const zoneFormatters = new Map();
+
+function getZoneFormatter(timeZone) {
+  let formatter = zoneFormatters.get(timeZone);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone,
+      hourCycle: 'h23',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+    zoneFormatters.set(timeZone, formatter);
+  }
+  return formatter;
+}
+
+function getZonedParts(instantMs, timeZone) {
+  const parts = {};
+  for (const p of getZoneFormatter(timeZone).formatToParts(new Date(instantMs))) {
+    if (p.type !== 'literal') parts[p.type] = parseInt(p.value, 10);
+  }
+  parts.hour = parts.hour % 24;
+  return parts;
+}
+
+const pad2 = (n) => n.toString().padStart(2, '0');
+
+function parseLocalDate(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function addDays(date, n) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + n);
+}
+
+/**
+ * UTC offset (hours) of a time zone on a given calendar date. Sampled at 12:00 UTC,
+ * which is after every DST switch for the preset cities and before local sunrise/sunset
+ * are affected.
+ */
+export function getUtcOffsetHours(timeZone, year, month, day) {
+  const instant = Date.UTC(year, month - 1, day, 12);
+  const p = getZonedParts(instant, timeZone);
+  const wallAsUtc = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second);
+  return (wallAsUtc - instant) / 3600000;
+}
+
+export function formatUtcOffset(hours) {
+  const sign = hours < 0 ? '-' : '+';
+  const abs = Math.abs(hours);
+  const h = Math.floor(abs);
+  const m = Math.round((abs - h) * 60);
+  return `UTC${sign}${h}${m ? ':' + pad2(m) : ''}`;
+}
+
+/** Current wall-clock time in a time zone. `minutes` is minutes since local midnight. */
+export function getZonedNow(timeZone, nowMs = Date.now()) {
+  const p = getZonedParts(nowMs, timeZone);
+  return {
+    dateStr: `${p.year}-${pad2(p.month)}-${pad2(p.day)}`,
+    hours: p.hour,
+    minutes: p.minute,
+    seconds: p.second,
+    minutesFromMidnight: p.hour * 60 + p.minute + p.second / 60
+  };
+}
+
+export function getTodayInZone(timeZone) {
+  return getZonedNow(timeZone).dateStr;
+}
+
+/** Convert "minutes since local midnight on dateStr in timeZone" to a real UTC instant. */
+export function zonedMinutesToUtcDate(dateStr, timeZone, minutes) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const offsetMin = getUtcOffsetHours(timeZone, y, m, d) * 60;
+  return new Date(Date.UTC(y, m - 1, d, 0, Math.round(minutes - offsetMin)));
+}
+
+/* ------------------------------------------------------------------ */
+/* Solar calculation                                                   */
+/* ------------------------------------------------------------------ */
 
 /**
  * NOAA Solar Calculation to get Sunrise & Sunset in Minutes from Midnight
@@ -82,7 +174,7 @@ function getSunTimes(date, lat, lng, tzOffset) {
 
 export function formatTime(minutesFromMidnight) {
   let mins = Math.round(minutesFromMidnight);
-  mins = (mins + 1440) % 1440;
+  mins = ((mins % 1440) + 1440) % 1440;
   const hours24 = Math.floor(mins / 60);
   const m = mins % 60;
   const period = hours24 >= 12 ? 'PM' : 'AM';
@@ -97,6 +189,10 @@ export function formatDuration(mins) {
   return `${h}h ${m}m`;
 }
 
+/* ------------------------------------------------------------------ */
+/* Horas                                                               */
+/* ------------------------------------------------------------------ */
+
 // Chaldean Order of Planetary Horas
 const CHALDEAN_ORDER = ['Saturn', 'Jupiter', 'Mars', 'Sun', 'Venus', 'Mercury', 'Moon'];
 const WEEKDAY_LORDS = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn'];
@@ -107,7 +203,7 @@ export const HORA_METADATA = {
     planet: 'Mercury',
     color: '#00f5ff',
     bg: 'rgba(0, 245, 255, 0.1)',
-    badge: 'Deal Closer & Negotiations',
+    badge: 'Deals and negotiations',
     goodFor: ['Closing Sales & Contracts', 'Price Negotiations', 'Commercial Trading', 'Client Pitching', 'Analytics Presentation'],
     avoidFor: ['Emotional conflict talks'],
     scoreBoost: 40,
@@ -118,7 +214,7 @@ export const HORA_METADATA = {
     planet: 'Jupiter',
     color: '#ffd700',
     bg: 'rgba(255, 215, 0, 0.1)',
-    badge: 'High-Level Strategy & Advisory',
+    badge: 'Strategy and advisory',
     goodFor: ['VC & Investor Board Meetings', 'Hiring Key Leadership', 'Legal Agreements', 'Signing Term Sheets', 'Mentorship'],
     avoidFor: ['Aggressive confrontations'],
     scoreBoost: 50,
@@ -129,7 +225,7 @@ export const HORA_METADATA = {
     planet: 'Sun',
     color: '#ff8400',
     bg: 'rgba(255, 132, 0, 0.1)',
-    badge: 'Authority & Executive Pitching',
+    badge: 'Authority and executive pitches',
     goodFor: ['Meeting C-level Executives & VCs', 'Government / Regulatory Filings', 'Public Product Launches', 'Press Releases'],
     avoidFor: ['Submissive discussions'],
     scoreBoost: 35,
@@ -140,7 +236,7 @@ export const HORA_METADATA = {
     planet: 'Venus',
     color: '#ff007f',
     bg: 'rgba(255, 0, 127, 0.1)',
-    badge: 'Design, PR & Partnerships',
+    badge: 'Design, PR and partnerships',
     goodFor: ['Creative & UX Reviews', 'Strategic Alliances', 'PR & Media Interviews', 'Customer Empathy Calls', 'Team Bonding'],
     avoidFor: ['Hard numeric audits'],
     scoreBoost: 30,
@@ -151,7 +247,7 @@ export const HORA_METADATA = {
     planet: 'Moon',
     color: '#a5b4fc',
     bg: 'rgba(165, 180, 252, 0.1)',
-    badge: 'Brainstorming & Syncs',
+    badge: 'Brainstorming and check-ins',
     goodFor: ['Casual 1-on-1s', 'Creative Brainstorming', 'Product Ideation', 'Listening Sessions'],
     avoidFor: ['Permanent final decisions'],
     scoreBoost: 15,
@@ -162,7 +258,7 @@ export const HORA_METADATA = {
     planet: 'Mars',
     color: '#ef4444',
     bg: 'rgba(239, 68, 68, 0.12)',
-    badge: '🔴 Caution: Friction & Ego Clashes',
+    badge: 'Caution: friction and ego clashes',
     goodFor: ['Decisive terminations', 'Emergency crisis firefighting', 'Setting hard boundaries'],
     avoidFor: ['Investor pitches', 'Friendly negotiations', 'Salary discussions (causes resentment)'],
     scoreBoost: -40,
@@ -173,7 +269,7 @@ export const HORA_METADATA = {
     planet: 'Saturn',
     color: '#94a3b8',
     bg: 'rgba(148, 163, 184, 0.12)',
-    badge: '🔴 Caution: Delays & Overruns',
+    badge: 'Caution: delays and overruns',
     goodFor: ['Labor audits', 'Long-term structural cleanups', 'Debugging legacy code'],
     avoidFor: ['Fast deal sign-offs (causes meetings to drag without resolution)', 'First impressions'],
     scoreBoost: -35,
@@ -181,46 +277,97 @@ export const HORA_METADATA = {
   }
 };
 
-// Gowri Panchangam States
+/* ------------------------------------------------------------------ */
+/* Gowri Panchangam                                                    */
+/* ------------------------------------------------------------------ */
+
+// The five Nalla Neram states are Amirtham, Labham, Danam, Sugam and Uthi.
 export const GOWRI_STATES = {
-  Amirtham: { name: 'Amirtham', quality: 'Auspicious', desc: 'Supreme divine nectar; deal sign-off guaranteed', color: '#10b981' },
-  Labham: { name: 'Labham', quality: 'Auspicious', desc: 'Financial profit, positive negotiation margins', color: '#10b981' },
-  Sugam: { name: 'Sugam / Uthi', quality: 'Auspicious', desc: 'Comfort, peaceful understanding and consensus', color: '#3b82f6' },
-  Danam: { name: 'Danam', quality: 'Auspicious', desc: 'Cash inflow, grant approvals, invoice clears', color: '#10b981' },
-  Shubham: { name: 'Shubham', quality: 'Auspicious', desc: 'General auspicious harmony', color: '#3b82f6' },
-  Rogam: { name: 'Rogam', quality: 'Inauspicious', desc: 'Fatigue, low energy, audio/video glitches', color: '#ef4444' },
-  Soram: { name: 'Soram', quality: 'Inauspicious', desc: 'Hidden motives, fine-print traps, deceit', color: '#ef4444' },
-  Visham: { name: 'Visham', quality: 'Inauspicious', desc: 'Toxic friction, complete deal collapse', color: '#ef4444' }
+  Amirtham: { name: 'Amirtham', quality: 'Auspicious', rank: 'Best', desc: 'Divine nectar; the most favourable Gowri period', color: '#10b981' },
+  Labham: { name: 'Labham', quality: 'Auspicious', rank: 'Gain', desc: 'Financial profit, positive negotiation margins', color: '#10b981' },
+  Danam: { name: 'Danam', quality: 'Auspicious', rank: 'Wealth', desc: 'Cash inflow, grant approvals, invoice clears', color: '#10b981' },
+  Sugam: { name: 'Sugam', quality: 'Auspicious', rank: 'Good', desc: 'Comfort, peaceful understanding and consensus', color: '#3b82f6' },
+  Uthi: { name: 'Uthi', quality: 'Auspicious', rank: 'Good', desc: 'Steady, supportive energy for new beginnings', color: '#3b82f6' },
+  Rogam: { name: 'Rogam', quality: 'Inauspicious', rank: 'Evil', desc: 'Fatigue, low energy, audio/video glitches', color: '#ef4444' },
+  Soram: { name: 'Soram', quality: 'Inauspicious', rank: 'Bad', desc: 'Hidden motives, fine-print traps, deceit', color: '#ef4444' },
+  Visham: { name: 'Visham', quality: 'Inauspicious', rank: 'Bad', desc: 'Friction and obstruction; avoid important starts', color: '#ef4444' }
 };
 
-// Day Gowri table per weekday (8 parts of day)
+const INAUSPICIOUS_GOWRI = new Set(['Rogam', 'Soram', 'Visham']);
+
+// Weekday Gowri tables (index 0 = Sunday), sunrise->sunset in 8 equal parts.
+// Source: published Tamil Gowri Panchangam tables (Drik Panchang; the Saturday
+// rows were cross-checked against Prokerala). Saturday night genuinely lists
+// Soram twice and no Rogam.
 const DAY_GOWRI = [
-  // Sun
-  ['Sugam', 'Visham', 'Labham', 'Soram', 'Danam', 'Amirtham', 'Rogam', 'Shubham'],
-  // Mon
-  ['Amirtham', 'Rogam', 'Shubham', 'Sugam', 'Visham', 'Labham', 'Soram', 'Danam'],
-  // Tue
-  ['Danam', 'Amirtham', 'Rogam', 'Shubham', 'Sugam', 'Visham', 'Labham', 'Soram'],
-  // Wed
-  ['Soram', 'Danam', 'Amirtham', 'Rogam', 'Shubham', 'Sugam', 'Visham', 'Labham'],
-  // Thu
-  ['Labham', 'Soram', 'Danam', 'Amirtham', 'Rogam', 'Shubham', 'Sugam', 'Visham'],
-  // Fri
-  ['Visham', 'Labham', 'Soram', 'Danam', 'Amirtham', 'Rogam', 'Shubham', 'Sugam'],
-  // Sat
-  ['Rogam', 'Shubham', 'Sugam', 'Visham', 'Labham', 'Soram', 'Danam', 'Amirtham']
+  ['Uthi', 'Amirtham', 'Rogam', 'Labham', 'Danam', 'Sugam', 'Soram', 'Visham'], // Sun
+  ['Amirtham', 'Visham', 'Rogam', 'Labham', 'Danam', 'Sugam', 'Soram', 'Uthi'], // Mon
+  ['Rogam', 'Labham', 'Danam', 'Sugam', 'Soram', 'Uthi', 'Visham', 'Amirtham'], // Tue
+  ['Labham', 'Danam', 'Sugam', 'Soram', 'Visham', 'Uthi', 'Amirtham', 'Rogam'], // Wed
+  ['Danam', 'Sugam', 'Soram', 'Uthi', 'Amirtham', 'Visham', 'Rogam', 'Labham'], // Thu
+  ['Sugam', 'Soram', 'Uthi', 'Visham', 'Amirtham', 'Rogam', 'Labham', 'Danam'], // Fri
+  ['Soram', 'Uthi', 'Visham', 'Amirtham', 'Rogam', 'Labham', 'Danam', 'Sugam']  // Sat
 ];
 
-/**
- * Full calculation of Vedic Day & Intervals
- */
+// Night tables: sunset -> next sunrise in 8 equal parts, for the same Vedic weekday.
+const NIGHT_GOWRI = [
+  ['Danam', 'Sugam', 'Soram', 'Visham', 'Uthi', 'Amirtham', 'Rogam', 'Labham'], // Sun
+  ['Sugam', 'Soram', 'Uthi', 'Amirtham', 'Visham', 'Rogam', 'Labham', 'Danam'], // Mon
+  ['Soram', 'Uthi', 'Visham', 'Amirtham', 'Rogam', 'Labham', 'Danam', 'Sugam'], // Tue
+  ['Uthi', 'Amirtham', 'Rogam', 'Labham', 'Danam', 'Sugam', 'Soram', 'Visham'], // Wed
+  ['Amirtham', 'Visham', 'Rogam', 'Labham', 'Danam', 'Sugam', 'Soram', 'Uthi'], // Thu
+  ['Rogam', 'Labham', 'Danam', 'Sugam', 'Soram', 'Uthi', 'Visham', 'Amirtham'], // Fri
+  ['Labham', 'Danam', 'Sugam', 'Soram', 'Uthi', 'Visham', 'Amirtham', 'Soram']  // Sat
+];
+
+function buildGowriSlots(names, start, partDuration, isNight) {
+  return names.map((state, i) => ({
+    part: i + 1,
+    state,
+    start: start + i * partDuration,
+    end: start + (i + 1) * partDuration,
+    isNight,
+    ...GOWRI_STATES[state]
+  }));
+}
+
+/** Merge back-to-back Nalla Neram (auspicious) Gowri parts into single windows. */
+function buildNallaNeramWindows(slots) {
+  const windows = [];
+  for (const slot of slots) {
+    if (slot.quality !== 'Auspicious') continue;
+    const last = windows[windows.length - 1];
+    if (last && Math.abs(last.end - slot.start) < 0.001) {
+      last.end = slot.end;
+      last.states.push(slot.state);
+    } else {
+      windows.push({ start: slot.start, end: slot.end, states: [slot.state] });
+    }
+  }
+  return windows;
+}
+
+/* ------------------------------------------------------------------ */
+/* Full calculation of a Vedic day (sunrise -> next sunrise)           */
+/* ------------------------------------------------------------------ */
+
 export function calculateVedicDay(targetDate, city) {
   const date = new Date(targetDate);
   const dayOfWeek = date.getDay(); // 0 = Sun, 1 = Mon ... 6 = Sat
-  const { sunriseMin, sunsetMin } = getSunTimes(date, city.lat, city.lng, city.tz);
+  const utcOffsetHours = getUtcOffsetHours(city.timeZone, date.getFullYear(), date.getMonth() + 1, date.getDate());
+  const { sunriseMin, sunsetMin } = getSunTimes(date, city.lat, city.lng, utcOffsetHours);
+
+  // The Vedic day runs sunrise -> next sunrise, so the night needs tomorrow's dawn.
+  // Times are wall-clock minutes; on a DST switch night the real duration is +-1h.
+  const nextDate = addDays(date, 1);
+  const nextOffset = getUtcOffsetHours(city.timeZone, nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate());
+  const nextSunrise = getSunTimes(nextDate, city.lat, city.lng, nextOffset).sunriseMin;
+  const nextSunriseMin = nextSunrise + 1440;
 
   const dinamana = sunsetMin > sunriseMin ? (sunsetMin - sunriseMin) : (sunsetMin + 1440 - sunriseMin);
+  const ratrimana = nextSunriseMin - sunsetMin;
   const partDuration = dinamana / 8;
+  const nightPartDuration = ratrimana / 8;
 
   // Rahu Kaalam Part indices (1-based: Sunday=8, Monday=2, Tuesday=7, Wed=5, Thu=6, Fri=4, Sat=3)
   const rahuParts = [8, 2, 7, 5, 6, 4, 3];
@@ -240,125 +387,140 @@ export function calculateVedicDay(targetDate, city) {
   const gulikaStart = sunriseMin + gulikaIndex * partDuration;
   const gulikaEnd = gulikaStart + partDuration;
 
-  // 12 Horas of Daytime (Dinamana / 12)
+  // 12 daytime Horas (Dinamana / 12) followed by 12 night Horas (Ratrimana / 12).
+  // The Chaldean sequence simply continues through the night.
   const dayHoraDuration = dinamana / 12;
+  const nightHoraDuration = ratrimana / 12;
   const dayLord = WEEKDAY_LORDS[dayOfWeek];
   const startLordIndex = CHALDEAN_ORDER.indexOf(dayLord);
 
   const horas = [];
-  for (let i = 0; i < 12; i++) {
+  const nightHoras = [];
+  for (let i = 0; i < 24; i++) {
+    const isNight = i >= 12;
     const horaLord = CHALDEAN_ORDER[(startLordIndex + i) % 7];
-    const hStart = sunriseMin + i * dayHoraDuration;
-    const hEnd = hStart + dayHoraDuration;
-    horas.push({
+    const hStart = isNight ? sunsetMin + (i - 12) * nightHoraDuration : sunriseMin + i * dayHoraDuration;
+    const hEnd = hStart + (isNight ? nightHoraDuration : dayHoraDuration);
+    (isNight ? nightHoras : horas).push({
       index: i + 1,
       lord: horaLord,
       start: hStart,
       end: hEnd,
+      isNight,
       ...HORA_METADATA[horaLord]
     });
   }
 
-  // Gowri Panchangam Daytime slots (8 equal slots)
-  const gowriSlots = [];
-  const gowriList = DAY_GOWRI[dayOfWeek];
-  for (let i = 0; i < 8; i++) {
-    const gStart = sunriseMin + i * partDuration;
-    const gEnd = gStart + partDuration;
-    const stateKey = gowriList[i];
-    gowriSlots.push({
-      part: i + 1,
-      state: stateKey,
-      start: gStart,
-      end: gEnd,
-      ...GOWRI_STATES[stateKey]
-    });
-  }
+  // Gowri Panchangam: 8 day parts and 8 night parts
+  const gowriSlots = buildGowriSlots(DAY_GOWRI[dayOfWeek], sunriseMin, partDuration, false);
+  const nightGowriSlots = buildGowriSlots(NIGHT_GOWRI[dayOfWeek], sunsetMin, nightPartDuration, true);
 
-  // Identify Top Auspicious Windows (Nalla Neram)
-  // Traditional Tamil Nalla Neram Morning & Evening
-  const nallaNeramMorning = {
-    start: sunriseMin + partDuration * 1.5,
-    end: sunriseMin + partDuration * 2.5,
-    label: 'Morning Auspicious Window (Shubh Muhurtha)'
-  };
-  const nallaNeramEvening = {
-    start: sunriseMin + partDuration * 6.5,
-    end: sunriseMin + partDuration * 7.5,
-    label: 'Evening Auspicious Window (Shubh Muhurtha)'
-  };
+  // Nalla Neram = the auspicious Gowri periods (Amirtham, Labham, Danam, Sugam, Uthi)
+  const nallaNeramDay = buildNallaNeramWindows(gowriSlots);
+  const nallaNeramNight = buildNallaNeramWindows(nightGowriSlots);
 
   return {
     date,
     city,
     dayOfWeek,
     dayName: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek],
+    utcOffsetHours,
     sunriseMin,
     sunsetMin,
+    nextSunriseMin,
     dinamana,
+    ratrimana,
     partDuration,
     rahuKaalam: { start: rahuStart, end: rahuEnd, title: 'Rahu Kaalam' },
     yamagandam: { start: yamaStart, end: yamaEnd, title: 'Yamagandam' },
     gulikaKaalam: { start: gulikaStart, end: gulikaEnd, title: 'Gulika Kaalam' },
     horas,
+    nightHoras,
+    allHoras: [...horas, ...nightHoras],
     gowriSlots,
-    nallaNeramMorning,
-    nallaNeramEvening
+    nightGowriSlots,
+    allGowriSlots: [...gowriSlots, ...nightGowriSlots],
+    nallaNeramDay,
+    nallaNeramNight
   };
 }
+
+/**
+ * The Hora that is running right now in a city. Before local sunrise the Vedic day
+ * is still the previous calendar day, so that day's night Horas are used.
+ */
+export function getLiveHora(city, nowMs = Date.now()) {
+  const now = getZonedNow(city.timeZone, nowMs);
+  const today = parseLocalDate(now.dateStr);
+  let day = calculateVedicDay(today, city);
+  let minutes = now.minutesFromMidnight;
+
+  if (minutes < day.sunriseMin) {
+    day = calculateVedicDay(addDays(today, -1), city);
+    minutes += 1440;
+  }
+
+  const hora = day.allHoras.find(h => minutes >= h.start && minutes < h.end) || day.allHoras[0];
+  const gowri = day.allGowriSlots.find(g => minutes >= g.start && minutes < g.end) || day.allGowriSlots[0];
+  return { hora, gowri, day, minutes };
+}
+
+/* ------------------------------------------------------------------ */
+/* Meeting slot finder                                                 */
+/* ------------------------------------------------------------------ */
+
+// Business hours scanned for meeting slots (minutes from local midnight)
+const BUSINESS_START = 9 * 60;
+const BUSINESS_END = 19 * 60;
 
 /**
  * Intelligent Meeting Slot Finder
  * Finds optimal Google Meet / Zoom window for high-stakes business goals
  */
 export function findOptimalMeetingSlots(vedicDay, purpose, durationMins = 30) {
-  const { sunriseMin, sunsetMin, rahuKaalam, yamagandam, horas, gowriSlots } = vedicDay;
+  const { sunriseMin, rahuKaalam, yamagandam, allHoras, allGowriSlots } = vedicDay;
   const candidates = [];
+  const lower = purpose.toLowerCase();
 
   // Determine preferred Horas based on meeting purpose
   let preferredHoras = ['Mercury', 'Jupiter'];
   let priorityTitle = 'Sales & Strategic Deals';
 
-  if (purpose.toLowerCase().includes('pitch') || purpose.toLowerCase().includes('investor') || purpose.toLowerCase().includes('vc')) {
+  if (lower.includes('pitch') || lower.includes('investor') || lower.includes('vc')) {
     preferredHoras = ['Jupiter', 'Sun', 'Mercury'];
     priorityTitle = 'VC Pitching & Term Sheets';
-  } else if (purpose.toLowerCase().includes('salary') || purpose.toLowerCase().includes('raise') || purpose.toLowerCase().includes('contract') || purpose.toLowerCase().includes('sign')) {
+  } else if (lower.includes('salary') || lower.includes('raise') || lower.includes('contract') || lower.includes('sign')) {
     preferredHoras = ['Mercury', 'Jupiter'];
     priorityTitle = 'Financial Gain & Contract Closing';
-  } else if (purpose.toLowerCase().includes('design') || purpose.toLowerCase().includes('creative') || purpose.toLowerCase().includes('partner')) {
+  } else if (lower.includes('design') || lower.includes('creative') || lower.includes('partner')) {
     preferredHoras = ['Venus', 'Mercury'];
     priorityTitle = 'Creative Alignment & Partnerships';
-  } else if (purpose.toLowerCase().includes('interview') || purpose.toLowerCase().includes('hiring')) {
+  } else if (lower.includes('interview') || lower.includes('hiring')) {
     preferredHoras = ['Jupiter', 'Sun'];
     priorityTitle = 'Executive Hiring & Assessment';
   }
 
-  // Scan business day: from 09:00 AM (540 mins) to 06:30 PM (1110 mins)
-  const dayStart = Math.max(540, sunriseMin + 30);
-  const dayEnd = Math.min(1140, sunsetMin - 15);
+  // Scan business hours (never before local sunrise). Evening slots fall in the
+  // night Horas / night Gowri, which are part of the same Vedic day.
+  const dayStart = Math.max(BUSINESS_START, Math.ceil(sunriseMin));
+  const dayEnd = BUSINESS_END;
 
   for (let time = dayStart; time <= dayEnd - durationMins; time += 15) {
     const slotStart = time;
     const slotEnd = time + durationMins;
 
-    // Check collision with Rahu Kaalam (Strict Blocker)
+    // Rahu Kaalam is a strict blocker; Yamagandam is avoided
     const overlapsRahu = Math.max(slotStart, rahuKaalam.start) < Math.min(slotEnd, rahuKaalam.end);
     if (overlapsRahu) continue;
-
-    // Check collision with Yamagandam (Avoid)
     const overlapsYama = Math.max(slotStart, yamagandam.start) < Math.min(slotEnd, yamagandam.end);
     if (overlapsYama) continue;
 
-    // Find active Hora
-    const currentHora = horas.find(h => slotStart >= h.start && slotStart < h.end) || horas[0];
-
-    // Find active Gowri
-    const currentGowri = gowriSlots.find(g => slotStart >= g.start && slotStart < g.end) || gowriSlots[0];
+    const currentHora = allHoras.find(h => slotStart >= h.start && slotStart < h.end);
+    const currentGowri = allGowriSlots.find(g => slotStart >= g.start && slotStart < g.end);
+    if (!currentHora || !currentGowri) continue;
 
     // Skip inauspicious Gowri
-    if (currentGowri.state === 'Visham' || currentGowri.state === 'Rogam' || currentGowri.state === 'Soram') {
-      continue;
-    }
+    if (INAUSPICIOUS_GOWRI.has(currentGowri.state)) continue;
 
     // Scoring
     let score = 50;
@@ -367,11 +529,17 @@ export function findOptimalMeetingSlots(vedicDay, purpose, durationMins = 30) {
     }
     if (currentGowri.state === 'Amirtham') score += 30;
     if (currentGowri.state === 'Labham') score += 25;
-    if (currentGowri.state === 'Sugam' || currentGowri.state === 'Danam') score += 20;
+    if (currentGowri.state === 'Sugam' || currentGowri.state === 'Danam' || currentGowri.state === 'Uthi') score += 20;
 
     // Proximity buffer before energy changes
     const minsToHoraEnd = currentHora.end - slotEnd;
     if (minsToHoraEnd < 5) score -= 15; // too close to boundary
+
+    // Slot runs into an inauspicious Gowri part
+    const spillsIntoBadGowri = allGowriSlots.some(
+      g => INAUSPICIOUS_GOWRI.has(g.state) && g.start < slotEnd && g.end > slotStart
+    );
+    if (spillsIntoBadGowri) score -= 20;
 
     candidates.push({
       startMin: slotStart,
@@ -387,8 +555,8 @@ export function findOptimalMeetingSlots(vedicDay, purpose, durationMins = 30) {
     });
   }
 
-  // Sort descending by score
-  candidates.sort((a, b) => b.score - a.score);
+  // Sort descending by score (earlier slot wins ties)
+  candidates.sort((a, b) => b.score - a.score || a.startMin - b.startMin);
 
   // Pick top 3 spaced out recommendations
   const topSlots = [];

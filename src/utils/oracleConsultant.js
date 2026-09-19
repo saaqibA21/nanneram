@@ -4,7 +4,7 @@
  * and precision planetary scheduling.
  */
 
-import { formatTime } from './vedicTiming';
+import { formatTime, findOptimalMeetingSlots } from './vedicTiming';
 
 export const PLANETARY_ATTIRE = {
   Mercury: {
@@ -150,14 +150,17 @@ export function generateOracleConsultation({
   strategy,
   prompt,
   vedicData,
-  selectedCity,
-  optimalSlots = []
+  selectedCity
 }) {
   const combinedText = prompt || `${topic || ''} ${goal || ''} ${strategy || ''}`;
   const archetype = detectMeetingArchetype(combinedText);
 
+  // Slots are computed for the meeting the user actually described, not for the
+  // scheduler's currently selected objective.
+  const optimalSlots = findOptimalMeetingSlots(vedicData, combinedText, 30);
+
   // Determine best matching slot based on archetype
-  let chosenSlot = optimalSlots[0];
+  let chosenSlot = optimalSlots[0] || null;
   
   if (archetype === 'INVESTOR_PITCH') {
     const found = optimalSlots.find(s => s.hora.planet === 'Jupiter' || s.hora.planet === 'Sun' || s.hora.planet === 'Mercury');
@@ -221,20 +224,14 @@ export function generateOracleConsultation({
     goal: goal || 'Flawless execution and binding agreement',
     strategy: strategy || 'Measured articulation with firm boundary control',
     city: selectedCity.name,
-    dateStr: vedicData.targetDate ? vedicData.targetDate.toDateString() : new Date().toDateString(),
-    slot: chosenSlot || {
-      startTimeFormatted: '11:15 AM',
-      endTimeFormatted: '11:45 AM',
-      gracefulExitWindow: '11:42 AM',
-      hora: { name: 'Mercury Hora (Budha)', planet: 'Mercury' },
-      gowri: { name: 'Amirtham (Divine Nectar)', quality: 'Auspicious' },
-      recommendation: 'Peak harmony for binding commercial transactions and fast agreement.'
-    },
+    dateStr: vedicData.date.toDateString(),
+    // null when no clear window exists that day; the UI says so instead of inventing one
+    slot: chosenSlot,
     attire,
     openingScript,
     tacticalAdvice,
     deskRitual,
-    rahuAvoidance: `${formatTime(vedicData.rahuKaalam.start)} – ${formatTime(vedicData.rahuKaalam.end)} (Vetted 100% Shadow-Free)`,
+    rahuAvoidance: `${formatTime(vedicData.rahuKaalam.start)} – ${formatTime(vedicData.rahuKaalam.end)} (avoid this window)`,
     generatedAt: new Date().toLocaleTimeString()
   };
 }

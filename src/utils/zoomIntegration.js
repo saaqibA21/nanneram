@@ -1,78 +1,48 @@
 /**
- * Nanneram Zoom Apparatus Integration & RFC 5545 iCal Generator
- * Supports Personal Meeting IDs (PMI), Vanity Links, and Zoom OAuth credentials.
+ * Nanneram Zoom room helper & RFC 5545 iCal generator.
+ *
+ * There is no backend, so Nanneram never talks to the Zoom API. It only embeds the
+ * personal room (PMI or vanity link) the user types in, and keeps it in this browser.
  */
 
 const STORAGE_KEY = 'nanneram_zoom_apparatus_config';
 
-export const DEFAULT_CLIENT_ID = 'ZFTS0RgwT1OFEEkhFsXxA';
-
 export const DEFAULT_ZOOM_CONFIG = {
   connected: false,
-  mode: 'pmi', // 'pmi' | 'oauth'
   meetingId: '',
   passcode: '',
   vanityUrl: '',
   hostName: '',
-  clientId: DEFAULT_CLIENT_ID,
-  clientSecret: '',
-  accountId: '',
   lastTestedAt: null
 };
 
-/**
- * Get Zoom 1-Click OAuth Authorization URL for any visitor
- */
-export function getZoomOAuthUrl(customClientId) {
-  const clientId = customClientId || DEFAULT_CLIENT_ID;
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://nanneram.vercel.app';
-  const redirectUri = encodeURIComponent(origin);
-  return `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
-}
+// Keys written by the earlier fake OAuth flow. They must never stay in localStorage.
+const LEGACY_KEYS = ['clientId', 'clientSecret', 'accountId', 'authCode', 'mode'];
 
 /**
- * Handle incoming OAuth redirect code on app mount
- */
-export function handleZoomOAuthCallback() {
-  if (typeof window === 'undefined') return null;
-  try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    if (code) {
-      const current = loadZoomConfig();
-      const updated = {
-        ...current,
-        connected: true,
-        mode: 'oauth',
-        authCode: code,
-        clientId: current.clientId || DEFAULT_CLIENT_ID,
-        hostName: 'Authenticated Zoom Member',
-        lastTestedAt: new Date().toISOString()
-      };
-      saveZoomConfig(updated);
-      
-      // Clean up URL search query without page reload
-      const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, document.title, cleanUrl);
-      return updated;
-    }
-  } catch (err) {
-    console.error('Error handling Zoom OAuth callback:', err);
-  }
-  return null;
-}
-
-/**
- * Load persisted Zoom configuration from browser local storage
+ * Load persisted Zoom room from browser local storage. Legacy OAuth fields
+ * (including any saved client secret) are scrubbed from storage on the way in.
  */
 export function loadZoomConfig() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return { ...DEFAULT_ZOOM_CONFIG };
     const parsed = JSON.parse(raw);
-    return { ...DEFAULT_ZOOM_CONFIG, ...parsed };
+
+    const hadLegacy = LEGACY_KEYS.some((key) => key in parsed);
+    const config = { ...DEFAULT_ZOOM_CONFIG };
+    for (const key of Object.keys(DEFAULT_ZOOM_CONFIG)) {
+      if (key in parsed) config[key] = parsed[key];
+    }
+
+    // The old OAuth flow marked users "connected" without any room saved.
+    if (!getZoomJoinUrl(config)) config.connected = false;
+    if (hadLegacy && config.hostName === 'Authenticated Zoom Member') config.hostName = '';
+
+    if (hadLegacy) saveZoomConfig(config);
+    return config;
   } catch (err) {
-    console.error('Failed to load Zoom apparatus config:', err);
+    console.error('Failed to load Zoom config:', err);
     return { ...DEFAULT_ZOOM_CONFIG };
   }
 }
@@ -85,13 +55,13 @@ export function saveZoomConfig(config) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
     return true;
   } catch (err) {
-    console.error('Failed to save Zoom apparatus config:', err);
+    console.error('Failed to save Zoom config:', err);
     return false;
   }
 }
 
 /**
- * Remove Zoom connection
+ * Remove saved Zoom room
  */
 export function clearZoomConfig() {
   try {
@@ -118,14 +88,13 @@ export function formatZoomId(rawId) {
 }
 
 /**
- * Generate authentic Zoom Join URL from user config
+ * Join URL built from the saved room, or '' when no room is set. There is no
+ * fallback link: a host-only "start meeting" URL is useless to an invitee.
  */
 export function getZoomJoinUrl(config) {
-  if (!config) {
-    return 'https://zoom.us/start/videomeeting';
-  }
+  if (!config) return '';
 
-  // 1. If user provided a vanity URL (e.g. zoom.us/my/dr_saaqib)
+  // 1. Vanity URL (e.g. zoom.us/my/foundername)
   if (config.vanityUrl && config.vanityUrl.trim()) {
     let clean = config.vanityUrl.trim();
     if (!clean.startsWith('http')) {
@@ -137,7 +106,7 @@ export function getZoomJoinUrl(config) {
     return clean;
   }
 
-  // 2. If user provided a numeric Meeting ID (PMI)
+  // 2. Numeric Meeting ID (PMI)
   if (config.meetingId && config.meetingId.trim()) {
     const cleanId = config.meetingId.replace(/\D/g, '');
     if (cleanId.length >= 9) {
@@ -149,69 +118,97 @@ export function getZoomJoinUrl(config) {
     }
   }
 
-  // 3. Fallback to Zoom's verified instant room launcher (never generates fake non-existent meeting IDs)
-  return 'https://zoom.us/start/videomeeting';
+  return '';
 }
 
 /**
- * Generate RFC 5545 iCalendar (.ics) content for Apple Calendar & Outlook
+ * Short label describing the saved room, for status chips
  */
-export function generateICSContent({
-  title,
-  description,
-  location,
-  startDateStr, // 'YYYY-MM-DD'
-  startMin,     // minutes from midnight
-  endMin        // minutes from midnight
-}) {
-  const d = new Date(startDateStr + 'T00:00:00');
-  const startHour = Math.floor(startMin / 60);
-  const startMins = startMin % 60;
-  const endHour = Math.floor(endMin / 60);
-  const endMins = endMin % 60;
+export function describeZoomRoom(config) {
+  if (!config || !config.connected) return 'No room set';
+  if (config.vanityUrl && config.vanityUrl.trim()) {
+    return config.vanityUrl.trim().replace(/^https?:\/\//, '');
+  }
+  return `PMI: ${formatZoomId(config.meetingId)}`;
+}
 
-  const pad = (n) => n.toString().padStart(2, '0');
-  const y = d.getFullYear();
-  const m = pad(d.getMonth() + 1);
-  const day = pad(d.getDate());
+/* ------------------------------------------------------------------ */
+/* iCalendar                                                           */
+/* ------------------------------------------------------------------ */
 
-  const startISO = `${y}${m}${day}T${pad(startHour)}${pad(startMins)}00`;
-  const endISO = `${y}${m}${day}T${pad(endHour)}${pad(endMins)}00`;
-  const nowISO = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+const toIcsUtc = (date) => date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 
-  // Sanitize text for iCal
-  const cleanTitle = (title || 'Nanneram Auspicious Meeting').replace(/[\r\n]+/g, ' ');
-  const cleanDesc = (description || '').replace(/[\r\n]+/g, '\\n');
-  const cleanLoc = (location || '').replace(/[\r\n]+/g, ' ');
-  const uid = `nanneram-${Date.now()}@nanneram.ai`;
+// RFC 5545 TEXT escaping
+const escapeIcsText = (text) =>
+  (text || '')
+    .replace(/\\/g, '\\\\')
+    .replace(/;/g, '\\;')
+    .replace(/,/g, '\\,')
+    .replace(/\r?\n/g, '\\n');
 
-  return [
+// RFC 5545 content lines are limited to 75 octets; continuation lines start with a space.
+function foldIcsLine(line) {
+  const encoder = new TextEncoder();
+  if (encoder.encode(line).length <= 75) return line;
+
+  const chunks = [];
+  let current = '';
+  let currentBytes = 0;
+  for (const ch of line) {
+    const bytes = encoder.encode(ch).length;
+    // continuation lines carry a leading space, so they hold 74 octets of content
+    const limit = chunks.length === 0 ? 75 : 74;
+    if (currentBytes + bytes > limit) {
+      chunks.push(current);
+      current = '';
+      currentBytes = 0;
+    }
+    current += ch;
+    currentBytes += bytes;
+  }
+  chunks.push(current);
+  return chunks.join('\r\n ');
+}
+
+/**
+ * Generate RFC 5545 iCalendar (.ics) content for Apple Calendar & Outlook.
+ * `start` and `end` are real instants (Date), written in UTC so every calendar
+ * shows the meeting at the right moment in the viewer's own zone.
+ */
+export function generateICSContent({ title, description, location, url, start, end }) {
+  const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
     'PRODID:-//Nanneram Horology//Vedic Auspicious Meeting Pass//EN',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     'BEGIN:VEVENT',
-    `UID:${uid}`,
-    `DTSTAMP:${nowISO}`,
-    `DTSTART:${startISO}`,
-    `DTEND:${endISO}`,
-    `SUMMARY:${cleanTitle}`,
-    `DESCRIPTION:${cleanDesc}`,
-    `LOCATION:${cleanLoc}`,
+    `UID:nanneram-${Date.now()}@nanneram.vercel.app`,
+    `DTSTAMP:${toIcsUtc(new Date())}`,
+    `DTSTART:${toIcsUtc(start)}`,
+    `DTEND:${toIcsUtc(end)}`,
+    `SUMMARY:${escapeIcsText((title || 'Nanneram Auspicious Meeting').replace(/[\r\n]+/g, ' '))}`,
+    `DESCRIPTION:${escapeIcsText(description)}`
+  ];
+  if (location) lines.push(`LOCATION:${escapeIcsText(location)}`);
+  if (url) lines.push(`URL:${url}`);
+  lines.push(
     'STATUS:CONFIRMED',
+    // Graceful-exit reminder: 5 minutes before the END of the window
     'BEGIN:VALARM',
-    'TRIGGER:-PT5M',
+    'TRIGGER;RELATED=END:-PT5M',
     'ACTION:DISPLAY',
-    'DESCRIPTION:Graceful Exit Alert: 5 minutes remaining before planetary shift!',
+    'DESCRIPTION:Graceful Exit: 5 minutes left before the planetary shift',
     'END:VALARM',
     'END:VEVENT',
     'END:VCALENDAR'
-  ].join('\r\n');
+  );
+
+  return lines.map(foldIcsLine).join('\r\n') + '\r\n';
 }
 
 /**
- * Trigger immediate client-side download/open of an .ics file for Apple Calendar
+ * Trigger immediate client-side download of an .ics file
  */
 export function downloadICSFile(filename, icsContent) {
   const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
