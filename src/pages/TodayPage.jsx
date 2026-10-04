@@ -7,7 +7,7 @@ import ContextBar from '../components/layout/ContextBar';
 import NowCard from '../components/NowCard';
 import DayTimeline from '../components/DayTimeline';
 
-// Hero video featuring the glowing rotating clock hands
+// Hero video featuring the cosmic Venkateswara / Vishnu celestial video
 function HeroVideo() {
   const [reduceMotion, setReduceMotion] = useState(false);
   useEffect(() => {
@@ -18,7 +18,7 @@ function HeroVideo() {
   if (reduceMotion) {
     return (
       <img
-        src="/assets/video/clock-poster.png"
+        src="/assets/video/hero-poster.png"
         alt=""
         className="hero-video"
         aria-hidden="true"
@@ -29,7 +29,8 @@ function HeroVideo() {
   return (
     <video
       className="hero-video"
-      poster="/assets/video/clock-poster.png"
+      src="/assets/video/hero-cosmic.mp4"
+      poster="/assets/video/hero-poster.png"
       autoPlay
       loop
       muted
@@ -43,7 +44,7 @@ function HeroVideo() {
         e.target.play().catch(() => {});
       }}
     >
-      <source src="/assets/video/Clock_hands_rotate_and_glow_20260912193543.mp4" type="video/mp4" />
+      <source src="/assets/video/hero-cosmic.mp4" type="video/mp4" />
       <source src="/assets/video/nalla-neram-hero.mp4" type="video/mp4" />
     </video>
   );
