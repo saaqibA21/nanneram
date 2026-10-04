@@ -48,13 +48,17 @@ const PLANS = [
 ];
 
 export default function PlansPage() {
-  const { triggerToast } = useApp();
+  const { triggerToast, appMode } = useApp();
+  const isGenZ = appMode === 'genz';
 
   return (
     <div className="page container">
       <PageHeader
-        title="Plans"
-        description="Paid plans are not open yet. Everything you see on Nanneram today is free during the preview. This is what is planned."
+        title={isGenZ ? "Membership & Drops" : "Plans"}
+        description={isGenZ
+          ? "Everything on Nanneram is 100% free during the preview. Future drops include WhatsApp aura alerts and calendar autopilot."
+          : "Paid plans are not open yet. Everything you see on Nanneram today is free during the preview. This is what is planned."
+        }
       />
 
       <div className="grid-3">

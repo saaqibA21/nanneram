@@ -52,6 +52,9 @@ export function AppProvider({ children }) {
   const [showZoomModal, setShowZoomModal] = useState(false);
   const [showGmeetModal, setShowGmeetModal] = useState(false);
 
+  // Audience mode: 'normal' (Classic Executive) vs 'genz' (Aura / Teen)
+  const [appMode, setAppModeState] = useState(() => readStored('nanneram_app_mode', 'normal'));
+
   // Toast
   const [toast, setToast] = useState(null);
   const toastTimer = useRef(null);
@@ -78,6 +81,25 @@ export function AppProvider({ children }) {
   }, []);
 
   const setGmeetLink = useCallback((link) => setGmeetLinkState(link), []);
+
+  const setAppMode = useCallback((mode) => {
+    setAppModeState(mode);
+    writeStored('nanneram_app_mode', mode);
+    try { document.documentElement.setAttribute('data-mode', mode); } catch {}
+  }, []);
+
+  const toggleAppMode = useCallback(() => {
+    setAppModeState((prev) => {
+      const next = prev === 'normal' ? 'genz' : 'normal';
+      writeStored('nanneram_app_mode', next);
+      try { document.documentElement.setAttribute('data-mode', next); } catch {}
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    try { document.documentElement.setAttribute('data-mode', appMode); } catch {}
+  }, [appMode]);
 
   // Calculations
   const vedicData = useMemo(
@@ -171,6 +193,7 @@ export function AppProvider({ children }) {
     openZoomSetup: () => setShowZoomModal(true),
     openGmeetSetup: () => setShowGmeetModal(true),
     triggerToast,
+    appMode, setAppMode, toggleAppMode,
     getRealMeetingUrl, getMeetingLine, zoneLabel,
     getGoogleCalendarUrl, copyInvite, downloadIcs
   };

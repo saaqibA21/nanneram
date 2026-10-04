@@ -20,7 +20,7 @@ function ScrollToTop() {
 }
 
 function TopBar() {
-  const { platform, zoomConfig, gmeetLink, openZoomSetup, openGmeetSetup } = useApp();
+  const { platform, zoomConfig, gmeetLink, openZoomSetup, openGmeetSetup, appMode, setAppMode } = useApp();
   const linkSet = platform === 'Zoom' ? zoomConfig.connected : Boolean(gmeetLink);
 
   return (
@@ -30,19 +30,44 @@ function TopBar() {
           <span className="brand-mark" aria-hidden="true">N</span>
           <span>
             Nanneram
-            <small>Good-time planner</small>
+            <small>{appMode === 'genz' ? 'Aura & Timing Radar' : 'Good-time planner'}</small>
           </span>
         </NavLink>
 
         <nav className="navlinks" aria-label="Main">
-          {NAV.map(({ to, label, end }) => (
-            <NavLink key={to} to={to} end={end} className={({ isActive }) => `navlink${isActive ? ' active' : ''}`}>
-              {label}
-            </NavLink>
-          ))}
+          {NAV.map(({ to, label, end }) => {
+            const displayLabel = appMode === 'genz' && label === 'Advisor' ? 'Rizz Advisor' : label;
+            return (
+              <NavLink key={to} to={to} end={end} className={({ isActive }) => `navlink${isActive ? ' active' : ''}`}>
+                {displayLabel}
+              </NavLink>
+            );
+          })}
         </nav>
 
         <div className="topbar-spacer" />
+
+        {/* Mode Switcher Pill */}
+        <div className="mode-switch-pill" role="radiogroup" aria-label="App mode">
+          <button
+            type="button"
+            className={`mode-btn ${appMode === 'normal' ? 'active' : ''}`}
+            onClick={() => setAppMode('normal')}
+            aria-pressed={appMode === 'normal'}
+            title="Classic Executive Vedic Mode"
+          >
+            Classic
+          </button>
+          <button
+            type="button"
+            className={`mode-btn ${appMode === 'genz' ? 'active genz-btn' : ''}`}
+            onClick={() => setAppMode('genz')}
+            aria-pressed={appMode === 'genz'}
+            title="Gen-Z Teen & Aura Mode"
+          >
+            ⚡ Gen-Z
+          </button>
+        </div>
 
         <button
           className="btn btn-secondary btn-sm"
@@ -59,14 +84,18 @@ function TopBar() {
 }
 
 function TabBar() {
+  const { appMode } = useApp();
   return (
     <nav className="tabbar" aria-label="Main">
-      {NAV.map(({ to, label, icon: Icon, end }) => (
-        <NavLink key={to} to={to} end={end} className={({ isActive }) => `tab${isActive ? ' active' : ''}`}>
-          <Icon size={20} />
-          {label}
-        </NavLink>
-      ))}
+      {NAV.map(({ to, label, icon: Icon, end }) => {
+        const displayLabel = appMode === 'genz' && label === 'Advisor' ? 'Rizz' : label;
+        return (
+          <NavLink key={to} to={to} end={end} className={({ isActive }) => `tab${isActive ? ' active' : ''}`}>
+            <Icon size={20} />
+            {displayLabel}
+          </NavLink>
+        );
+      })}
     </nav>
   );
 }

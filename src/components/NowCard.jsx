@@ -17,7 +17,8 @@ const within = (minutes, win) => minutes >= win.start && minutes < win.end;
  * moment to start something. Always live, whatever date is selected below.
  */
 export default function NowCard() {
-  const { selectedCity, liveHora, nowMs } = useApp();
+  const { selectedCity, liveHora, nowMs, appMode } = useApp();
+  const isGenZ = appMode === 'genz';
   const { hora, gowri, day, minutes } = liveHora;
   const clock = getZonedNow(selectedCity.timeZone, nowMs);
 
@@ -25,21 +26,55 @@ export default function NowCard() {
   const inYama = within(minutes, day.yamagandam);
   const badGowri = gowri.quality !== 'Auspicious';
 
-  let verdict = { tone: 'good', text: 'Good time to start things' };
-  if (inRahu) verdict = { tone: 'bad', text: 'Rahu Kaalam: avoid starting things' };
-  else if (inYama) verdict = { tone: 'warn', text: 'Yamagandam: use care' };
-  else if (badGowri) verdict = { tone: 'warn', text: `${gowri.name}: use care` };
+  let verdict = {
+    tone: 'good',
+    text: isGenZ ? '🟢 Peak Aura Window (+500 Aura)' : 'Good time to start things'
+  };
+  if (inRahu) {
+    verdict = {
+      tone: 'bad',
+      text: isGenZ ? '🔴 Chaos Hour (Rahu Kaalam): Guaranteed L / Stay low' : 'Rahu Kaalam: avoid starting things'
+    };
+  } else if (inYama) {
+    verdict = {
+      tone: 'warn',
+      text: isGenZ ? '⚠️ Brain Fog Trap (Yamagandam): Easy tilt' : 'Yamagandam: use care'
+    };
+  } else if (badGowri) {
+    verdict = {
+      tone: 'warn',
+      text: isGenZ ? `⚠️ ${gowri.name}: Low aura / Mid energy` : `${gowri.name}: use care`
+    };
+  }
 
   const rahuStatus = inRahu
-    ? `Active now until ${formatTime(day.rahuKaalam.end)}`
+    ? (isGenZ ? `Active right now till ${formatTime(day.rahuKaalam.end)} (Avoid risky moves)` : `Active now until ${formatTime(day.rahuKaalam.end)}`)
     : minutes < day.rahuKaalam.start
-      ? `Starts in ${formatRemaining(day.rahuKaalam.start - minutes)}`
-      : 'Not active';
+      ? (isGenZ ? `L-energy window starts in ${formatRemaining(day.rahuKaalam.start - minutes)}` : `Starts in ${formatRemaining(day.rahuKaalam.start - minutes)}`)
+      : (isGenZ ? 'Clear for now (Zero Rahu hazard)' : 'Not active');
+
+  const GENZ_HORA_BADGES = {
+    Mercury: 'God-Tier Banter & Wit',
+    Jupiter: 'Supreme Luck & Academic W',
+    Sun: 'Main Character Energy',
+    Venus: 'Aesthetic, Drip & High Rizz',
+    Moon: 'Chill Vibe Check & Real Talks',
+    Mars: 'Demon Mode & Gaming Clutch',
+    Saturn: 'Monk Mode / Deep Focus Grind'
+  };
+
+  const horaBadgeText = isGenZ
+    ? (GENZ_HORA_BADGES[hora.planet] || hora.badge)
+    : hora.badge;
+
+  const gowriQualityText = isGenZ
+    ? (gowri.quality === 'Auspicious' ? 'Elite Timing (Nalla Neram)' : 'NPC Energy / Friction')
+    : (gowri.quality === 'Auspicious' ? 'Nalla Neram' : 'Not favourable');
 
   return (
     <div className="card now" aria-label={`Right now in ${selectedCity.name}`}>
       <div className="now-cell">
-        <div className="now-label">Right now in {selectedCity.name}</div>
+        <div className="now-label">{isGenZ ? `Live Radar · ${selectedCity.name}` : `Right now in ${selectedCity.name}`}</div>
         <div className="now-time">{formatTime(clock.minutesFromMidnight)}</div>
         <span className={`badge badge-${verdict.tone}`}>
           <span className="dot" aria-hidden="true" />
@@ -48,23 +83,23 @@ export default function NowCard() {
       </div>
 
       <div className="now-cell">
-        <div className="now-label">Hora</div>
+        <div className="now-label">{isGenZ ? 'Aura Hora' : 'Hora'}</div>
         <div className="now-value">{hora.planet}</div>
         <div className="now-sub">
-          {hora.badge}. Ends {formatTime(hora.end)} (in {formatRemaining(hora.end - minutes)})
+          {horaBadgeText}. Ends {formatTime(hora.end)} (in {formatRemaining(hora.end - minutes)})
         </div>
       </div>
 
       <div className="now-cell">
-        <div className="now-label">Gowri</div>
+        <div className="now-label">{isGenZ ? 'Gowri Vibe' : 'Gowri'}</div>
         <div className="now-value">{gowri.name}</div>
         <div className="now-sub">
-          {gowri.quality === 'Auspicious' ? 'Nalla Neram' : 'Not favourable'} ({gowri.rank.toLowerCase()}). Ends {formatTime(gowri.end)}
+          {gowriQualityText} ({gowri.rank.toLowerCase()}). Ends {formatTime(gowri.end)}
         </div>
       </div>
 
       <div className="now-cell">
-        <div className="now-label">Rahu Kaalam today</div>
+        <div className="now-label">{isGenZ ? 'Rahu Kaalam (The L Window)' : 'Rahu Kaalam today'}</div>
         <div className="now-value">
           {formatTime(day.rahuKaalam.start)} – {formatTime(day.rahuKaalam.end)}
         </div>

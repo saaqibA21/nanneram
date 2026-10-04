@@ -234,6 +234,61 @@ button:disabled { cursor: not-allowed; }
 .navlink.active { color: var(--ink); background: var(--surface-2); font-weight: 600; }
 .topbar-spacer { flex: 1; }
 
+/* ---------- Mode Switcher Pill ---------- */
+.mode-switch-pill {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 2px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.mode-btn {
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.mode-btn:hover {
+  color: var(--ink);
+}
+
+.mode-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(29, 26, 22, 0.12);
+}
+
+.mode-btn.active.genz-btn {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
+}
+
+/* Gen-Z Mode Theme Accents */
+[data-mode="genz"] {
+  --accent: #7c3aed;
+  --accent-ink: #5b21b6;
+  --accent-soft: #f3e8ff;
+  --good: #10b981;
+  --good-soft: #d1fae5;
+  --bad: #ef4444;
+  --bad-soft: #fee2e2;
+}
+
+[data-mode="genz"] .brand-mark {
+  background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
+}
+
 .tabbar { display: none; }
 
 /* ---------- Page layout ---------- */

@@ -5,7 +5,7 @@ import { useApp } from '../context/AppContext';
 import PageHeader from '../components/layout/PageHeader';
 import SlotCard from '../components/SlotCard';
 
-const SCENARIOS = [
+const CLASSIC_SCENARIOS = [
   {
     label: 'VC investor pitch',
     text: 'Seed round pitch to lead partner at venture fund. Demanding $12M pre-money valuation without governance concessions. Leading with 3.2x ARR growth, enterprise pipeline, and 2-week commitment deadline.'
@@ -24,33 +24,55 @@ const SCENARIOS = [
   }
 ];
 
-function buildCopyText(c) {
+const GENZ_SCENARIOS = [
+  {
+    label: '💖 Texting my crush',
+    text: 'Sliding into my crush’s DMs after they posted a story. Want maximum rizz, witty banter, and zero awkward left-on-read energy.'
+  },
+  {
+    label: '👨‍👩‍👧 Asking parents for permission & cash',
+    text: 'Asking my strict parents for permission to go on a weekend road trip with friends and loan me $150. Need maximum generosity mode and zero anger.'
+  },
+  {
+    label: '📚 Exam cramming & submission',
+    text: 'Need 3 hours of hyper-focused study cramming before my final exam, plus the exact golden minute to submit my assignment without wifi glitches or mistakes.'
+  },
+  {
+    label: '🎮 Ranked gaming clutch lobby',
+    text: 'Playing competitive ranked placement matches in Valorant with my squad. Need peak reflex speed, clutch focus, and zero tilt or rage-quits.'
+  }
+];
+
+function buildCopyText(c, isGenZ = false) {
   return (
-    `NANNERAM MEETING ADVICE\n` +
-    `Meeting: ${c.topic}\n` +
+    `${isGenZ ? '⚡ NANNERAM AURA & RIZZ PLAYBOOK' : 'NANNERAM MEETING ADVICE'}\n` +
+    `Situation: ${c.topic}\n` +
     `City: ${c.city} · Date: ${c.dateStr}\n\n` +
-    `TIMING\n` +
+    `${isGenZ ? 'CERTIFIED AURA WINDOW' : 'TIMING'}\n` +
     (c.slot
       ? `• Window: ${c.slot.startTimeFormatted} – ${c.slot.endTimeFormatted} (${c.city} time)\n` +
         `• Wrap up by: ${c.slot.gracefulExitWindow}\n` +
-        `• Ruling planet: ${c.attire.planet}\n`
+        `• Ruling energy: ${c.attire.planet}\n`
       : `• No clear window found on this date. Try another date.\n`) +
-    `• Rahu Kaalam to avoid: ${c.rahuAvoidance}\n\n` +
-    `WHAT TO WEAR\n` +
-    `• Colours: ${c.attire.recommendedPalette}\n` +
+    `• Chaos Hour (Rahu Kaalam) to avoid: ${c.rahuAvoidance}\n\n` +
+    `${isGenZ ? 'DRIP & COLOR PSYCHOLOGY' : 'WHAT TO WEAR'}\n` +
+    `• Recommended palette: ${c.attire.recommendedPalette}\n` +
     `• Avoid: ${c.attire.avoidColors}\n` +
     `• Fabric: ${c.attire.fabrics}\n` +
-    `• Metal and watch: ${c.attire.metalAndWatch}\n\n` +
-    `WHICH WAY TO FACE\n` +
+    `• Accents: ${c.attire.metalAndWatch}\n\n` +
+    `${isGenZ ? 'POWER SEATING DIRECTION' : 'WHICH WAY TO FACE'}\n` +
     `• ${c.attire.direction}: ${c.attire.directionMeaning}\n\n` +
-    `OPENING LINE\n${c.openingScript}\n\n` +
-    `HOW TO RUN IT\n${c.tacticalAdvice}\n\n` +
-    `DESK SETUP\n${c.deskRitual}`
+    `${isGenZ ? 'OPENING TEXT / ICEBREAKER' : 'OPENING LINE'}\n${c.openingScript}\n\n` +
+    `${isGenZ ? 'TACTICAL PLAYBOOK' : 'HOW TO RUN IT'}\n${c.tacticalAdvice}\n\n` +
+    `${isGenZ ? 'VIBE & ENVIRONMENT SETUP' : 'DESK SETUP'}\n${c.deskRitual}`
   );
 }
 
 export default function AdvisorPage() {
-  const { vedicData, selectedCity, triggerToast } = useApp();
+  const { vedicData, selectedCity, triggerToast, appMode } = useApp();
+  const isGenZ = appMode === 'genz';
+  const scenarios = isGenZ ? GENZ_SCENARIOS : CLASSIC_SCENARIOS;
+
   const [prompt, setPrompt] = useState('');
   const [result, setResult] = useState(null);
   const [copied, setCopied] = useState(false);
@@ -58,7 +80,7 @@ export default function AdvisorPage() {
   const consult = (text) => {
     const value = (text ?? prompt).trim();
     if (!value) {
-      triggerToast('Describe your meeting first.');
+      triggerToast(isGenZ ? 'Describe your situation or drama first.' : 'Describe your meeting first.');
       return;
     }
     setResult(generateOracleConsultation({ prompt: value, vedicData, selectedCity }));
@@ -72,10 +94,10 @@ export default function AdvisorPage() {
 
   const copyAdvice = () => {
     if (!result) return;
-    navigator.clipboard.writeText(buildCopyText(result)).then(
+    navigator.clipboard.writeText(buildCopyText(result, isGenZ)).then(
       () => {
         setCopied(true);
-        triggerToast('Advice copied.');
+        triggerToast(isGenZ ? 'Aura playbook copied.' : 'Advice copied.');
         setTimeout(() => setCopied(false), 2500);
       },
       () => triggerToast('Could not copy. Your browser blocked clipboard access.')
@@ -85,17 +107,21 @@ export default function AdvisorPage() {
   return (
     <div className="page container">
       <PageHeader
-        title="Meeting advisor"
-        description="Describe the meeting. You get the best window on the selected date, what to wear, which way to face, and how to open. The advice comes from fixed traditional rules, not a live AI model."
+        title={isGenZ ? '⚡ Aura & Rizz Advisor' : 'Meeting advisor'}
+        description={
+          isGenZ
+            ? 'Describe your high-stakes situation (crush, strict parents, exam cram, gaming lobby). The Oracle calculates your peak aura window, what drip to wear, which way to face, and your opening text.'
+            : 'Describe the meeting. You get the best window on the selected date, what to wear, which way to face, and how to open. The advice comes from fixed traditional rules, not a live AI model.'
+        }
         withContext
       />
 
       <div className="advisor-intro">
         <section className="card card-pad-lg field-group" style={{ display: 'grid', gap: '1rem' }}>
           <div>
-            <span className="field-label">Start from an example</span>
+            <span className="field-label">{isGenZ ? 'Pick a scenario to autofill' : 'Start from an example'}</span>
             <div className="chips" style={{ marginTop: '0.5rem' }}>
-              {SCENARIOS.map((s) => (
+              {scenarios.map((s) => (
                 <button key={s.label} className="chip" onClick={() => applyScenario(s)}>
                   <Zap size={13} /> {s.label}
                 </button>
@@ -104,20 +130,30 @@ export default function AdvisorPage() {
           </div>
 
           <div className="field">
-            <label className="field-label" htmlFor="brief">Your meeting, who it is with, and what you want from it</label>
+            <label className="field-label" htmlFor="brief">
+              {isGenZ
+                ? 'Your situation, who it is with, and what you want to happen'
+                : 'Your meeting, who it is with, and what you want from it'}
+            </label>
             <textarea
               id="brief"
               className="textarea"
               rows={5}
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="e.g. Pitch to the lead partner at a seed fund. Asking for a term sheet at a $12M pre-money valuation."
+              placeholder={
+                isGenZ
+                  ? 'e.g. Asking my strict parents for permission to go on a weekend trip with friends and loan me $150. Need maximum generosity mode and zero anger...'
+                  : 'e.g. Pitch to the lead partner at a seed fund. Asking for a term sheet at a $12M pre-money valuation.'
+              }
             />
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-            <span className="small muted">Uses {selectedCity.name} sunrise and sunset for {vedicData.dayName}.</span>
-            <button className="btn btn-primary" onClick={() => consult()}>Get advice</button>
+            <span className="small muted">Uses {selectedCity.name} solar ephemeris for {vedicData.dayName}.</span>
+            <button className="btn btn-primary" onClick={() => consult()}>
+              {isGenZ ? '⚡ Calculate Aura Playbook' : 'Get advice'}
+            </button>
           </div>
         </section>
 

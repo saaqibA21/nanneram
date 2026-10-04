@@ -135,8 +135,17 @@ export function detectMeetingArchetype(text) {
   if (lower.includes('dispute') || lower.includes('fire') || lower.includes('terminat') || lower.includes('conflict') || lower.includes('lawyer') || lower.includes('settle') || lower.includes('legal')) {
     return 'CRISIS_DISPUTE';
   }
-  if (lower.includes('design') || lower.includes('brand') || lower.includes('creative') || lower.includes('ux') || lower.includes('product review') || lower.includes('pr ') || lower.includes('marketing')) {
-    return 'CREATIVE_ALLIANCE';
+  if (lower.includes('crush') || lower.includes('rizz') || lower.includes('dm') || lower.includes('date') || lower.includes('slide') || lower.includes('dating') || lower.includes('texting') || lower.includes('story reply')) {
+    return 'CRUSH_RIZZ';
+  }
+  if (lower.includes('parent') || lower.includes('mom') || lower.includes('dad') || lower.includes('curfew') || lower.includes('permission') || lower.includes('strict') || lower.includes('allowance')) {
+    return 'PARENT_PERMISSION';
+  }
+  if (lower.includes('exam') || lower.includes('cram') || lower.includes('study') || lower.includes('homework') || lower.includes('assignment') || lower.includes('sat') || lower.includes('jee') || lower.includes('neet') || lower.includes('college app') || lower.includes('revision')) {
+    return 'EXAM_STUDY';
+  }
+  if (lower.includes('game') || lower.includes('gaming') || lower.includes('ranked') || lower.includes('clutch') || lower.includes('valorant') || lower.includes('bgmi') || lower.includes('fortnite') || lower.includes('cs2') || lower.includes('tournament') || lower.includes('scrim')) {
+    return 'GAMING_CLUTCH';
   }
   return 'STRATEGIC_CONSULT';
 }
@@ -168,8 +177,17 @@ export function generateOracleConsultation({
   } else if (archetype === 'SALARY_NEGOTIATION' || archetype === 'CLIENT_CLOSING') {
     const found = optimalSlots.find(s => s.hora.planet === 'Mercury' || s.hora.planet === 'Jupiter');
     if (found) chosenSlot = found;
-  } else if (archetype === 'CREATIVE_ALLIANCE') {
+  } else if (archetype === 'CREATIVE_ALLIANCE' || archetype === 'CRUSH_RIZZ') {
     const found = optimalSlots.find(s => s.hora.planet === 'Venus' || s.hora.planet === 'Mercury');
+    if (found) chosenSlot = found;
+  } else if (archetype === 'PARENT_PERMISSION') {
+    const found = optimalSlots.find(s => s.hora.planet === 'Jupiter' || s.hora.planet === 'Sun');
+    if (found) chosenSlot = found;
+  } else if (archetype === 'EXAM_STUDY') {
+    const found = optimalSlots.find(s => s.hora.planet === 'Mercury' || s.hora.planet === 'Jupiter' || s.hora.planet === 'Saturn');
+    if (found) chosenSlot = found;
+  } else if (archetype === 'GAMING_CLUTCH') {
+    const found = optimalSlots.find(s => s.hora.planet === 'Mars' || s.hora.planet === 'Sun');
     if (found) chosenSlot = found;
   }
 
@@ -181,6 +199,30 @@ export function generateOracleConsultation({
   let deskRitual = '';
 
   switch (archetype) {
+    case 'CRUSH_RIZZ':
+      openingScript = `"Saw that story you posted—didn't know you had immaculate taste in music. We need to debate this playlist immediately."`;
+      tacticalAdvice = `Under Shukra (Venus), banter must feel effortless and detached. Never send double texts or ask generic questions ('how was your day'). Drop one intriguing hook during the active window, then step away. Venus rewards aesthetic confidence and mysterious timing.`;
+      deskRitual = `Wear pearl white, champagne, or clean pastel. Face North or East while typing to project magnetic charm and calm aura.`;
+      break;
+
+    case 'PARENT_PERMISSION':
+      openingScript = `"Hey Mom and Dad, got 2 minutes? I finished all my homework and chores for the week, and wanted to run a plan by you before the weekend."`;
+      tacticalAdvice = `Guru (Jupiter) brings benevolence, mercy, and generosity. Approach them when they are seated and not rushing. Anchor your request with completed responsibilities first. State your return time clearly and offer location sharing before they even ask.`;
+      deskRitual = `Wear golden amber, warm yellow, or clean cream. Face North-East (Ishanya) to channel parental warmth and ethical approval.`;
+      break;
+
+    case 'EXAM_STUDY':
+      openingScript = `"Setting a strict 90-minute focus sprint. All social notifications silenced. Phone parked in another room."`;
+      tacticalAdvice = `Budha (Mercury) accelerates synaptic memory retention and math agility. Review core formulas and high-yield flashcards in 25-minute Pomodoro bursts. Wrap up and hydrate 5 minutes before the window ends so your memory consolidation locks in.`;
+      deskRitual = `Keep your desk completely clutter-free with an open glass of water. Wear emerald green or clean white linen to stimulate cognitive clarity. Face North.`;
+      break;
+
+    case 'GAMING_CLUTCH':
+      openingScript = `"Comms on point tonight. Locked in for the rank-up lobby. Let's get these Ws."`;
+      tacticalAdvice = `Mangala (Mars) fuels explosive reflexes, clutch crosshair placement, and decisive calls. Stay hydrated and avoid tilting on early rounds. Mars rewards calculated aggression; play trades cleanly and call rotations with calm certainty.`;
+      deskRitual = `Face South or East. Wear ruby red or deep copper. Keep your mousepad clean and posture upright for peak kinetic reaction speed.`;
+      break;
+
     case 'INVESTOR_PITCH':
       openingScript = `"Thank you for convening today. Before diving into deck mechanics, let's align on the macro shift that makes our timing mathematically inevitable..."`;
       tacticalAdvice = `Lead with undeniable compounding metrics within the first 120 seconds. Do not plead for capital; frame the allocation as a finite window of entry into an accelerating trajectory. Conclude 5 minutes before the graceful exit timestamp so the partner experiences urgency rather than meeting exhaustion.`;

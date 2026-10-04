@@ -8,8 +8,9 @@ import { useApp } from '../context/AppContext';
 export default function SlotCard({ slot, purpose, badge, featured = false }) {
   const {
     platform, selectedCity, getRealMeetingUrl, getGoogleCalendarUrl, copyInvite, downloadIcs,
-    openZoomSetup, openGmeetSetup
+    openZoomSetup, openGmeetSetup, appMode
   } = useApp();
+  const isGenZ = appMode === 'genz';
   const hasLink = Boolean(getRealMeetingUrl());
 
   return (
@@ -25,9 +26,9 @@ export default function SlotCard({ slot, purpose, badge, featured = false }) {
       </div>
 
       <div className="slot-tags">
-        <span className="badge badge-accent">{slot.hora.planet} Hora</span>
+        <span className="badge badge-accent">{slot.hora.planet} {isGenZ ? 'Aura' : 'Hora'}</span>
         <span className="badge badge-good">{slot.gowri.name}</span>
-        <span className="badge">Wrap up by {slot.gracefulExitWindow.split(' – ')[0]}</span>
+        <span className="badge">{isGenZ ? `Dip out before ${slot.gracefulExitWindow.split(' – ')[0]}` : `Wrap up by ${slot.gracefulExitWindow.split(' – ')[0]}`}</span>
       </div>
 
       <p className="slot-why">{slot.recommendation}</p>
@@ -39,13 +40,13 @@ export default function SlotCard({ slot, purpose, badge, featured = false }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <CalendarPlus size={16} /> Add to Google Calendar
+          <CalendarPlus size={16} /> {isGenZ ? 'Lock In (Google Cal)' : 'Add to Google Calendar'}
         </a>
         <button className="btn btn-secondary" onClick={() => downloadIcs(slot, purpose)}>
-          <Download size={16} /> Apple / Outlook (.ics)
+          <Download size={16} /> {isGenZ ? 'Export .ics' : 'Apple / Outlook (.ics)'}
         </button>
         <button className="btn btn-ghost" onClick={() => copyInvite(slot, purpose)}>
-          <Copy size={16} /> Copy invite
+          <Copy size={16} /> {isGenZ ? 'Copy Pitch' : 'Copy invite'}
         </button>
       </div>
 

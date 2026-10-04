@@ -32,13 +32,17 @@ const TERMS = [
 ];
 
 export default function GuidePage() {
-  const { vedicData: v, selectedCity } = useApp();
+  const { vedicData: v, selectedCity, appMode } = useApp();
+  const isGenZ = appMode === 'genz';
 
   return (
     <div className="page container">
       <PageHeader
-        title="How Nanneram works"
-        description="Everything here is calculated, not guessed. This page explains the terms and shows the numbers behind the times for your city."
+        title={isGenZ ? "How Nanneram Powers Your Aura" : "How Nanneram works"}
+        description={isGenZ
+          ? "Everything here is pure astronomical NOAA math and Vedic science, zero guesswork. How ancient timing rules save you from taking Ls."
+          : "Everything here is calculated, not guessed. This page explains the terms and shows the numbers behind the times for your city."
+        }
       />
 
       <section className="section" style={{ marginTop: 0 }}>
