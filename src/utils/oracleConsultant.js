@@ -120,33 +120,74 @@ export const PLANETARY_ATTIRE = {
 export function detectMeetingArchetype(text) {
   const lower = text.toLowerCase();
   
+  // 1. Meeting crush / partner's father or parents (Highest priority)
+  const isCrushOrPartner = lower.includes('crush') || lower.includes('girlfriend') || lower.includes('boyfriend') || lower.includes('partner') || lower.includes('her') || lower.includes('his') || lower.includes('in-law');
+  const isParentOrFamily = lower.includes('dad') || lower.includes('father') || lower.includes('mom') || lower.includes('mother') || lower.includes('parent') || lower.includes('family');
+
+  if ((lower.includes('crush') && isParentOrFamily) || (isCrushOrPartner && isParentOrFamily) || lower.includes('meet the parents')) {
+    return 'CRUSH_PARENTS';
+  }
+
+  // 2. Direct crush rizz / texting / asking out
+  if (lower.includes('crush') || lower.includes('rizz') || lower.includes('dm') || lower.includes('slide') || lower.includes('dating') || lower.includes('flirt') || lower.includes('ask out') || lower.includes('confess') || lower.includes('first date') || lower.includes('story reply') || lower.includes('text her') || lower.includes('text him') || lower.includes('texting') || lower.includes('love')) {
+    return 'CRUSH_RIZZ';
+  }
+
+  // 3. Negotiating with own parents
+  if (lower.includes('parent') || lower.includes('mom') || lower.includes('dad') || lower.includes('curfew') || lower.includes('permission') || lower.includes('strict') || lower.includes('allowance') || lower.includes('pocket money') || lower.includes('borrow car')) {
+    return 'PARENT_PERMISSION';
+  }
+
+  // 4. Academic teachers / professors / faculty
+  if (lower.includes('teacher') || lower.includes('professor') || lower.includes('principal') || lower.includes('dean') || lower.includes('attendance') || lower.includes('grade') || lower.includes('marks') || lower.includes('extension') || lower.includes('faculty') || lower.includes('re-evaluation')) {
+    return 'TEACHER_PROFESSOR';
+  }
+
+  // 5. Exam study & deep cramming
+  if (lower.includes('exam') || lower.includes('cram') || lower.includes('study') || lower.includes('homework') || lower.includes('assignment') || lower.includes('sat') || lower.includes('jee') || lower.includes('neet') || lower.includes('college app') || lower.includes('revision') || lower.includes('test') || lower.includes('midterm') || lower.includes('final')) {
+    return 'EXAM_STUDY';
+  }
+
+  // 6. Competitive ranked gaming / clutch
+  if (lower.includes('game') || lower.includes('gaming') || lower.includes('ranked') || lower.includes('clutch') || lower.includes('valorant') || lower.includes('bgmi') || lower.includes('fortnite') || lower.includes('cs2') || lower.includes('tournament') || lower.includes('scrim') || lower.includes('lobby')) {
+    return 'GAMING_CLUTCH';
+  }
+
+  // 7. Job / Internship Interview
+  if (lower.includes('interview') || lower.includes('hire') || lower.includes('candidate') || lower.includes('executive') || lower.includes('internship') || lower.includes('job') || lower.includes('placement') || lower.includes('recruiter')) {
+    return 'JOB_INTERVIEW';
+  }
+
+  // 8. Friends drama / conflict resolution
+  if (lower.includes('friend') || lower.includes('beef') || lower.includes('drama') || lower.includes('fight') || lower.includes('argument') || lower.includes('apolog') || lower.includes('sorry') || lower.includes('falling out') || lower.includes('rumor')) {
+    return 'FRIEND_DRAMA';
+  }
+
+  // 9. VC & Investor Pitch
   if (lower.includes('vc') || lower.includes('investor') || lower.includes('pitch') || lower.includes('seed') || lower.includes('series a') || lower.includes('fundrais') || lower.includes('term sheet') || lower.includes('valuation') || lower.includes('angel')) {
     return 'INVESTOR_PITCH';
   }
+
+  // 10. Salary & Compensation Negotiation
   if (lower.includes('salary') || lower.includes('raise') || lower.includes('promot') || lower.includes('compensation') || lower.includes('hike') || lower.includes('bonus') || lower.includes('appraisal') || lower.includes('equity split')) {
     return 'SALARY_NEGOTIATION';
   }
+
+  // 11. Commercial Client Closing
   if (lower.includes('client') || lower.includes('deal') || lower.includes('contract') || lower.includes('sale') || lower.includes('pricing') || lower.includes('sign') || lower.includes('closing') || lower.includes('msa') || lower.includes('sow') || lower.includes('proposal')) {
     return 'CLIENT_CLOSING';
   }
-  if (lower.includes('interview') || lower.includes('hire') || lower.includes('candidate') || lower.includes('executive') || lower.includes('vp') || lower.includes('cto') || lower.includes('c-level')) {
-    return 'EXECUTIVE_HIRING';
-  }
+
+  // 12. Crisis / Legal Dispute
   if (lower.includes('dispute') || lower.includes('fire') || lower.includes('terminat') || lower.includes('conflict') || lower.includes('lawyer') || lower.includes('settle') || lower.includes('legal')) {
     return 'CRISIS_DISPUTE';
   }
-  if (lower.includes('crush') || lower.includes('rizz') || lower.includes('dm') || lower.includes('date') || lower.includes('slide') || lower.includes('dating') || lower.includes('texting') || lower.includes('story reply')) {
-    return 'CRUSH_RIZZ';
+
+  // 13. Creative & Partnerships
+  if (lower.includes('creative') || lower.includes('design') || lower.includes('brand') || lower.includes('partner') || lower.includes('alliance')) {
+    return 'CREATIVE_ALLIANCE';
   }
-  if (lower.includes('parent') || lower.includes('mom') || lower.includes('dad') || lower.includes('curfew') || lower.includes('permission') || lower.includes('strict') || lower.includes('allowance')) {
-    return 'PARENT_PERMISSION';
-  }
-  if (lower.includes('exam') || lower.includes('cram') || lower.includes('study') || lower.includes('homework') || lower.includes('assignment') || lower.includes('sat') || lower.includes('jee') || lower.includes('neet') || lower.includes('college app') || lower.includes('revision')) {
-    return 'EXAM_STUDY';
-  }
-  if (lower.includes('game') || lower.includes('gaming') || lower.includes('ranked') || lower.includes('clutch') || lower.includes('valorant') || lower.includes('bgmi') || lower.includes('fortnite') || lower.includes('cs2') || lower.includes('tournament') || lower.includes('scrim')) {
-    return 'GAMING_CLUTCH';
-  }
+
   return 'STRATEGIC_CONSULT';
 }
 
@@ -164,14 +205,16 @@ export function generateOracleConsultation({
   const combinedText = prompt || `${topic || ''} ${goal || ''} ${strategy || ''}`;
   const archetype = detectMeetingArchetype(combinedText);
 
-  // Slots are computed for the meeting the user actually described, not for the
-  // scheduler's currently selected objective.
+  // Slots are computed for the scenario described
   const optimalSlots = findOptimalMeetingSlots(vedicData, combinedText, 30);
 
   // Determine best matching slot based on archetype
   let chosenSlot = optimalSlots[0] || null;
   
-  if (archetype === 'INVESTOR_PITCH') {
+  if (archetype === 'CRUSH_PARENTS') {
+    const found = optimalSlots.find(s => s.hora.planet === 'Sun' || s.hora.planet === 'Jupiter' || s.hora.planet === 'Mercury');
+    if (found) chosenSlot = found;
+  } else if (archetype === 'INVESTOR_PITCH') {
     const found = optimalSlots.find(s => s.hora.planet === 'Jupiter' || s.hora.planet === 'Sun' || s.hora.planet === 'Mercury');
     if (found) chosenSlot = found;
   } else if (archetype === 'SALARY_NEGOTIATION' || archetype === 'CLIENT_CLOSING') {
@@ -183,44 +226,104 @@ export function generateOracleConsultation({
   } else if (archetype === 'PARENT_PERMISSION') {
     const found = optimalSlots.find(s => s.hora.planet === 'Jupiter' || s.hora.planet === 'Sun');
     if (found) chosenSlot = found;
+  } else if (archetype === 'TEACHER_PROFESSOR') {
+    const found = optimalSlots.find(s => s.hora.planet === 'Jupiter' || s.hora.planet === 'Mercury');
+    if (found) chosenSlot = found;
   } else if (archetype === 'EXAM_STUDY') {
     const found = optimalSlots.find(s => s.hora.planet === 'Mercury' || s.hora.planet === 'Jupiter' || s.hora.planet === 'Saturn');
     if (found) chosenSlot = found;
   } else if (archetype === 'GAMING_CLUTCH') {
     const found = optimalSlots.find(s => s.hora.planet === 'Mars' || s.hora.planet === 'Sun');
     if (found) chosenSlot = found;
+  } else if (archetype === 'JOB_INTERVIEW') {
+    const found = optimalSlots.find(s => s.hora.planet === 'Sun' || s.hora.planet === 'Jupiter' || s.hora.planet === 'Mercury');
+    if (found) chosenSlot = found;
+  } else if (archetype === 'FRIEND_DRAMA') {
+    const found = optimalSlots.find(s => s.hora.planet === 'Moon' || s.hora.planet === 'Mercury');
+    if (found) chosenSlot = found;
   }
 
   const planetName = chosenSlot?.hora?.planet || 'Mercury';
-  const attire = PLANETARY_ATTIRE[planetName] || PLANETARY_ATTIRE.Mercury;
+  let attire = { ...(PLANETARY_ATTIRE[planetName] || PLANETARY_ATTIRE.Mercury) };
+
+  // Contextual polish for specific social situations:
+  if (archetype === 'CRUSH_PARENTS') {
+    attire.title = 'Respectful Dignity & Traditional Favor';
+    attire.recommendedPalette = 'Crisp White, Sky Blue, Royal Cream, or Clean Navy (projects humility, integrity, and grounded reliability)';
+    attire.avoidColors = 'Flashy streetwear, ripped jeans, oversized graphic tees, or aggressive black/neon';
+    attire.fabrics = 'Clean pressed button-down collar shirt or structured classic polo, pressed trousers, and clean shoes.';
+    attire.metalAndWatch = 'Understated classic watch with leather or steel strap; clean grooming and light subtle cologne.';
+    attire.direction = 'East or North-East';
+    attire.directionMeaning = 'Aligns with solar dignity (Surya) and ethical preceptors (Guru). Radiates trustworthy character, composure, and natural respect.';
+    attire.energy = 'Dignified, respectful, sincere, grounded';
+  } else if (archetype === 'GAMING_CLUTCH') {
+    attire.recommendedPalette = 'Deep Charcoal, Stealth Black, or Obsidian Navy with Red/Orange kinetic accents';
+    attire.avoidColors = 'Tight restrictive clothing or slippery footwear';
+    attire.fabrics = 'Breathable lightweight athletic hoodie or dry-fit jersey for unrestricted forearm movement.';
+    attire.metalAndWatch = 'No heavy jewelry on the mouse wrist; lightweight sports band or bare wrist.';
+  } else if (archetype === 'EXAM_STUDY') {
+    attire.recommendedPalette = 'Emerald Green, Mint, Crisp White, or Sage (stimulates synaptic memory retention)';
+    attire.avoidColors = 'Chaotic neon patterns or uncomfortable tight layers';
+    attire.fabrics = 'Soft breathable cotton or comfortable oversized fleece that keeps body temperature optimal.';
+    attire.metalAndWatch = 'Minimalist analog watch to track Pomodoro intervals without digital screen distractions.';
+  } else if (archetype === 'CRUSH_RIZZ') {
+    attire.recommendedPalette = 'Pearl White, Champagne, Soft Pastel Rose, or Crisp Monochrome (effortless aesthetic magnetism)';
+    attire.avoidColors = 'Overly formal stiff business suits or drab unwashed loungewear';
+    attire.fabrics = 'High-grade textured cotton, linen overshirt, or clean knitwear with effortless drape.';
+    attire.metalAndWatch = 'Clean silver or platinum chain, minimalist watch, and fresh signature fragrance.';
+  }
   
   let openingScript = '';
   let tacticalAdvice = '';
   let deskRitual = '';
 
   switch (archetype) {
+    case 'CRUSH_PARENTS':
+      openingScript = `"Good afternoon Uncle / Mr. [Name], thank you so much for welcoming me today. I really appreciate you taking the time to speak with me directly."`;
+      tacticalAdvice = `Meeting a crush or partner's father requires solar composure (Surya) and Jupiterian respect (Guru). Look him straight in the eye with a calm, humble gaze and offer a firm, confident handshake. Never brag, posture, use casual slang, or get defensive. When asked about your life, speak clearly about your education, career ambitions, and genuine respect for his family. Listen twice as much as you speak. Fathers instinctively test for emotional maturity, honesty, and consistency.`;
+      deskRitual = `Arrive 5 to 10 minutes early. Wear a clean, crisp pressed shirt (white, sky blue, or cream) and tidy shoes. Silence your phone completely and keep it in your pocket. Face East or North-East during the conversation to channel solar composure.`;
+      break;
+
     case 'CRUSH_RIZZ':
-      openingScript = `"Saw that story you posted—didn't know you had immaculate taste in music. We need to debate this playlist immediately."`;
-      tacticalAdvice = `Under Shukra (Venus), banter must feel effortless and detached. Never send double texts or ask generic questions ('how was your day'). Drop one intriguing hook during the active window, then step away. Venus rewards aesthetic confidence and mysterious timing.`;
-      deskRitual = `Wear pearl white, champagne, or clean pastel. Face North or East while typing to project magnetic charm and calm aura.`;
+      openingScript = `"Quick question for you—I need an unbiased opinion on something only you would know."`;
+      tacticalAdvice = `Under Shukra (Venus) and Budha (Mercury), banter must feel effortless, witty, and zero-pressure. Never send needy double-texts, dry queries ('wyd'), or long emotional paragraphs. Drop one intriguing hook during the active window, match their response tempo, and hold a playful, confident aura. Venus rewards aesthetic confidence and mysterious pacing.`;
+      deskRitual = `Wear pearl white, champagne, or clean pastel. Face North or South-East while typing to project Venusian magnetism and calm confidence.`;
       break;
 
     case 'PARENT_PERMISSION':
-      openingScript = `"Hey Mom and Dad, got 2 minutes? I finished all my homework and chores for the week, and wanted to run a plan by you before the weekend."`;
-      tacticalAdvice = `Guru (Jupiter) brings benevolence, mercy, and generosity. Approach them when they are seated and not rushing. Anchor your request with completed responsibilities first. State your return time clearly and offer location sharing before they even ask.`;
-      deskRitual = `Wear golden amber, warm yellow, or clean cream. Face North-East (Ishanya) to channel parental warmth and ethical approval.`;
+      openingScript = `"Hey Mom and Dad, do you have 5 minutes? I finished all my homework and chores for the week, and wanted to run an idea by you before the weekend."`;
+      tacticalAdvice = `Guru (Jupiter) brings benevolence, mercy, and generosity. Approach them when they are seated and relaxed (never when they just walked through the door after work). Anchor your request on fulfilled duties first. State who will be there, exact return times, and offer live location sharing proactively.`;
+      deskRitual = `Wear golden amber, warm yellow, or clean cream. Face North-East (Ishanya) to channel parental warmth and ethical approval. Keep your voice calm, open-palmed, and non-defensive.`;
+      break;
+
+    case 'TEACHER_PROFESSOR':
+      openingScript = `"Good morning Professor [Name], thank you for taking time during your office hours. I've been reviewing the recent feedback and wanted to seek your guidance on how to strengthen my approach."`;
+      tacticalAdvice = `In Vedic astrology, Guru governs teachers and preceptors. Never make excuses for missed deadlines or low marks. Take complete personal accountability first, present the work you've already attempted, and ask for specific guidance. Mentors are honored by genuine curiosity and diligence.`;
+      deskRitual = `Wear clean emerald green, sage, or crisp white. Face North (Mercury) or North-East (Jupiter). Bring a physical notebook and pen.`;
       break;
 
     case 'EXAM_STUDY':
-      openingScript = `"Setting a strict 90-minute focus sprint. All social notifications silenced. Phone parked in another room."`;
-      tacticalAdvice = `Budha (Mercury) accelerates synaptic memory retention and math agility. Review core formulas and high-yield flashcards in 25-minute Pomodoro bursts. Wrap up and hydrate 5 minutes before the window ends so your memory consolidation locks in.`;
-      deskRitual = `Keep your desk completely clutter-free with an open glass of water. Wear emerald green or clean white linen to stimulate cognitive clarity. Face North.`;
+      openingScript = `"Focus Protocol Activated: 90-minute deep study sprint. All notifications muted, phone parked in another room, zero tabs open except study material."`;
+      tacticalAdvice = `Budha (Mercury) accelerates synaptic memory retention and math logic, while Shani (Saturn) provides monk-mode stamina. Study in 30-minute high-focus Pomodoro blocks. Hydrate regularly and avoid multitasking.`;
+      deskRitual = `Keep your desk completely clutter-free with an open glass of fresh water. Wear emerald green or clean white linen to stimulate cognitive clarity. Face North.`;
       break;
 
     case 'GAMING_CLUTCH':
-      openingScript = `"Comms on point tonight. Locked in for the rank-up lobby. Let's get these Ws."`;
-      tacticalAdvice = `Mangala (Mars) fuels explosive reflexes, clutch crosshair placement, and decisive calls. Stay hydrated and avoid tilting on early rounds. Mars rewards calculated aggression; play trades cleanly and call rotations with calm certainty.`;
-      deskRitual = `Face South or East. Wear ruby red or deep copper. Keep your mousepad clean and posture upright for peak kinetic reaction speed.`;
+      openingScript = `"Squad locked in. Comms crisp and minimal tonight. Eyes on the crosshair, let's claim the rank-up."`;
+      tacticalAdvice = `Mangala (Mars) fuels explosive reflexes and clutch playmaking. Stay hydrated, keep your posture upright, and call rotations with calm certainty. If a round is lost, reset instantly without emotional tilt.`;
+      deskRitual = `Face South or East. Wear deep charcoal with subtle red accents. Keep your mousepad clean and posture upright for peak kinetic reaction speed.`;
+      break;
+
+    case 'JOB_INTERVIEW':
+      openingScript = `"Good morning, thank you for this opportunity. I've followed your recent work in [domain], and I'm eager to discuss how my skill set in [specialty] can deliver immediate impact for your team."`;
+      tacticalAdvice = `Structure answers using the STAR method (Situation, Task, Action, Result). State quantifiable impact rather than generic responsibilities. Conclude answers with confident silence.`;
+      deskRitual = `Face East (Surya) or North (Budha). Test webcam eye-line at 90 degrees with clear frontal lighting.`;
+      break;
+
+    case 'FRIEND_DRAMA':
+      openingScript = `"Hey, can we talk one-on-one for a few minutes? Our friendship matters too much to let a misunderstanding sit between us."`;
+      tacticalAdvice = `Never resolve sensitive drama over text or group chats. Meet in person or get on a voice call. Use 'I feel' statements instead of accusatory 'You did' phrasing. Chandra (Moon) dissolves friction through genuine presence.`;
+      deskRitual = `Wear calm alabaster, soft silver, or neutral slate. Face North-West (Chandra). Keep your breathing slow and non-reactive.`;
       break;
 
     case 'INVESTOR_PITCH':
@@ -254,8 +357,8 @@ export function generateOracleConsultation({
       break;
 
     default:
-      openingScript = `"I've outlined three strategic outcomes for our discussion today to ensure we maximize velocity and conclude with clear operational ownership."`;
-      tacticalAdvice = `Maintain conversational control by setting the agenda in minute one. Anchor every commitment to a named person and a firm deadline before the planetary transit ends.`;
+      openingScript = `"I've outlined three clear outcomes for our conversation today so we align smoothly and reach mutual agreement."`;
+      tacticalAdvice = `Maintain conversational poise by framing expectations early. Speak with steady tempo, listen actively, and conclude agreements before the planetary transit window ends.`;
       deskRitual = `Face ${attire.direction}. Keep posture upright to project solar meridian balance.`;
       break;
   }
@@ -263,7 +366,7 @@ export function generateOracleConsultation({
   return {
     archetype,
     topic: prompt || topic || 'High-Stakes Strategic Sync',
-    goal: goal || 'Flawless execution and binding agreement',
+    goal: goal || 'Flawless execution and mutual agreement',
     strategy: strategy || 'Measured articulation with firm boundary control',
     city: selectedCity.name,
     dateStr: vedicData.date.toDateString(),

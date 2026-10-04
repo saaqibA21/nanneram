@@ -5,7 +5,7 @@ import { useApp } from '../context/AppContext';
 /**
  * One recommended meeting window with the actions to put it in a calendar.
  */
-export default function SlotCard({ slot, purpose, badge, featured = false }) {
+export default function SlotCard({ slot, purpose, badge, featured = false, hideLinkWarning = false }) {
   const {
     platform, selectedCity, getRealMeetingUrl, getGoogleCalendarUrl, copyInvite, downloadIcs,
     openZoomSetup, openGmeetSetup, appMode
@@ -50,7 +50,7 @@ export default function SlotCard({ slot, purpose, badge, featured = false }) {
         </button>
       </div>
 
-      {!hasLink && (
+      {!hasLink && !hideLinkWarning && (
         <div className="slot-warn">
           <AlertTriangle size={15} />
           <span>

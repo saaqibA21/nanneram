@@ -482,22 +482,62 @@ export function findOptimalMeetingSlots(vedicDay, purpose, durationMins = 30) {
   const candidates = [];
   const lower = purpose.toLowerCase();
 
-  // Determine preferred Horas based on meeting purpose
-  let preferredHoras = ['Mercury', 'Jupiter'];
-  let priorityTitle = 'Sales & Strategic Deals';
+  // Determine preferred Horas and priority title based on scenario/purpose
+  let preferredHoras = ['Mercury', 'Jupiter', 'Sun'];
+  let priorityTitle = 'Strategic Timing & Alignment';
+  let scenarioType = 'general';
 
-  if (lower.includes('pitch') || lower.includes('investor') || lower.includes('vc')) {
+  const isCrushOrPartner = lower.includes('crush') || lower.includes('girlfriend') || lower.includes('boyfriend') || lower.includes('her') || lower.includes('his') || lower.includes('partner') || lower.includes('in-law');
+  const isParentFigure = lower.includes('dad') || lower.includes('father') || lower.includes('mom') || lower.includes('mother') || lower.includes('parent') || lower.includes('family');
+
+  if ((lower.includes('crush') && isParentFigure) || (isCrushOrPartner && isParentFigure) || lower.includes('meet the parents')) {
+    preferredHoras = ['Sun', 'Jupiter', 'Mercury'];
+    priorityTitle = "Meeting Partner's / Crush's Parents";
+    scenarioType = 'crush_parents';
+  } else if (lower.includes('crush') || lower.includes('rizz') || lower.includes('dating') || lower.includes('first date') || lower.includes('dm') || lower.includes('flirt')) {
+    preferredHoras = ['Venus', 'Mercury'];
+    priorityTitle = 'Crush DM & Rizz Alignment';
+    scenarioType = 'crush_rizz';
+  } else if (lower.includes('parent') || lower.includes('mom') || lower.includes('dad') || lower.includes('curfew') || lower.includes('allowance') || lower.includes('permission')) {
+    preferredHoras = ['Jupiter', 'Sun'];
+    priorityTitle = 'Parent Permission & Negotiation';
+    scenarioType = 'parent_permission';
+  } else if (lower.includes('exam') || lower.includes('study') || lower.includes('cram') || lower.includes('homework') || lower.includes('assignment') || lower.includes('revision') || lower.includes('test')) {
+    preferredHoras = ['Mercury', 'Jupiter', 'Saturn'];
+    priorityTitle = 'Deep Study & Focus Sprint';
+    scenarioType = 'study';
+  } else if (lower.includes('game') || lower.includes('gaming') || lower.includes('ranked') || lower.includes('clutch') || lower.includes('valorant') || lower.includes('bgmi') || lower.includes('cs2')) {
+    preferredHoras = ['Mars', 'Sun'];
+    priorityTitle = 'Ranked Clutch & Kinetic Reflex';
+    scenarioType = 'gaming';
+  } else if (lower.includes('teacher') || lower.includes('professor') || lower.includes('grade') || lower.includes('dean') || lower.includes('principal') || lower.includes('marks')) {
+    preferredHoras = ['Jupiter', 'Mercury'];
+    priorityTitle = 'Academic Authority & Faculty Sync';
+    scenarioType = 'teacher';
+  } else if (lower.includes('friend') || lower.includes('beef') || lower.includes('drama') || lower.includes('apolog') || lower.includes('argument')) {
+    preferredHoras = ['Moon', 'Mercury'];
+    priorityTitle = 'Friendship Sync & De-escalation';
+    scenarioType = 'friend';
+  } else if (lower.includes('pitch') || lower.includes('investor') || lower.includes('vc') || lower.includes('seed')) {
     preferredHoras = ['Jupiter', 'Sun', 'Mercury'];
     priorityTitle = 'VC Pitching & Term Sheets';
-  } else if (lower.includes('salary') || lower.includes('raise') || lower.includes('contract') || lower.includes('sign')) {
+    scenarioType = 'pitch';
+  } else if (lower.includes('salary') || lower.includes('raise') || lower.includes('compensation') || lower.includes('appraisal')) {
     preferredHoras = ['Mercury', 'Jupiter'];
-    priorityTitle = 'Financial Gain & Contract Closing';
-  } else if (lower.includes('design') || lower.includes('creative') || lower.includes('partner')) {
+    priorityTitle = 'Salary & Financial Negotiation';
+    scenarioType = 'salary';
+  } else if (lower.includes('contract') || lower.includes('deal') || lower.includes('client') || lower.includes('closing') || lower.includes('sign')) {
+    preferredHoras = ['Mercury', 'Jupiter'];
+    priorityTitle = 'Client Closing & Deal Sign-off';
+    scenarioType = 'deal';
+  } else if (lower.includes('interview') || lower.includes('hiring') || lower.includes('job') || lower.includes('placement')) {
+    preferredHoras = ['Sun', 'Jupiter', 'Mercury'];
+    priorityTitle = 'Interview & Executive Assessment';
+    scenarioType = 'interview';
+  } else if (lower.includes('design') || lower.includes('creative') || lower.includes('partner') || lower.includes('brand')) {
     preferredHoras = ['Venus', 'Mercury'];
     priorityTitle = 'Creative Alignment & Partnerships';
-  } else if (lower.includes('interview') || lower.includes('hiring')) {
-    preferredHoras = ['Jupiter', 'Sun'];
-    priorityTitle = 'Executive Hiring & Assessment';
+    scenarioType = 'creative';
   }
 
   // Scan business hours (never before local sunrise). Evening slots fall in the
@@ -541,6 +581,19 @@ export function findOptimalMeetingSlots(vedicDay, purpose, durationMins = 30) {
     );
     if (spillsIntoBadGowri) score -= 20;
 
+    let recommendation = `Optimal alignment with ${currentHora.name} & ${currentGowri.name}. Plan your key sync between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
+    if (scenarioType === 'crush_parents') {
+      recommendation = `Optimal solar dignity with ${currentHora.name} & ${currentGowri.name}. Make your respectful approach between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
+    } else if (scenarioType === 'crush_rizz') {
+      recommendation = `Peak charm & witty magnetism with ${currentHora.name} & ${currentGowri.name}. Drop your text or make your move between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
+    } else if (scenarioType === 'parent_permission') {
+      recommendation = `Benevolent alignment with ${currentHora.name} & ${currentGowri.name}. Present your request between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
+    } else if (scenarioType === 'study') {
+      recommendation = `Peak synaptic focus window with ${currentHora.name} & ${currentGowri.name}. Run your focus sprint between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
+    } else if (scenarioType === 'gaming') {
+      recommendation = `Peak kinetic reaction speed and clutch composure with ${currentHora.name} & ${currentGowri.name}. Queue up between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
+    }
+
     candidates.push({
       startMin: slotStart,
       endMin: slotEnd,
@@ -551,7 +604,7 @@ export function findOptimalMeetingSlots(vedicDay, purpose, durationMins = 30) {
       gowri: currentGowri,
       score,
       priorityTitle,
-      recommendation: `Optimal alignment with ${currentHora.name} & ${currentGowri.name}. Plan strategic ask between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`
+      recommendation
     });
   }
 

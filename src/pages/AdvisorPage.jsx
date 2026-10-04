@@ -178,7 +178,7 @@ export default function AdvisorPage() {
           </div>
 
           {result.slot ? (
-            <SlotCard slot={result.slot} purpose={result.topic.slice(0, 60)} badge="Recommended window" featured />
+            <SlotCard slot={result.slot} purpose={result.topic.slice(0, 60)} badge={isGenZ ? "👑 Peak Aura Window" : "Recommended window"} featured hideLinkWarning />
           ) : (
             <div className="card empty">
               <h3>No clear window on this date</h3>
@@ -189,7 +189,7 @@ export default function AdvisorPage() {
           <div className="grid-2">
             <article className="card card-pad-lg">
               <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                <Shirt size={18} /> What to wear
+                <Shirt size={18} /> {isGenZ ? 'Drip & Attire Strategy' : 'What to wear'}
               </h3>
               <div className="swatches" style={{ marginBottom: '0.75rem' }}>
                 {result.attire.colorSwatches.map((hex) => (
@@ -207,7 +207,7 @@ export default function AdvisorPage() {
             <div style={{ display: 'grid', gap: '1rem', alignContent: 'start' }}>
               <article className="card card-pad-lg">
                 <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                  <Compass size={18} /> Which way to face
+                  <Compass size={18} /> {isGenZ ? 'Power Seating Direction' : 'Which way to face'}
                 </h3>
                 <p style={{ fontSize: '1.15rem', fontWeight: 600, color: 'var(--ink)' }}>{result.attire.direction}</p>
                 <p className="small">{result.attire.directionMeaning}</p>
@@ -215,7 +215,7 @@ export default function AdvisorPage() {
 
               <article className="card card-pad-lg">
                 <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                  <Armchair size={18} /> Desk setup
+                  <Armchair size={18} /> {isGenZ ? 'Vibe & Setting Protocol' : 'Setting & Environment'}
                 </h3>
                 <p className="small">{result.deskRitual}</p>
                 <p className="small muted" style={{ marginTop: '0.5rem' }}>Energy: {result.attire.energy}</p>
@@ -231,9 +231,9 @@ export default function AdvisorPage() {
           </div>
 
           <article className="card card-pad-lg">
-            <span className="eyebrow">Opening line</span>
+            <span className="eyebrow">{isGenZ ? '⚡ Opening Line / Icebreaker' : 'Opening line'}</span>
             <blockquote className="quote" style={{ margin: '0.6rem 0 1rem' }}>{result.openingScript}</blockquote>
-            <span className="eyebrow">How to run it</span>
+            <span className="eyebrow">{isGenZ ? '🎯 Tactical Playbook & Delivery' : 'How to run it'}</span>
             <p style={{ marginTop: '0.4rem' }}>{result.tacticalAdvice}</p>
           </article>
         </section>

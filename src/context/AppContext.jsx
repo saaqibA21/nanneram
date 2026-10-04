@@ -134,7 +134,10 @@ export function AppProvider({ children }) {
     `• Why this time: ${slot.recommendation}\n\n` +
     `Conference: ${getMeetingLine()}`;
 
-  const eventTitle = (purpose) => `${purpose} (${platform}) - Nanneram`;
+  const eventTitle = (purpose) => {
+    const hasRoom = Boolean(getRealMeetingUrl());
+    return hasRoom ? `${purpose} (${platform}) - Nanneram` : `${purpose} - Nanneram`;
+  };
 
   const getGoogleCalendarUrl = (slot, purpose = meetingPurpose) => {
     const { start, end } = getSlotInstants(slot);
