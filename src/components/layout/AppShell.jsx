@@ -3,6 +3,8 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Sun, CalendarClock, Sparkles, BookOpen, Tag, Video } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
+import IntroSplash from '../IntroSplash';
+
 const NAV = [
   { to: '/', label: 'Today', icon: Sun, end: true },
   { to: '/schedule', label: 'Schedule', icon: CalendarClock },
@@ -120,10 +122,34 @@ function Footer() {
             ))}
           </nav>
         </div>
-        <p className="fine">
-          Timings are for planning and tradition only. They do not predict or guarantee any outcome, and Nanneram does not
-          give financial, legal or medical advice. © 2026 Nanneram.
-        </p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
+          <p className="fine" style={{ margin: 0 }}>
+            Timings are for planning and tradition only. They do not predict or guarantee any outcome, and Nanneram does not
+            give financial, legal or medical advice. © 2026 Nanneram.
+          </p>
+          <button
+            type="button"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--copper, #d97706)',
+              cursor: 'pointer',
+              padding: '0.2rem 0',
+              fontSize: '0.8rem',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              fontWeight: 500
+            }}
+            onClick={() => {
+              sessionStorage.removeItem('nanneram_intro_played');
+              window.location.reload();
+            }}
+            title="Replay opening video"
+          >
+            ✨ Replay Intro
+          </button>
+        </div>
       </div>
     </footer>
   );
@@ -132,6 +158,7 @@ function Footer() {
 export default function AppShell() {
   return (
     <>
+      <IntroSplash />
       <ScrollToTop />
       <TopBar />
       <main>
