@@ -624,6 +624,9 @@ html, body {
     width: 100%;
     min-height: 44px;
   }
+  .hero::after {
+    background: linear-gradient(180deg, rgba(26, 22, 19, 0.92) 0%, rgba(26, 22, 19, 0.7) 65%, rgba(26, 22, 19, 0.45) 100%);
+  }
 
   /* Timeline */
   .tl-wrap { padding: 1rem 0.85rem 0.85rem; }

@@ -7,30 +7,45 @@ import ContextBar from '../components/layout/ContextBar';
 import NowCard from '../components/NowCard';
 import DayTimeline from '../components/DayTimeline';
 
-// The hero video is decorative and 7 MB, so skip it on phones and for reduced-motion users.
+// Hero video featuring the glowing rotating clock hands
 function HeroVideo() {
-  const [show, setShow] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const small = window.matchMedia('(max-width: 720px)').matches;
-    setShow(!reduce && !small);
+    setReduceMotion(reduce);
   }, []);
 
-  if (!show) return null;
+  if (reduceMotion) {
+    return (
+      <img
+        src="/assets/video/clock-poster.png"
+        alt=""
+        className="hero-video"
+        aria-hidden="true"
+      />
+    );
+  }
+
   return (
     <video
       className="hero-video"
-      src="/assets/video/nalla-neram-hero.mp4"
+      poster="/assets/video/clock-poster.png"
       autoPlay
       loop
       muted
       playsInline
-      preload="metadata"
+      preload="auto"
       aria-hidden="true"
       tabIndex={-1}
       disablePictureInPicture
       disableRemotePlayback
-    />
+      onCanPlay={(e) => {
+        e.target.play().catch(() => {});
+      }}
+    >
+      <source src="/assets/video/Clock_hands_rotate_and_glow_20260912193543.mp4" type="video/mp4" />
+      <source src="/assets/video/nalla-neram-hero.mp4" type="video/mp4" />
+    </video>
   );
 }
 
