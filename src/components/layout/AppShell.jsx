@@ -27,7 +27,7 @@ function TopBar() {
     <header className="topbar">
       <div className="container topbar-inner">
         <NavLink to="/" className="brand" aria-label="Nanneram home">
-          <span className="brand-mark" aria-hidden="true">N</span>
+          <img src="/assets/logo.png" alt="Nanneram" className="brand-logo" />
           <span>
             Nanneram
             <small>{appMode === 'genz' ? 'Aura & Timing Radar' : 'Good-time planner'}</small>
@@ -107,7 +107,7 @@ function Footer() {
         <div className="footer-grid">
           <div>
             <div className="brand">
-              <span className="brand-mark" aria-hidden="true">N</span>
+              <img src="/assets/logo.png" alt="Nanneram" className="brand-logo" />
               Nanneram
             </div>
             <p className="small muted" style={{ marginTop: '0.5rem', maxWidth: '38ch' }}>
