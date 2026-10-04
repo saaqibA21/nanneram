@@ -11,7 +11,17 @@ export default function SlotCard({ slot, purpose, badge, featured = false, hideL
     openZoomSetup, openGmeetSetup, appMode
   } = useApp();
   const isGenZ = appMode === 'genz';
-  const hasLink = Boolean(getRealMeetingUrl());
+  const isPersonal = Boolean(purpose && (
+    purpose.toLowerCase().includes('crush') || purpose.toLowerCase().includes('text') ||
+    purpose.toLowerCase().includes('dm') || purpose.toLowerCase().includes('rizz') ||
+    purpose.toLowerCase().includes('date') || purpose.toLowerCase().includes('parent') ||
+    purpose.toLowerCase().includes('mom') || purpose.toLowerCase().includes('dad') ||
+    purpose.toLowerCase().includes('exam') || purpose.toLowerCase().includes('cram') ||
+    purpose.toLowerCase().includes('study') || purpose.toLowerCase().includes('game') ||
+    purpose.toLowerCase().includes('gaming') || purpose.toLowerCase().includes('friend') ||
+    purpose.toLowerCase().includes('beef') || purpose.toLowerCase().includes('homework') ||
+    purpose.toLowerCase().includes('reply')
+  ));
 
   return (
     <article className={`card slot${featured ? ' slot-best' : ''}`}>
@@ -40,17 +50,17 @@ export default function SlotCard({ slot, purpose, badge, featured = false, hideL
           target="_blank"
           rel="noopener noreferrer"
         >
-          <CalendarPlus size={16} /> {isGenZ ? 'Lock In (Google Cal)' : 'Add to Google Calendar'}
+          <CalendarPlus size={16} /> {isPersonal ? (isGenZ ? 'Lock In Time (Cal)' : 'Add Reminder to Calendar') : (isGenZ ? 'Lock In (Google Cal)' : 'Add to Google Calendar')}
         </a>
         <button className="btn btn-secondary" onClick={() => downloadIcs(slot, purpose)}>
           <Download size={16} /> {isGenZ ? 'Export .ics' : 'Apple / Outlook (.ics)'}
         </button>
         <button className="btn btn-ghost" onClick={() => copyInvite(slot, purpose)}>
-          <Copy size={16} /> {isGenZ ? 'Copy Pitch' : 'Copy invite'}
+          <Copy size={16} /> {isPersonal ? (isGenZ ? 'Copy Reminder' : 'Copy details') : (isGenZ ? 'Copy Pitch' : 'Copy invite')}
         </button>
       </div>
 
-      {!hasLink && !hideLinkWarning && (
+      {!hasLink && !hideLinkWarning && !isPersonal && (
         <div className="slot-warn">
           <AlertTriangle size={15} />
           <span>

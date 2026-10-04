@@ -494,10 +494,26 @@ export function findOptimalMeetingSlots(vedicDay, purpose, durationMins = 30) {
     preferredHoras = ['Sun', 'Jupiter', 'Mercury'];
     priorityTitle = "Meeting Partner's / Crush's Parents";
     scenarioType = 'crush_parents';
+  } else if (lower.includes('crush') && (lower.includes('reply') || lower.includes('read') || lower.includes('delivered') || lower.includes('re text') || lower.includes('retext') || lower.includes('ghost') || lower.includes('ignoring') || lower.includes('seen') || lower.includes('wait'))) {
+    preferredHoras = ['Venus', 'Mercury'];
+    priorityTitle = 'Crush Follow-Up & Re-Text Window';
+    scenarioType = 'crush_retext';
+  } else if (lower.includes('crush') && (lower.includes('ask out') || lower.includes('date') || lower.includes('coffee') || lower.includes('drinks') || lower.includes('hang out') || lower.includes('dinner'))) {
+    preferredHoras = ['Venus', 'Mercury'];
+    priorityTitle = 'Asking Crush Out & Date Proposal';
+    scenarioType = 'crush_askout';
   } else if (lower.includes('crush') || lower.includes('rizz') || lower.includes('dating') || lower.includes('first date') || lower.includes('dm') || lower.includes('flirt')) {
     preferredHoras = ['Venus', 'Mercury'];
     priorityTitle = 'Crush DM & Rizz Alignment';
     scenarioType = 'crush_rizz';
+  } else if ((lower.includes('parent') || lower.includes('mom') || lower.includes('dad')) && (lower.includes('money') || lower.includes('cash') || lower.includes('allowance') || lower.includes('dollar') || lower.includes('rupee') || lower.includes('pay for') || lower.includes('borrow'))) {
+    preferredHoras = ['Jupiter', 'Mercury', 'Sun'];
+    priorityTitle = 'Parent Financial Request & Cash';
+    scenarioType = 'parent_cash';
+  } else if ((lower.includes('parent') || lower.includes('mom') || lower.includes('dad')) && (lower.includes('trip') || lower.includes('weekend') || lower.includes('night out') || lower.includes('party') || lower.includes('curfew') || lower.includes('sleepover') || lower.includes('stayover'))) {
+    preferredHoras = ['Jupiter', 'Sun'];
+    priorityTitle = 'Parent Trip & Curfew Permission';
+    scenarioType = 'parent_trip';
   } else if (lower.includes('parent') || lower.includes('mom') || lower.includes('dad') || lower.includes('curfew') || lower.includes('allowance') || lower.includes('permission')) {
     preferredHoras = ['Jupiter', 'Sun'];
     priorityTitle = 'Parent Permission & Negotiation';
@@ -510,6 +526,10 @@ export function findOptimalMeetingSlots(vedicDay, purpose, durationMins = 30) {
     preferredHoras = ['Mars', 'Sun'];
     priorityTitle = 'Ranked Clutch & Kinetic Reflex';
     scenarioType = 'gaming';
+  } else if ((lower.includes('teacher') || lower.includes('professor')) && (lower.includes('extension') || lower.includes('deadline') || lower.includes('late') || lower.includes('grade') || lower.includes('marks'))) {
+    preferredHoras = ['Jupiter', 'Mercury'];
+    priorityTitle = 'Deadline Extension & Faculty Request';
+    scenarioType = 'teacher_extension';
   } else if (lower.includes('teacher') || lower.includes('professor') || lower.includes('grade') || lower.includes('dean') || lower.includes('principal') || lower.includes('marks')) {
     preferredHoras = ['Jupiter', 'Mercury'];
     priorityTitle = 'Academic Authority & Faculty Sync';
@@ -584,10 +604,20 @@ export function findOptimalMeetingSlots(vedicDay, purpose, durationMins = 30) {
     let recommendation = `Optimal alignment with ${currentHora.name} & ${currentGowri.name}. Plan your key sync between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
     if (scenarioType === 'crush_parents') {
       recommendation = `Optimal solar dignity with ${currentHora.name} & ${currentGowri.name}. Make your respectful approach between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
+    } else if (scenarioType === 'crush_retext') {
+      recommendation = `Reset conversational momentum with ${currentHora.name} & ${currentGowri.name}. Drop your effortless, low-pressure reset text between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}, then detach.`;
+    } else if (scenarioType === 'crush_askout') {
+      recommendation = `Peak romantic magnetism with ${currentHora.name} & ${currentGowri.name}. Drop your casual plan between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
     } else if (scenarioType === 'crush_rizz') {
       recommendation = `Peak charm & witty magnetism with ${currentHora.name} & ${currentGowri.name}. Drop your text or make your move between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
+    } else if (scenarioType === 'parent_cash') {
+      recommendation = `Optimal generosity with ${currentHora.name} & ${currentGowri.name}. State your fulfilled chores and present the ask between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
+    } else if (scenarioType === 'parent_trip') {
+      recommendation = `Benevolent alignment with ${currentHora.name} & ${currentGowri.name}. Present your trip logistics, safety plan, and return time between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
     } else if (scenarioType === 'parent_permission') {
       recommendation = `Benevolent alignment with ${currentHora.name} & ${currentGowri.name}. Present your request between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
+    } else if (scenarioType === 'teacher_extension') {
+      recommendation = `Highest academic receptivity under ${currentHora.name} & ${currentGowri.name}. Approach with your completed draft and request between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
     } else if (scenarioType === 'study') {
       recommendation = `Peak synaptic focus window with ${currentHora.name} & ${currentGowri.name}. Run your focus sprint between ${formatTime(slotStart + 5)} and ${formatTime(slotEnd - 5)}.`;
     } else if (scenarioType === 'gaming') {

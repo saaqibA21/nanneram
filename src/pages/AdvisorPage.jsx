@@ -30,6 +30,10 @@ const GENZ_SCENARIOS = [
     text: 'Sliding into my crush’s DMs after they posted a story. Want maximum rizz, witty banter, and zero awkward left-on-read energy.'
   },
   {
+    label: '👻 Re-texting after no reply / read',
+    text: 'My crush didn’t reply to my previous text. Still left on read. When to re-text, what exact line to send to reset momentum, and how to keep my aura high?'
+  },
+  {
     label: '👨‍👩‍👧 Asking parents for permission & cash',
     text: 'Asking my strict parents for permission to go on a weekend road trip with friends and loan me $150. Need maximum generosity mode and zero anger.'
   },
@@ -44,27 +48,37 @@ const GENZ_SCENARIOS = [
 ];
 
 function buildCopyText(c, isGenZ = false) {
+  let scriptsBlock = '';
+  if (c.openingOptions && c.openingOptions.length > 1) {
+    scriptsBlock = c.openingOptions
+      .map(o => `• ${o.label}:\n  ${o.script}\n  (Why: ${o.why})`)
+      .join('\n\n');
+  } else {
+    scriptsBlock = c.openingScript;
+  }
+
   return (
-    `${isGenZ ? '⚡ NANNERAM AURA & RIZZ PLAYBOOK' : 'NANNERAM MEETING ADVICE'}\n` +
+    `${isGenZ ? '⚡ NANNERAM AURA & TACTICAL PLAYBOOK' : 'NANNERAM ADVICE DECREE'}\n` +
     `Situation: ${c.topic}\n` +
     `City: ${c.city} · Date: ${c.dateStr}\n\n` +
     `${isGenZ ? 'CERTIFIED AURA WINDOW' : 'TIMING'}\n` +
     (c.slot
       ? `• Window: ${c.slot.startTimeFormatted} – ${c.slot.endTimeFormatted} (${c.city} time)\n` +
-        `• Wrap up by: ${c.slot.gracefulExitWindow}\n` +
-        `• Ruling energy: ${c.attire.planet}\n`
+        `• Action window: ${c.slot.gracefulExitWindow}\n` +
+        `• Ruling energy: ${c.attire.planet}\n` +
+        `• Alignment: ${c.slot.recommendation}\n`
       : `• No clear window found on this date. Try another date.\n`) +
     `• Chaos Hour (Rahu Kaalam) to avoid: ${c.rahuAvoidance}\n\n` +
-    `${isGenZ ? 'DRIP & COLOR PSYCHOLOGY' : 'WHAT TO WEAR'}\n` +
-    `• Recommended palette: ${c.attire.recommendedPalette}\n` +
+    `${isGenZ ? 'DRIP & PSYCHOLOGY FRAME' : 'PRESENTATION & ATTIRE'}\n` +
+    `• Palette: ${c.attire.recommendedPalette}\n` +
     `• Avoid: ${c.attire.avoidColors}\n` +
-    `• Fabric: ${c.attire.fabrics}\n` +
-    `• Accents: ${c.attire.metalAndWatch}\n\n` +
-    `${isGenZ ? 'POWER SEATING DIRECTION' : 'WHICH WAY TO FACE'}\n` +
+    `• Details: ${c.attire.fabrics}\n` +
+    `• Protocol: ${c.attire.metalAndWatch}\n\n` +
+    `${isGenZ ? 'POWER DIRECTION' : 'WHICH WAY TO FACE'}\n` +
     `• ${c.attire.direction}: ${c.attire.directionMeaning}\n\n` +
-    `${isGenZ ? 'OPENING TEXT / ICEBREAKER' : 'OPENING LINE'}\n${c.openingScript}\n\n` +
-    `${isGenZ ? 'TACTICAL PLAYBOOK' : 'HOW TO RUN IT'}\n${c.tacticalAdvice}\n\n` +
-    `${isGenZ ? 'VIBE & ENVIRONMENT SETUP' : 'DESK SETUP'}\n${c.deskRitual}`
+    `${isGenZ ? 'TACTICAL SCRIPTS / OPENERS' : 'OPENING SCRIPTS'}\n${scriptsBlock}\n\n` +
+    `${isGenZ ? 'THE TACTICAL PLAYBOOK' : 'HOW TO RUN IT'}\n${c.tacticalAdvice}\n\n` +
+    `${isGenZ ? 'VIBE & ENVIRONMENT PROTOCOL' : 'SETTING & ENVIRONMENT'}\n${c.deskRitual}`
   );
 }
 
@@ -189,7 +203,15 @@ export default function AdvisorPage() {
           <div className="grid-2">
             <article className="card card-pad-lg">
               <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                <Shirt size={18} /> {isGenZ ? 'Drip & Attire Strategy' : 'What to wear'}
+                <Shirt size={18} /> {
+                  result.contextType === 'digital_messaging'
+                    ? (isGenZ ? '⚡ Aura & Digital Composure' : 'Vibe & Digital Frame')
+                    : result.contextType === 'study_sprint'
+                    ? (isGenZ ? '🧠 Cognitive Drip & Monk Mode' : 'Study Attire & Focus Setup')
+                    : result.contextType === 'gaming'
+                    ? (isGenZ ? '🎮 Clutch Drip & Ergonomics' : 'Gaming Gear & Posture')
+                    : (isGenZ ? 'Drip & Attire Strategy' : 'What to wear')
+                }
               </h3>
               <div className="swatches" style={{ marginBottom: '0.75rem' }}>
                 {result.attire.colorSwatches.map((hex) => (
@@ -197,17 +219,17 @@ export default function AdvisorPage() {
                 ))}
               </div>
               <dl className="kv">
-                <div><dt>Colours</dt><dd>{result.attire.recommendedPalette}</dd></div>
+                <div><dt>{result.contextType === 'digital_messaging' ? (isGenZ ? 'Aesthetic Palette' : 'Colours') : 'Colours'}</dt><dd>{result.attire.recommendedPalette}</dd></div>
                 <div><dt>Avoid</dt><dd>{result.attire.avoidColors}</dd></div>
-                <div><dt>Fabric</dt><dd>{result.attire.fabrics}</dd></div>
-                <div><dt>Metal and watch</dt><dd>{result.attire.metalAndWatch}</dd></div>
+                <div><dt>{result.contextType === 'digital_messaging' ? (isGenZ ? 'Physical Frame' : 'Comfort & Posture') : result.contextType === 'study_sprint' ? 'Layers & Comfort' : result.contextType === 'gaming' ? 'Jersey & Mobility' : 'Fabric'}</dt><dd>{result.attire.fabrics}</dd></div>
+                <div><dt>{result.contextType === 'digital_messaging' ? (isGenZ ? 'Device & Notification Rule' : 'Device protocol') : result.contextType === 'study_sprint' ? 'Analog Tool' : result.contextType === 'gaming' ? 'Wrist & Gear' : 'Metal and watch'}</dt><dd>{result.attire.metalAndWatch}</dd></div>
               </dl>
             </article>
 
             <div style={{ display: 'grid', gap: '1rem', alignContent: 'start' }}>
               <article className="card card-pad-lg">
                 <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                  <Compass size={18} /> {isGenZ ? 'Power Seating Direction' : 'Which way to face'}
+                  <Compass size={18} /> {isGenZ ? (result.contextType === 'digital_messaging' ? 'Power Direction While Typing' : 'Power Seating Direction') : 'Which way to face'}
                 </h3>
                 <p style={{ fontSize: '1.15rem', fontWeight: 600, color: 'var(--ink)' }}>{result.attire.direction}</p>
                 <p className="small">{result.attire.directionMeaning}</p>
@@ -231,10 +253,53 @@ export default function AdvisorPage() {
           </div>
 
           <article className="card card-pad-lg">
-            <span className="eyebrow">{isGenZ ? '⚡ Opening Line / Icebreaker' : 'Opening line'}</span>
-            <blockquote className="quote" style={{ margin: '0.6rem 0 1rem' }}>{result.openingScript}</blockquote>
-            <span className="eyebrow">{isGenZ ? '🎯 Tactical Playbook & Delivery' : 'How to run it'}</span>
-            <p style={{ marginTop: '0.4rem' }}>{result.tacticalAdvice}</p>
+            <span className="eyebrow">{isGenZ ? '⚡ Tactical Scripts & High-Aura Openers' : 'Opening scripts & options'}</span>
+            
+            {result.openingOptions && result.openingOptions.length > 1 ? (
+              <div style={{ display: 'grid', gap: '0.9rem', margin: '0.75rem 0 1.5rem' }}>
+                {result.openingOptions.map((opt, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.03)',
+                      border: '1px solid var(--line)',
+                      borderRadius: '12px',
+                      padding: '1rem 1.15rem'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem', flexWrap: 'wrap', gap: '0.4rem' }}>
+                      <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--copper, #d97706)' }}>
+                        {opt.label}
+                      </span>
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        style={{ padding: '0.2rem 0.55rem', fontSize: '0.78rem' }}
+                        onClick={() => {
+                          navigator.clipboard.writeText(opt.script.replace(/^"|"$/g, ''));
+                          triggerToast('Script copied to clipboard!');
+                        }}
+                      >
+                        <Copy size={13} /> Copy text
+                      </button>
+                    </div>
+                    <blockquote className="quote" style={{ margin: '0 0 0.45rem', fontSize: '1.02rem', fontStyle: 'italic', color: 'var(--ink)' }}>
+                      {opt.script}
+                    </blockquote>
+                    <p className="small muted" style={{ margin: 0, fontSize: '0.82rem' }}>
+                      💡 {opt.why}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <blockquote className="quote" style={{ margin: '0.6rem 0 1.25rem' }}>{result.openingScript}</blockquote>
+            )}
+
+            <span className="eyebrow">{isGenZ ? '🎯 The Tactical Playbook' : 'How to run it'}</span>
+            <div style={{ marginTop: '0.5rem', whiteSpace: 'pre-line', lineHeight: 1.68, fontSize: '0.95rem' }}>
+              {result.tacticalAdvice}
+            </div>
           </article>
         </section>
       )}

@@ -126,15 +126,36 @@ export function AppProvider({ children }) {
     end: zonedMinutesToUtcDate(targetDateStr, selectedCity.timeZone, slot.endMin)
   });
 
-  const getSlotDetails = (slot) =>
-    `Timed via Nanneram.\n` +
-    `• Window: ${slot.startTimeFormatted} – ${slot.endTimeFormatted} (${zoneLabel})\n` +
-    `• Wrap up by: ${slot.gracefulExitWindow}\n` +
-    `• Hora and Gowri: ${slot.hora.name} & ${slot.gowri.name}\n` +
-    `• Why this time: ${slot.recommendation}\n\n` +
-    `Conference: ${getMeetingLine()}`;
+  const isPersonalAction = (str = '') => {
+    const l = (str || '').toLowerCase();
+    return (
+      l.includes('crush') || l.includes('text') || l.includes('dm') || l.includes('rizz') ||
+      l.includes('date') || l.includes('parent') || l.includes('mom') || l.includes('dad') ||
+      l.includes('exam') || l.includes('cram') || l.includes('study') || l.includes('game') ||
+      l.includes('gaming') || l.includes('friend') || l.includes('beef') || l.includes('homework') ||
+      l.includes('clutch') || l.includes('confess') || l.includes('ask out') || l.includes('reply')
+    );
+  };
+
+  const getSlotDetails = (slot, purpose = '') => {
+    const isPersonal = isPersonalAction(purpose);
+    let details = 
+      `Timed via Nanneram.\n` +
+      `• Window: ${slot.startTimeFormatted} – ${slot.endTimeFormatted} (${zoneLabel})\n` +
+      `• Optimal execution window: ${slot.gracefulExitWindow}\n` +
+      `• Hora and Gowri: ${slot.hora.name} & ${slot.gowri.name}\n` +
+      `• Why this time: ${slot.recommendation}`;
+
+    if (!isPersonal) {
+      details += `\n\nConference: ${getMeetingLine()}`;
+    }
+    return details;
+  };
 
   const eventTitle = (purpose) => {
+    if (isPersonalAction(purpose)) {
+      return `${purpose} · Nanneram`;
+    }
     const hasRoom = Boolean(getRealMeetingUrl());
     return hasRoom ? `${purpose} (${platform}) - Nanneram` : `${purpose} - Nanneram`;
   };
@@ -146,25 +167,33 @@ export function AppProvider({ children }) {
       action: 'TEMPLATE',
       text: eventTitle(purpose),
       dates: `${toCalendarStamp(start)}/${toCalendarStamp(end)}`,
-      details: getSlotDetails(slot)
+      details: getSlotDetails(slot, purpose)
     });
-    if (realUrl) params.set('location', realUrl);
+    if (realUrl && !isPersonalAction(purpose)) params.set('location', realUrl);
     return `https://calendar.google.com/calendar/render?${params.toString()}`;
   };
 
   const copyInvite = (slot, purpose = meetingPurpose) => {
-    const invite =
-      `Meeting: ${purpose}\n` +
-      `Platform: ${platform}\n` +
-      `Date: ${vedicData.dayName}, ${targetDateStr}\n` +
-      `Window: ${slot.startTimeFormatted} – ${slot.endTimeFormatted} (${zoneLabel})\n` +
-      `Wrap up by: ${slot.gracefulExitWindow}\n` +
-      `Hora and Gowri: ${slot.hora.name} | ${slot.gowri.name}\n` +
-      `Link: ${getMeetingLine()}\n\n` +
-      `Timed with Nanneram, using NOAA solar equations and the Tamil Gowri Panchangam.`;
+    const isPersonal = isPersonalAction(purpose);
+    const invite = isPersonal
+      ? `⚡ Timing Reminder: ${purpose}\n` +
+        `Date: ${vedicData.dayName}, ${targetDateStr}\n` +
+        `Peak Window: ${slot.startTimeFormatted} – ${slot.endTimeFormatted} (${zoneLabel})\n` +
+        `Optimal action window: ${slot.gracefulExitWindow}\n` +
+        `Hora and Gowri: ${slot.hora.name} | ${slot.gowri.name}\n` +
+        `Alignment: ${slot.recommendation}\n\n` +
+        `Calculated via Nanneram Vedic Timing.`
+      : `Meeting: ${purpose}\n` +
+        `Platform: ${platform}\n` +
+        `Date: ${vedicData.dayName}, ${targetDateStr}\n` +
+        `Window: ${slot.startTimeFormatted} – ${slot.endTimeFormatted} (${zoneLabel})\n` +
+        `Wrap up by: ${slot.gracefulExitWindow}\n` +
+        `Hora and Gowri: ${slot.hora.name} | ${slot.gowri.name}\n` +
+        `Link: ${getMeetingLine()}\n\n` +
+        `Timed with Nanneram, using NOAA solar equations and the Tamil Gowri Panchangam.`;
 
     navigator.clipboard.writeText(invite).then(
-      () => triggerToast('Invite text copied.'),
+      () => triggerToast(isPersonal ? 'Timing reminder copied.' : 'Invite text copied.'),
       () => triggerToast('Could not copy. Your browser blocked clipboard access.')
     );
   };
