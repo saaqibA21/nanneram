@@ -11,6 +11,7 @@ export default function SlotCard({ slot, purpose, badge, featured = false, hideL
     openZoomSetup, openGmeetSetup, appMode
   } = useApp();
   const isGenZ = appMode === 'genz';
+  const hasLink = Boolean(getRealMeetingUrl());
   const isPersonal = Boolean(purpose && (
     purpose.toLowerCase().includes('crush') || purpose.toLowerCase().includes('text') ||
     purpose.toLowerCase().includes('dm') || purpose.toLowerCase().includes('rizz') ||
