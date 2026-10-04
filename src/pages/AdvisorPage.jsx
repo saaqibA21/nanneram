@@ -149,7 +149,7 @@ export default function AdvisorPage() {
             />
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          <div className="advisor-submit-row">
             <span className="small muted">Uses {selectedCity.name} solar ephemeris for {vedicData.dayName}.</span>
             <button className="btn btn-primary" onClick={() => consult()}>
               {isGenZ ? '⚡ Calculate Aura Playbook' : 'Get advice'}

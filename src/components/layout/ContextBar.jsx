@@ -37,7 +37,7 @@ export default function ContextBar() {
       </div>
 
       <div className="date-nav">
-        <button className="icon-btn btn-secondary" style={{ border: '1px solid var(--line-strong)' }} onClick={() => setTargetDateStr(shiftDate(targetDateStr, -1))} aria-label="Previous day">
+        <button className="icon-btn btn-secondary date-nav-btn" style={{ border: '1px solid var(--line-strong)' }} onClick={() => setTargetDateStr(shiftDate(targetDateStr, -1))} aria-label="Previous day">
           <ChevronLeft size={18} />
         </button>
         <div className="field field-date">
@@ -50,13 +50,13 @@ export default function ContextBar() {
             onChange={(e) => e.target.value && setTargetDateStr(e.target.value)}
           />
         </div>
-        <button className="icon-btn btn-secondary" style={{ border: '1px solid var(--line-strong)' }} onClick={() => setTargetDateStr(shiftDate(targetDateStr, 1))} aria-label="Next day">
+        <button className="icon-btn btn-secondary date-nav-btn" style={{ border: '1px solid var(--line-strong)' }} onClick={() => setTargetDateStr(shiftDate(targetDateStr, 1))} aria-label="Next day">
           <ChevronRight size={18} />
         </button>
       </div>
 
       <button
-        className="btn btn-secondary"
+        className="btn btn-secondary ctx-today-btn"
         onClick={() => setTargetDateStr(today)}
         disabled={targetDateStr === today}
       >

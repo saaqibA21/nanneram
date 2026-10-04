@@ -70,7 +70,7 @@ function TopBar() {
         </div>
 
         <button
-          className="btn btn-secondary btn-sm"
+          className="btn btn-secondary btn-sm topbar-meet-btn"
           onClick={platform === 'Zoom' ? openZoomSetup : openGmeetSetup}
           title={linkSet ? `${platform} room is set` : `Set your ${platform} room`}
         >

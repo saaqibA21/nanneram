@@ -76,7 +76,7 @@ export default function DayTimeline() {
 
   return (
     <div className="card tl-wrap">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+      <div className="tl-header">
         <div>
           <h3>{v.dayName}'s timeline</h3>
           <p className="small muted">
