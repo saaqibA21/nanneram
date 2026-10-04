@@ -36,7 +36,7 @@
   --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
 
-  --nav-h: 60px;
+  --nav-h: 66px;
   --tabbar-h: 62px;
 }
 
@@ -217,17 +217,18 @@ button:disabled { cursor: not-allowed; }
 }
 .topbar-inner { height: var(--nav-h); display: flex; align-items: center; gap: 1.5rem; }
 
-.brand { display: inline-flex; align-items: center; gap: 0.65rem; font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600; letter-spacing: -0.01em; }
+.brand { display: inline-flex; align-items: center; gap: 0.75rem; font-family: var(--font-serif); font-size: 1.35rem; font-weight: 600; letter-spacing: -0.01em; }
 .brand-logo {
-  width: 36px;
-  height: 36px;
+  height: 48px;
+  width: auto;
+  max-width: 62px;
   object-fit: contain;
   flex-shrink: 0;
   display: block;
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 .brand:hover .brand-logo {
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 .brand-mark {
   width: 30px; height: 30px; border-radius: 8px; background: var(--ink); color: #fff;
@@ -556,8 +557,12 @@ html, body {
   }
   .navlinks { display: none; }
   .topbar-inner {
-    height: 56px;
+    height: 60px;
     gap: 0.6rem;
+  }
+  .brand-logo {
+    height: 44px;
+    width: auto;
   }
   .brand small { display: none; }
   .topbar .nav-label { display: none; }
@@ -844,8 +849,8 @@ html, body {
     gap: 0.35rem;
   }
   .brand-logo {
-    width: 30px;
-    height: 30px;
+    height: 36px;
+    width: auto;
   }
   .brand-mark {
     width: 26px;
