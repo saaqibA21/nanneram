@@ -13,6 +13,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.135.0",
     "@vitejs/plugin-react": "^4.7.0",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.0.1",

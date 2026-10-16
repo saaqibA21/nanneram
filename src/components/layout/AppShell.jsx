@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { Sun, CalendarClock, Sparkles, BookOpen, Tag, Video } from 'lucide-react';
+import { Sun, CalendarClock, Sparkles, BookOpen, Tag, Video, MessageCircleQuestion } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
 import IntroSplash from '../IntroSplash';
@@ -9,6 +9,7 @@ const NAV = [
   { to: '/', label: 'Today', icon: Sun, end: true },
   { to: '/schedule', label: 'Schedule', icon: CalendarClock },
   { to: '/advisor', label: 'Advisor', icon: Sparkles },
+  { to: '/ask', label: 'Ask', icon: MessageCircleQuestion },
   { to: '/guide', label: 'Guide', icon: BookOpen },
   { to: '/plans', label: 'Plans', icon: Tag }
 ];

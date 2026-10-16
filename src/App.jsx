@@ -7,6 +7,7 @@ import SchedulePage from './pages/SchedulePage';
 import AdvisorPage from './pages/AdvisorPage';
 import GuidePage from './pages/GuidePage';
 import PlansPage from './pages/PlansPage';
+import AskPage from './pages/AskPage';
 
 // Hash routes (#/schedule) keep deep links and the back button working on static hosting.
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
             <Route index element={<TodayPage />} />
             <Route path="schedule" element={<SchedulePage />} />
             <Route path="advisor" element={<AdvisorPage />} />
+            <Route path="ask" element={<AskPage />} />
             <Route path="guide" element={<GuidePage />} />
             <Route path="plans" element={<PlansPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
