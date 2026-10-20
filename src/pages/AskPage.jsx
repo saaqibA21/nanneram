@@ -1,22 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowUp, CalendarClock, RotateCcw, Sparkles } from 'lucide-react';
-import { CITIES, formatTime, getZonedNow } from '../utils/vedicTiming';
-import { askQuestion } from '../utils/askClient';
+import { CITIES, getZonedNow } from '../utils/vedicTiming';
+import { answerQuestion } from '../utils/ask/engine';
 import { useApp } from '../context/AppContext';
 import PageHeader from '../components/layout/PageHeader';
 
-const STORAGE_KEY = 'nanneram_ask_thread';
+const STORAGE_KEY = 'nanneram_ask_thread_v2';
 
 const SUGGESTIONS = [
   'Is now a good time to start something?',
   'When is Rahu Kaalam tomorrow?',
   'Best time for a job interview on Friday?',
+  'Is 3 PM okay for a client call today?',
   'Which day this week is best to sign a contract?',
+  "Today's panchang",
+  'When is the next Pournami?',
   'What should I wear for an investor pitch?',
-  'What is the difference between Rahu Kaalam and Yamagandam?',
-  'How do I add my Zoom link to invites?',
-  'Nalla Neram in London next Monday?'
+  'Griha pravesam dates next month',
+  'Rahu Kaalam in Toronto tomorrow',
+  '10 AM IST in New York time',
+  'How do I add my Zoom link to invites?'
 ];
 
 const GENZ_SUGGESTIONS = [
@@ -99,7 +103,7 @@ function SlotsBlock({ slots }) {
 }
 
 export default function AskPage() {
-  const { selectedCity, targetDateStr, platform, appMode, vedicData } = useApp();
+  const { selectedCity, targetDateStr, appMode, vedicData } = useApp();
   const [thread, setThread] = useState(loadThread);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
@@ -115,38 +119,41 @@ export default function AskPage() {
     endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [thread, busy]);
 
-  const send = async (text) => {
+  const send = (text) => {
     const question = (text ?? input).trim();
     if (!question || busy) return;
     setInput('');
-    const history = [...thread, { role: 'user', content: question }];
-    setThread(history);
+    const prior = thread;
+    setThread([...prior, { role: 'user', content: question }]);
     setBusy(true);
 
-    const now = getZonedNow(selectedCity.timeZone);
-    const result = await askQuestion(
-      history.map(({ role, content }) => ({ role, content })),
-      {
-        server: {
-          city: selectedCity.name,
-          today: now.dateStr,
-          weekday: new Date(`${now.dateStr}T00:00:00`).toLocaleDateString('en-GB', { weekday: 'long' }),
-          localTime: formatTime(now.minutesFromMidnight),
-          selectedDate: targetDateStr,
-          platform,
+    // Let the question paint first; month-long searches take a moment on slow phones.
+    setTimeout(() => {
+      let result;
+      try {
+        result = answerQuestion(question, {
+          history: prior,
+          defaultCity: selectedCity,
+          selectedDate: targetDateStr === getZonedNow(selectedCity.timeZone).dateStr ? null : targetDateStr,
           mode: appMode
-        },
-        offline: { city: selectedCity, selectedDate: targetDateStr === now.dateStr ? null : targetDateStr }
+        });
+      } catch (err) {
+        console.error('Ask failed', err);
+        result = {
+          answer: 'Sorry, I tripped over that one. Try rephrasing it, for example "best time for a meeting tomorrow" or "Rahu Kaalam on Friday".',
+          slots: null,
+          suggestions: ['Is now a good time to start something?', 'Rahu Kaalam today', "Today's panchang"],
+          meta: null
+        };
       }
-    );
-
-    setThread((t) => [...t, { role: 'assistant', content: result.answer, slots: result.slots, source: result.source, note: result.note }]);
-    setBusy(false);
-    inputRef.current?.focus();
+      setThread((t) => [...t, { role: 'assistant', content: result.answer, slots: result.slots, suggestions: result.suggestions, meta: result.meta }]);
+      setBusy(false);
+      inputRef.current?.focus();
+    }, 30);
   };
 
   const suggestions = appMode === 'genz' ? [...GENZ_SUGGESTIONS, ...SUGGESTIONS.slice(0, 4)] : SUGGESTIONS;
-  const lastSource = [...thread].reverse().find((m) => m.role === 'assistant')?.source;
+  const lastAnswer = [...thread].reverse().find((m) => m.role === 'assistant');
 
   return (
     <div className="page container ask-page">
@@ -176,11 +183,17 @@ export default function AskPage() {
                   <>
                     <RichText text={m.content} />
                     {m.slots?.slots?.length > 0 && <SlotsBlock slots={m.slots} />}
-                    {m.note && <p className="small muted">{m.note}</p>}
                   </>
                 )}
               </div>
             ))}
+            {!busy && lastAnswer?.suggestions?.length > 0 && thread[thread.length - 1] === lastAnswer && (
+              <div className="chips ask-followups" aria-label="Suggested follow-up questions">
+                {lastAnswer.suggestions.map((s) => (
+                  <button key={s} className="chip" onClick={() => send(s)}>{s}</button>
+                ))}
+              </div>
+            )}
             {busy && (
               <div className="ask-msg ask-assistant ask-typing" aria-label="Working on an answer">
                 <span /><span /><span />
@@ -216,11 +229,7 @@ export default function AskPage() {
           }}
         />
         <div className="ask-composer-row">
-          <span className="small muted">
-            {lastSource === 'offline'
-              ? 'Quick answers mode: AI assistant not switched on.'
-              : 'Enter to send, Shift+Enter for a new line.'}
-          </span>
+          <span className="small muted">Calculated on your device for {selectedCity.name} unless you name a place. Enter to send.</span>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             {thread.length > 0 && (
               <button type="button" className="btn btn-ghost btn-sm" onClick={() => setThread([])} disabled={busy}>

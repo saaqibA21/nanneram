@@ -1088,3 +1088,5 @@ html, body {
   .ask-composer-row > .small { display: none; }
   .ask-composer-row { justify-content: flex-end; }
 }
+.ask-followups { margin-top: 0.25rem; }
+.ask-followups .chip { font-size: 0.8rem; }
